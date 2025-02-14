@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace ApiFinaças.Controllers.Movimentacoes
+namespace ApiFinaças.Src.Presentation.Controllers.Movimentacoes
 {
     [ApiController]
     [Route("/saida")]

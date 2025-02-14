@@ -9,13 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="Properties\launchSettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Swashbuckle" Version="5.6.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\Implementations\" />
-    <Folder Include="Services\Services\" />
+    <Folder Include="Src\Application\" />
+    <Folder Include="Src\Domain\" />
   </ItemGroup>
 
 </Project>
