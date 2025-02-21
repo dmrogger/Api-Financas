@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Src\Application\" />
+    <Folder Include="Src\Application\Interfaces\" />
     <Folder Include="Src\Domain\" />
   </ItemGroup>
 
