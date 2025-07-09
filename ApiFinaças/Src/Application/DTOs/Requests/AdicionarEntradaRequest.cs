@@ -11,12 +11,12 @@ namespace ApiFinaças.Src.Application.DTOs.Requests
         public AdicionarEntradaRequest(decimal valor, DateTime dataOperacao)
         {
             Valor = valor;
-            DataOperacao = DataOperacao;
+            DataOperacao = dataOperacao;
         }
         /// <summary>
         /// Valor Da Entrada 
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "O valor é obrigatório.")]
         [Range(0.01, double.MaxValue, ErrorMessage = "O valor deve ser maior que zero.")]
         public decimal Valor { get; private set; }
 

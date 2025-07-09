@@ -17,8 +17,5 @@ namespace ApiFinaças.Src.Application.DTOs.Requests
 
         [Required(ErrorMessage = "A origem deve ser informada")]
         public string Origem { get; private set; }
-
-        //public ETipoOperacao TipoOperacao { get; set; }
-
     }
 }

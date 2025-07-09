@@ -14,6 +14,7 @@ namespace ApiFinaças.Src.Application.DTOs.Requests
         /// Valor Da Saída
         /// </summary>
         [Required(ErrorMessage = "É necessário informar um valor")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "O valor deve ser maior que zero.")]
         public decimal Valor { get; private set; }
 
         /// <summary>

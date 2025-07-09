@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ApiFinaças.Src.Presentation.Controllers.Movimentacoes
 {
     [ApiController]
-   // [Route("/entrada")]
+   [Route("api/[controller]")]
     public class MovimentacoesController : ControllerBase
     {
         /// <remarks>
@@ -14,6 +14,8 @@ namespace ApiFinaças.Src.Presentation.Controllers.Movimentacoes
         [HttpPost("AdicionarEntrada")]
         public async Task<IActionResult> AdicionarEntrada([FromBody] AdicionarEntradaRequest request)
         {
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             return null;
         }
@@ -24,17 +26,22 @@ namespace ApiFinaças.Src.Presentation.Controllers.Movimentacoes
         [HttpPost("AdicionarSaida")]
         public async Task<IActionResult> AdicionarSaida([FromBody] AdicionarSaidaRequest request)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             return null;
         }
 
         /// <remarks>
-        ///  Retorna todas as operacoes cadastradas. O Endpoint pode ser parametrizado 
+        ///  Retorna todas as movimentações cadastradas. O Endpoint pode ser parametrizado 
         ///  para filtrá-las com base nos parâmetros fornecidos
         /// </remarks>
-        [HttpGet("ObterOperacoes")]
+        [HttpGet("ObterMovimentações")]
         public Task<IActionResult> ObterEntradas(string filtro)
         {
+            if (String.IsNullOrEmpty(filtro))
+                return null;
+
             return null;
         }
 
