@@ -1,4 +1,6 @@
 ﻿using ApiFinaças.Src.Domain.Enums;
+using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace ApiFinaças.Src.Application.DTOs.Requests
 {
@@ -6,6 +8,13 @@ namespace ApiFinaças.Src.Application.DTOs.Requests
     {
         public ExcluirOperacoesRequest()
         {
+
         }
+
+        [Required(ErrorMessage = "Id da operação necessário")]
+        public Guid IdOperacao { get; private set; }
+
+        [Required(ErrorMessage = "Tipo da operação necessário")]
+        public ETipoOperacao TipoOperacao { get; private set; }
     }
 }
