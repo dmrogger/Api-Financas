@@ -19,6 +19,8 @@
 
   <ItemGroup>
     <Folder Include="Src\Application\Interfaces\" />
+    <Folder Include="Src\Domain\Entities\" />
+    <Folder Include="Src\Domain\ValueObjects\" />
   </ItemGroup>
 
 </Project>

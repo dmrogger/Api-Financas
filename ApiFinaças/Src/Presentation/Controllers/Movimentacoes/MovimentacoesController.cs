@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ApiFinaças.Src.Presentation.Controllers.Movimentacoes
 {
-    [ApiController]
+   [ApiController]
    [Route("api/[controller]")]
     public class MovimentacoesController : ControllerBase
     {
