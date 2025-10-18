@@ -2,5 +2,8 @@
 {
     public class AdicionarEntradaResponse
     {
+        public Guid MovimentacaId { get; set; }
+        public bool Sucesso { get; set; }
+
     }
 }
