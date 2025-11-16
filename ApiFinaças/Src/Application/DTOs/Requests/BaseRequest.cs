@@ -10,12 +10,12 @@ namespace ApiFinaças.Src.Application.DTOs.Requests
             DataRequisicao = DateTime.UtcNow;
         }
 
-        public DateTime DataRequisicao { get; private set; }
+        public DateTime DataRequisicao { get; set; }
 
         [Required(ErrorMessage = "O id do usuário deve ser informado")]
-        public Guid idUsuario { get; private set; }
+        public Guid idUsuario { get; set; }
 
         [Required(ErrorMessage = "A origem deve ser informada")]
-        public string Origem { get; private set; }
+        public string Origem { get; set; } = string.Empty;
     }
 }
