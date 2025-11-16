@@ -1,28 +1,121 @@
 ﻿using ApiFinaças.Src.Application.DTOs.Requests;
 using ApiFinaças.Src.Application.DTOs.Responses;
+using ApiFinaças.Src.Application.Interfaces;
 using ApiFinaças.Src.Domain.Entities;
-using ApiFinaças.Src.Infrastructure.Repositories.Interfaces;
+using ApiFinaças.Src.Domain.Interfaces;
 
 namespace ApiFinaças.Src.Application.Services
 {
-    public class MovimentacaoService
+    /// <summary>
+    /// Serviço de movimentações financeiras
+    /// </summary>
+    public class MovimentacaoService : IMovimentacaoService
     {
         private readonly IMovimentacaoRepository _movimentacaoRepository;
 
         public MovimentacaoService(IMovimentacaoRepository movimentacaoRepository)
         {
-            _movimentacaoRepository = movimentacaoRepository;
+            _movimentacaoRepository = movimentacaoRepository ?? throw new ArgumentNullException(nameof(movimentacaoRepository));
         }
 
-        public Task<AdicionarEntradaResponse>CriaMovimentacaoEntrada(AdicionarEntradaRequest request)
+        public async Task<AdicionarEntradaResponse> CriarEntradaAsync(AdicionarEntradaRequest request)
         {
+            try
             {
-                var movimentacao = new Movimentacao(request.Valor,request.DataRequisicao,Guid.NewGuid(),request.idUsuario);
-               
-                var response = _movimentacaoRepository.CriarMovimentacao(movimentacao);
+                // TODO: Validar se a categoria existe
+                // TODO: Validar se o usuário existe
+                
+                var movimentacao = new Movimentacao(
+                    request.Valor, 
+                    request.DataOperacao, 
+                    Guid.NewGuid(), // TODO: Obter categoriaId do request
+                    request.idUsuario);
 
-                return null;
+                var movimentacaoCriada = await _movimentacaoRepository.CriarAsync(movimentacao);
+
+                return new AdicionarEntradaResponse
+                {
+                    MovimentacaoId = movimentacaoCriada.Id,
+                    Sucesso = true,
+                    Mensagem = "Entrada criada com sucesso."
+                };
             }
+            catch (Exception ex)
+            {
+                return new AdicionarEntradaResponse
+                {
+                    MovimentacaoId = Guid.Empty,
+                    Sucesso = false,
+                    Mensagem = $"Erro ao criar entrada: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<AdicionarSaidaResponse> CriarSaidaAsync(AdicionarSaidaRequest request)
+        {
+            try
+            {
+                // TODO: Validar se a categoria existe
+                // TODO: Validar se o usuário existe
+                
+                var movimentacao = new Movimentacao(
+                    request.Valor, 
+                    request.DataOperacao, 
+                    Guid.NewGuid(), // TODO: Obter categoriaId do request
+                    request.idUsuario);
+
+                var movimentacaoCriada = await _movimentacaoRepository.CriarAsync(movimentacao);
+
+                return new AdicionarSaidaResponse
+                {
+                    MovimentacaoId = movimentacaoCriada.Id,
+                    Sucesso = true,
+                    Mensagem = "Saída criada com sucesso."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new AdicionarSaidaResponse
+                {
+                    MovimentacaoId = Guid.Empty,
+                    Sucesso = false,
+                    Mensagem = $"Erro ao criar saída: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<IEnumerable<ObterMovimentacoesResponse>> ObterMovimentacoesAsync(
+            Guid usuarioId, 
+            DateTime? dataInicial = null, 
+            DateTime? dataFinal = null)
+        {
+            var movimentacoes = await _movimentacaoRepository.ObterPorUsuarioComFiltrosAsync(
+                usuarioId, 
+                dataInicial, 
+                dataFinal);
+
+            return movimentacoes.Select(m => new ObterMovimentacoesResponse
+            {
+                Id = m.Id,
+                Valor = m.Valor,
+                Data = m.Data,
+                CategoriaId = m.CategoriaId,
+                UsuarioId = m.UsuarioId
+            });
+        }
+
+        public async Task<bool> DeletarMovimentacaoAsync(Guid movimentacaoId, Guid usuarioId)
+        {
+            var movimentacao = await _movimentacaoRepository.ObterPorIdAsync(movimentacaoId);
+            
+            if (movimentacao == null)
+                return false;
+
+            // Validar se a movimentação pertence ao usuário
+            if (movimentacao.UsuarioId != usuarioId)
+                return false;
+
+            return await _movimentacaoRepository.DeletarAsync(movimentacaoId);
         }
     }
 }

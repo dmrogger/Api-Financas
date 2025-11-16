@@ -1,9 +1,9 @@
-﻿namespace ApiFinaças.Src.Application.DTOs.Responses
+namespace ApiFinaças.Src.Application.DTOs.Responses
 {
     /// <summary>
-    /// Response de adição de entrada
+    /// Response de adição de saída
     /// </summary>
-    public class AdicionarEntradaResponse
+    public class AdicionarSaidaResponse
     {
         /// <summary>
         /// ID da movimentação criada

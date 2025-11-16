@@ -12,9 +12,9 @@ namespace ApiFinaças.Src.Application.DTOs.Requests
         }
 
         [Required(ErrorMessage = "Id da operação necessário")]
-        public Guid IdOperacao { get; private set; }
+        public Guid IdOperacao { get; set; }
 
         [Required(ErrorMessage = "Tipo da operação necessário")]
-        public ETipoOperacao TipoOperacao { get; private set; }
+        public ETipoOperacao TipoOperacao { get; set; }
     }
 }

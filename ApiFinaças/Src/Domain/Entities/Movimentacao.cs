@@ -11,13 +11,14 @@
 
         public Movimentacao(decimal valor, DateTime data, Guid categoriaId, Guid usuarioId)
         {
+            if (usuarioId == Guid.Empty)
+                throw new ArgumentException("O id do usuário não pode ser vazio", nameof(usuarioId));
 
-            if (UsuarioId == Guid.Empty)
-                throw new ArgumentException("O id do usuário não pode ser vazio", nameof(Id));
+            if (categoriaId == Guid.Empty)
+                throw new ArgumentException("O id da categoria não pode ser vazio", nameof(categoriaId));
 
             if (valor <= 0)
-                throw new ArgumentException("O valor da movimentação deve ser maior que zero.");
-
+                throw new ArgumentException("O valor da movimentação deve ser maior que zero.", nameof(valor));
 
             Id = Guid.NewGuid();
             Valor = valor;
@@ -26,15 +27,20 @@
             UsuarioId = usuarioId;
         }
 
-        public void AtualizarValor(decimal novoValor, Guid Id)
+        public void AtualizarValor(decimal novoValor)
         {
             if (novoValor <= 0)
-                throw new ArgumentException("O valor da movimentação deve ser maior que zero.");
-
-            if (Id == Guid.Empty)
-                throw new ArgumentException("O id da movimentação deve ser informado");
+                throw new ArgumentException("O valor da movimentação deve ser maior que zero.", nameof(novoValor));
 
             Valor = novoValor;
+        }
+
+        public void AtualizarData(DateTime novaData)
+        {
+            if (novaData == default)
+                throw new ArgumentException("A data da movimentação deve ser informada.", nameof(novaData));
+
+            Data = novaData;
         }
     }
 }

@@ -8,18 +8,18 @@ namespace ApiFinaças.Src.Application.DTOs.Requests
         public AdicionarSaidaRequest(decimal valor, DateTime dataOperacao)
         {
             Valor = valor;
-            DataOperacao = DataOperacao;
+            DataOperacao = dataOperacao;
         }
         /// <summary>
         /// Valor Da Saída
         /// </summary>
         [Required(ErrorMessage = "É necessário informar um valor")]
         [Range(0.01, double.MaxValue, ErrorMessage = "O valor deve ser maior que zero.")]
-        public decimal Valor { get; private set; }
+        public decimal Valor { get; set; }
 
         /// <summary>
         /// Data da Saída
         /// </summary>
-        public DateTime DataOperacao { get; private set; } = DateTime.UtcNow;
+        public DateTime DataOperacao { get; set; } = DateTime.UtcNow;
     }
 }

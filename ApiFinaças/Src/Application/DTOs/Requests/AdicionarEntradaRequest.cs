@@ -18,11 +18,11 @@ namespace ApiFinaças.Src.Application.DTOs.Requests
         /// </summary>
         [Required(ErrorMessage = "O valor é obrigatório.")]
         [Range(0.01, double.MaxValue, ErrorMessage = "O valor deve ser maior que zero.")]
-        public decimal Valor { get; private set; }
+        public decimal Valor { get; set; }
 
         /// <summary>
         /// Data da Entrada
         /// </summary>
-        public DateTime DataOperacao { get; private set; } = DateTime.UtcNow;
+        public DateTime DataOperacao { get; set; } = DateTime.UtcNow;
     }
 }
