@@ -1,4 +1,5 @@
-﻿using ApiFinaças.Src.Application.DTOs.Requests;
+﻿using ApiFinaças.Src.Application.DTOs.Requests.Movimentacoes;
+using ApiFinaças.Src.Application.DTOs.Responses.Movimentacoes;
 using ApiFinaças.Src.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,7 +14,11 @@ namespace ApiFinaças.Src.Presentation.Controllers.Movimentacoes
     public class MovimentacoesController : ControllerBase
     {
         private readonly IMovimentacaoService _movimentacaoService;
-
+        /// <summary>
+        /// Controller responsável pelas movimentações 
+        /// </summary>
+        /// <param name="movimentacaoService"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public MovimentacoesController(IMovimentacaoService movimentacaoService)
         {
             _movimentacaoService = movimentacaoService ?? throw new ArgumentNullException(nameof(movimentacaoService));
@@ -24,8 +29,8 @@ namespace ApiFinaças.Src.Presentation.Controllers.Movimentacoes
         /// </summary>
         /// <param name="request">Dados da entrada</param>
         /// <returns>Resultado da operação</returns>
-        [HttpPost("AdicionarEntrada")]
-        [ProducesResponseType(typeof(ApiFinaças.Src.Application.DTOs.Responses.AdicionarEntradaResponse), StatusCodes.Status200OK)]
+        [HttpPost("Entrada")]
+        [ProducesResponseType(typeof(AdicionarEntradaResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AdicionarEntrada([FromBody] AdicionarEntradaRequest request)
         {
@@ -45,8 +50,8 @@ namespace ApiFinaças.Src.Presentation.Controllers.Movimentacoes
         /// </summary>
         /// <param name="request">Dados da saída</param>
         /// <returns>Resultado da operação</returns>
-        [HttpPost("AdicionarSaida")]
-        [ProducesResponseType(typeof(ApiFinaças.Src.Application.DTOs.Responses.AdicionarSaidaResponse), StatusCodes.Status200OK)]
+        [HttpPost("Saida")]
+        [ProducesResponseType(typeof(AdicionarSaidaResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AdicionarSaida([FromBody] AdicionarSaidaRequest request)
         {
@@ -69,8 +74,8 @@ namespace ApiFinaças.Src.Presentation.Controllers.Movimentacoes
         /// <param name="dataInicial">Data inicial para filtro (opcional)</param>
         /// <param name="dataFinal">Data final para filtro (opcional)</param>
         /// <returns>Lista de movimentações</returns>
-        [HttpGet("ObterMovimentações")]
-        [ProducesResponseType(typeof(IEnumerable<ApiFinaças.Src.Application.DTOs.Responses.ObterMovimentacoesResponse>), StatusCodes.Status200OK)]
+        [HttpGet("Movimentações")]
+        [ProducesResponseType(typeof(IEnumerable<ObterMovimentacoesResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ObterMovimentacoes(
             [FromQuery] Guid usuarioId,
@@ -91,7 +96,7 @@ namespace ApiFinaças.Src.Presentation.Controllers.Movimentacoes
         /// <param name="movimentacaoId">ID da movimentação</param>
         /// <param name="usuarioId">ID do usuário (para validação)</param>
         /// <returns>Resultado da operação</returns>
-        [HttpDelete("ExcluirOperacao")]
+        [HttpDelete("Operacao")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

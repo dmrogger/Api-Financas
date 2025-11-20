@@ -1,5 +1,5 @@
-﻿using ApiFinaças.Src.Application.DTOs.Requests;
-using ApiFinaças.Src.Application.DTOs.Responses;
+﻿using ApiFinaças.Src.Application.DTOs.Requests.Movimentacoes;
+using ApiFinaças.Src.Application.DTOs.Responses.Movimentacoes;
 using ApiFinaças.Src.Application.Interfaces;
 using ApiFinaças.Src.Domain.Entities;
 using ApiFinaças.Src.Domain.Interfaces;
@@ -22,13 +22,10 @@ namespace ApiFinaças.Src.Application.Services
         {
             try
             {
-                // TODO: Validar se a categoria existe
-                // TODO: Validar se o usuário existe
-                
+
                 var movimentacao = new Movimentacao(
-                    request.Valor, 
-                    request.DataOperacao, 
-                    Guid.NewGuid(), // TODO: Obter categoriaId do request
+                    request.Valor,
+                    request.DataOperacao,
                     request.idUsuario);
 
                 var movimentacaoCriada = await _movimentacaoRepository.CriarAsync(movimentacao);
@@ -55,13 +52,10 @@ namespace ApiFinaças.Src.Application.Services
         {
             try
             {
-                // TODO: Validar se a categoria existe
-                // TODO: Validar se o usuário existe
-                
+   
                 var movimentacao = new Movimentacao(
                     request.Valor, 
                     request.DataOperacao, 
-                    Guid.NewGuid(), // TODO: Obter categoriaId do request
                     request.idUsuario);
 
                 var movimentacaoCriada = await _movimentacaoRepository.CriarAsync(movimentacao);
@@ -99,7 +93,6 @@ namespace ApiFinaças.Src.Application.Services
                 Id = m.Id,
                 Valor = m.Valor,
                 Data = m.Data,
-                CategoriaId = m.CategoriaId,
                 UsuarioId = m.UsuarioId
             });
         }
