@@ -5,17 +5,14 @@
         public Guid Id { get; private set; }
         public decimal Valor { get; private set; }
         public DateTime Data { get; private set; }
-        public Categoria Categoria { get; private set; }
+        public Categoria ?Categoria { get; private set; }
         public Guid UsuarioId { get; private set; }
 
 
-        public Movimentacao(decimal valor, DateTime data, Categoria categoria, Guid usuarioId)
+        public Movimentacao(decimal valor, DateTime data, Guid usuarioId)
         {
             if (usuarioId == Guid.Empty)
                 throw new ArgumentException("O id do usuário não pode ser vazio", nameof(usuarioId));
-
-            if (categoria == default)
-                throw new ArgumentException("O id da categoria não pode ser vazio", nameof(categoria));
 
             if (valor <= 0)
                 throw new ArgumentException("O valor da movimentação deve ser maior que zero.", nameof(valor));
@@ -23,7 +20,6 @@
             Id = Guid.NewGuid();
             Valor = valor;
             Data = data;
-            Categoria = categoria;
             UsuarioId = usuarioId;
         }
 

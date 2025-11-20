@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ApiFinaças.Src.Application.DTOs.Requests
+namespace ApiFinaças.Src.Application.DTOs.Requests.Movimentacoes
 {
     public class ObterOperacoesRequest : BaseRequest
     {

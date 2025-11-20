@@ -1,5 +1,5 @@
-using ApiFinaças.Src.Application.DTOs.Requests;
-using ApiFinaças.Src.Application.DTOs.Responses;
+using ApiFinaças.Src.Application.DTOs.Requests.Movimentacoes;
+using ApiFinaças.Src.Application.DTOs.Responses.Movimentacoes;
 
 namespace ApiFinaças.Src.Application.Interfaces
 {

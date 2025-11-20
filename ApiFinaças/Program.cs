@@ -22,7 +22,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
     {
-        Title = "API de Finanças Pessoais",
+        Title = "API de Finanças",
         Version = "v1",
         Description = "API para gerenciamento de finanças pessoais",
         Contact = new Microsoft.OpenApi.Models.OpenApiContact

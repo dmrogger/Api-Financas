@@ -1,7 +1,7 @@
 ﻿using ApiFinaças.Src.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace ApiFinaças.Src.Application.DTOs.Requests
+namespace ApiFinaças.Src.Application.DTOs.Requests.Movimentacoes
 {
     /// <summary>
     /// Request de adição de entradas
@@ -13,6 +13,7 @@ namespace ApiFinaças.Src.Application.DTOs.Requests
             Valor = valor;
             DataOperacao = dataOperacao;
         }
+
         /// <summary>
         /// Valor Da Entrada 
         /// </summary>
