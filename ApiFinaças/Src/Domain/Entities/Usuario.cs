@@ -1,8 +1,8 @@
 ﻿namespace ApiFinaças.Src.Domain.Entities
 {
-    public class Usuário
+    public class Usuario
     {
-        public Usuário(string nome, string email)
+        public Usuario(string nome, string email)
         {
             Nome = nome;
             Email = email;
