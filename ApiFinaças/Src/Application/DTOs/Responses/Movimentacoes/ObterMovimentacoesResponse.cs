@@ -28,6 +28,6 @@ namespace ApiFinaças.Src.Application.DTOs.Responses.Movimentacoes
         /// <summary>
         /// ID do usuário
         /// </summary>
-        public Guid UsuarioId { get; set; }
+        public Guid? UsuarioId { get; set; }
     }
 }

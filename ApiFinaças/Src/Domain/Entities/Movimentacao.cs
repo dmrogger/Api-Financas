@@ -6,10 +6,10 @@
         public decimal Valor { get; private set; }
         public DateTime Data { get; private set; }
         public Categoria ?Categoria { get; private set; }
-        public Guid UsuarioId { get; private set; }
+        public Guid ?UsuarioId { get; private set; }
 
 
-        public Movimentacao(decimal valor, DateTime data, Guid usuarioId)
+        public Movimentacao(decimal valor, DateTime data, Guid? usuarioId)
         {
             if (usuarioId == Guid.Empty)
                 throw new ArgumentException("O id do usuário não pode ser vazio", nameof(usuarioId));
