@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	<DocumentationFile>bin\Debug\net8.0\ApiFinanças.xml</DocumentationFile>
+	<DocumentationFile>bin\Debug\net8.0\ApiFinancas.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,8 +14,9 @@
 
   <ItemGroup>
     <Folder Include="Src\Application\Interfaces\" />
-    <Folder Include="Src\Domain\ValueObjects\" />
     <Folder Include="Src\Documentation\" />
+    <Folder Include="Src\Configuration\" />
+    <Folder Include="Src\Presentation\Controllers\Usuario\" />
   </ItemGroup>
 
   <ItemGroup>
