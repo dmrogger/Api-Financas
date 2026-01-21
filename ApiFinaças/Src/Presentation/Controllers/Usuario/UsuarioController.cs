@@ -1,4 +1,4 @@
-﻿using ApiFinaças.Src.Application.DTOs.Requests.Usuario;
+﻿using ApiFinancas.Src.Application.DTOs.Requests.Usuario;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 

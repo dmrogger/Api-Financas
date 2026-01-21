@@ -1,6 +1,6 @@
-using ApiFinaças.Src.Domain.Common;
+using ApiFinancas.Src.Domain.Common;
 
-namespace ApiFinaças.Src.Domain.Common
+namespace ApiFinancas.Src.Domain.Common
 {
     /// <summary>
     /// Classe base para Aggregate Roots

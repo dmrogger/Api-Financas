@@ -1,7 +1,7 @@
-﻿using ApiFinaças.Src.Domain.Enums;
+﻿using ApiFinancas.Src.Application.DTOs.Requests;
 using System.ComponentModel.DataAnnotations;
 
-namespace ApiFinaças.Src.Application.DTOs.Requests.Movimentacoes
+namespace ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes
 {
     /// <summary>
     /// Request de adição de entradas

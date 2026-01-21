@@ -1,7 +1,7 @@
-using ApiFinaças.Src.Application.Interfaces;
-using ApiFinaças.Src.Application.Services;
-using ApiFinaças.Src.Domain.Interfaces;
 using ApiFinaças.Src.Infrastructure.Repositories;
+using ApiFinancas.Src.Application.Interfaces.Movimentacoes;
+using ApiFinancas.Src.Application.Services.Movimentacao;
+using ApiFinancas.Src.Domain.Interfaces;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using System.Text.Json;
 

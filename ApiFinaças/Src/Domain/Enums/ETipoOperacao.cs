@@ -1,4 +1,4 @@
-﻿namespace ApiFinaças.Src.Domain.Enums
+﻿namespace ApiFinancas.Src.Domain.Enums
 {
     public enum ETipoOperacao
     {

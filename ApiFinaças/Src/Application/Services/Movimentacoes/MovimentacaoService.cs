@@ -1,10 +1,11 @@
-﻿using ApiFinaças.Src.Application.DTOs.Requests.Movimentacoes;
-using ApiFinaças.Src.Application.DTOs.Responses.Movimentacoes;
-using ApiFinaças.Src.Application.Interfaces;
-using ApiFinaças.Src.Domain.Entities;
-using ApiFinaças.Src.Domain.Interfaces;
+﻿
+using ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes;
+using ApiFinancas.Src.Application.DTOs.Responses.Movimentacoes;
+using ApiFinancas.Src.Application.Interfaces.Movimentacoes;
+using ApiFinancas.Src.Domain.Entities;
+using ApiFinancas.Src.Domain.Interfaces;
 
-namespace ApiFinaças.Src.Application.Services
+namespace ApiFinancas.Src.Application.Services.Movimentacoes
 {
     /// <summary>
     /// Serviço de movimentações financeiras
@@ -110,5 +111,6 @@ namespace ApiFinaças.Src.Application.Services
 
             return await _movimentacaoRepository.DeletarAsync(movimentacaoId);
         }
+
     }
 }

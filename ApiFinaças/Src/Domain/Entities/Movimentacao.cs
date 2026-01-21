@@ -1,4 +1,5 @@
-﻿namespace ApiFinaças.Src.Domain.Entities
+﻿
+namespace ApiFinancas.Src.Domain.Entities
 {
     public class Movimentacao
     {
