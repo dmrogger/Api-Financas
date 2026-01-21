@@ -1,9 +1,9 @@
-﻿using ApiFinaças.Src.Application.DTOs.Requests.Movimentacoes;
-using ApiFinaças.Src.Application.DTOs.Responses.Movimentacoes;
-using ApiFinaças.Src.Application.Interfaces;
+﻿using ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes;
+using ApiFinancas.Src.Application.DTOs.Responses.Movimentacoes;
+using ApiFinancas.Src.Application.Interfaces.Movimentacoes;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ApiFinaças.Src.Presentation.Controllers.Movimentacoes
+namespace ApiFinancas.Src.Presentation.Controllers.Movimentacoes
 {
     /// <summary>
     /// Controller para gerenciamento de movimentações financeiras

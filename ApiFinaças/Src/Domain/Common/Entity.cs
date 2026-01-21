@@ -1,4 +1,4 @@
-namespace ApiFinaças.Src.Domain.Common
+namespace ApiFinancas.Src.Domain.Common
 {
     /// <summary>
     /// Classe base para todas as entidades do domínio

@@ -1,5 +1,5 @@
-﻿using ApiFinaças.Src.Domain.Entities;
-using ApiFinaças.Src.Domain.Interfaces;
+﻿using ApiFinancas.Src.Domain.Entities;
+using ApiFinancas.Src.Domain.Interfaces;
 
 namespace ApiFinaças.Src.Infrastructure.Repositories
 {

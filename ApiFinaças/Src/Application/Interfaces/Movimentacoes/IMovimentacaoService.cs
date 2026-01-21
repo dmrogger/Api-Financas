@@ -1,7 +1,7 @@
-using ApiFinaças.Src.Application.DTOs.Requests.Movimentacoes;
-using ApiFinaças.Src.Application.DTOs.Responses.Movimentacoes;
+using ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes;
+using ApiFinancas.Src.Application.DTOs.Responses.Movimentacoes;
 
-namespace ApiFinaças.Src.Application.Interfaces
+namespace ApiFinancas.Src.Application.Interfaces.Movimentacoes
 {
     /// <summary>
     /// Interface do serviço de movimentações financeiras

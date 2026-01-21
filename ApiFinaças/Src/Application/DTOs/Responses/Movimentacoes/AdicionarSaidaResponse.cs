@@ -1,4 +1,4 @@
-namespace ApiFinaças.Src.Application.DTOs.Responses.Movimentacoes
+namespace ApiFinancas.Src.Application.DTOs.Responses.Movimentacoes
 {
     /// <summary>
     /// Response de adição de saída

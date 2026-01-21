@@ -1,6 +1,6 @@
-﻿using ApiFinaças.Src.Domain.Common;
+﻿using ApiFinancas.Src.Domain.Common;
 
-namespace ApiFinaças.Src.Domain.Entities
+namespace ApiFinacas.Src.Domain.Entities
 {
     public class TipoConta : Entity
     {

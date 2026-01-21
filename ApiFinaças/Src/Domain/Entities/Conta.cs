@@ -1,6 +1,7 @@
-﻿using ApiFinaças.Src.Domain.Common;
+﻿using ApiFinacas.Src.Domain.Entities;
+using ApiFinancas.Src.Domain.Common;
 
-namespace ApiFinaças.Src.Domain.Entities
+namespace ApiFinancas.Src.Domain.Entities
 {
     public class Conta : AggregateRoot
     {

@@ -1,6 +1,6 @@
-using ApiFinaças.Src.Domain.Entities;
+using ApiFinancas.Src.Domain.Entities;   
 
-namespace ApiFinaças.Src.Domain.Interfaces
+namespace ApiFinancas.Src.Domain.Interfaces
 {
     /// <summary>
     /// Interface do repositório de movimentações financeiras
