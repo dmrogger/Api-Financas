@@ -25,17 +25,18 @@ jobs:
       - name: Detect project folder
         id: detect_folder
         run: |
-          echo "PROJECT_DIR=$(ls -d */ | grep -i ApiFinancas | head -n 1)" >> $GITHUB_ENV
-          echo "Detected project folder: $PROJECT_DIR"
+          PROJECT_DIR=$(find . -maxdepth 2 -type d -iname "apifina*" | head -n 1)
+          echo "PROJECT_DIR=$PROJECT_DIR" >> $GITHUB_ENV
+          echo "Detected: $PROJECT_DIR"
 
       - name: Restore
-        run: dotnet restore $PROJECT_DIR
+        run: dotnet restore "$PROJECT_DIR"
 
       - name: Build
-        run: dotnet build $PROJECT_DIR --configuration Release --no-restore
+        run: dotnet build "$PROJECT_DIR" --configuration Release --no-restore
 
       - name: Test
-        run: dotnet test $PROJECT_DIR --no-build --verbosity normal
+        run: dotnet test "$PROJECT_DIR" --no-build --verbosity normal
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
