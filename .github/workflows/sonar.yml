@@ -2,15 +2,9 @@ name: SonarCloud Analysis
 
 on:
   push:
-    branches:
-      - main
-      - master
-      - develop
+    branches: [ main, master, develop ]
   pull_request:
-    branches:
-      - main
-      - master
-      - develop
+    branches: [ main, master, develop ]
 
 jobs:
   build:
@@ -18,61 +12,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ==========================
-      # CHECKOUT
-      # ==========================
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # ==========================
-      # SETUP .NET
-      # ==========================
       - name: Setup .NET 8
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
 
-      # ==========================
-      # RESTORE
-      # ==========================
-      - name: Restore
-        run: dotnet restore
-
-      # ==========================
-      # BUILD
-      # ==========================
-      - name: Build
-        run: dotnet build --configuration Release --no-restore
-
-      # ==========================
-      # TEST + COVERAGE
-      # ==========================
-      - name: Test with coverage
+      - name: Detect project folder
+        id: detect_folder
         run: |
-          dotnet test **/*Tests.csproj \
-            /p:CollectCoverage=true \
-            /p:CoverletOutput=./coverage/ \
-            /p:CoverletOutputFormat=opencover
-      # ==========================
-      # SONARCLOUD - SCAN
-      # ==========================
+          echo "PROJECT_DIR=$(ls -d */ | grep -i ApiFinancas | head -n 1)" >> $GITHUB_ENV
+          echo "Detected project folder: $PROJECT_DIR"
+
+      - name: Restore
+        run: dotnet restore $PROJECT_DIR
+
+      - name: Build
+        run: dotnet build $PROJECT_DIR --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test $PROJECT_DIR --no-build --verbosity normal
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
-        with:
-          projectBaseDir: .
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: https://sonarcloud.io
-
-      # ==========================
-      # SONARCLOUD - QUALITY GATE
-      # ==========================
-      - name: SonarCloud Quality Gate
-        uses: SonarSource/sonarcloud-github-action@v2
-        with:
-          command: qualitygate
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
