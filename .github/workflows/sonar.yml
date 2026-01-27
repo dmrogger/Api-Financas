@@ -37,14 +37,14 @@ jobs:
       # ==========================
       # RESTORE
       # ==========================
-      - name: Restore
+      - name: Restore dependencies
         run: dotnet restore ApiFinancas.sln
 
       # ==========================
       # BUILD
       # ==========================
       - name: Build
-        run: dotnet build ApiFinancas.sln --no-restore --configuration Release
+        run: dotnet build ApiFinancas.sln --configuration Release --no-restore
 
       # ==========================
       # TEST + COVERAGE
@@ -57,7 +57,7 @@ jobs:
             /p:CoverletOutputFormat=opencover
 
       # ==========================
-      # SONARCLOUD SCANNER
+      # SONARCLOUD - SCAN
       # ==========================
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
@@ -68,10 +68,12 @@ jobs:
           SONAR_HOST_URL: https://sonarcloud.io
 
       # ==========================
-      # QUALITY GATE
+      # SONARCLOUD - QUALITY GATE
       # ==========================
-      - name: SonarCloud Scan
+      - name: SonarCloud Quality Gate
         uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          command: qualitygate
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
