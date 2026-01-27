@@ -7,10 +7,6 @@ namespace ApiFinancas.Src.Infrastructure.Repositories
     public class UsuárioRepository : IUsuarioRepository
     {
 
-        public UsuárioRepository(AppDbContext context)
-        {
-          _contex = context;
-        }
 
         public async Task AdicionarAsync(Usuario usuario)
         {
