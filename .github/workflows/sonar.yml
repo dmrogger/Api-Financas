@@ -37,25 +37,24 @@ jobs:
       # ==========================
       # RESTORE
       # ==========================
-      - name: Restore dependencies
-        run: dotnet restore ApiFinancas.sln
+      - name: Restore
+        run: dotnet restore
 
       # ==========================
       # BUILD
       # ==========================
       - name: Build
-        run: dotnet build ApiFinancas.sln --configuration Release --no-restore
+        run: dotnet build --configuration Release --no-restore
 
       # ==========================
       # TEST + COVERAGE
       # ==========================
       - name: Test with coverage
         run: |
-          dotnet test ApiFinancas.Tests/ApiFinancas.Tests.csproj \
+          dotnet test **/*Tests.csproj \
             /p:CollectCoverage=true \
             /p:CoverletOutput=./coverage/ \
             /p:CoverletOutputFormat=opencover
-
       # ==========================
       # SONARCLOUD - SCAN
       # ==========================
