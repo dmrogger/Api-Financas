@@ -1,5 +1,4 @@
-﻿
-using ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes;
+﻿using ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes;
 using ApiFinancas.Src.Application.DTOs.Responses.Movimentacoes;
 using ApiFinancas.Src.Application.Interfaces.Movimentacoes;
 using ApiFinancas.Src.Domain.Entities;
@@ -53,10 +52,10 @@ namespace ApiFinancas.Src.Application.Services.Movimentacoes
         {
             try
             {
-   
+
                 var movimentacao = new Movimentacao(
-                    request.Valor, 
-                    request.DataOperacao, 
+                    request.Valor,
+                    request.DataOperacao,
                     request.idUsuario);
 
                 var movimentacaoCriada = await _movimentacaoRepository.CriarAsync(movimentacao);
@@ -80,13 +79,13 @@ namespace ApiFinancas.Src.Application.Services.Movimentacoes
         }
 
         public async Task<IEnumerable<ObterMovimentacoesResponse>> ObterMovimentacoesAsync(
-            Guid usuarioId, 
-            DateTime? dataInicial = null, 
+            Guid usuarioId,
+            DateTime? dataInicial = null,
             DateTime? dataFinal = null)
         {
             var movimentacoes = await _movimentacaoRepository.ObterPorUsuarioComFiltrosAsync(
-                usuarioId, 
-                dataInicial, 
+                usuarioId,
+                dataInicial,
                 dataFinal);
 
             return movimentacoes.Select(m => new ObterMovimentacoesResponse
@@ -101,7 +100,7 @@ namespace ApiFinancas.Src.Application.Services.Movimentacoes
         public async Task<bool> DeletarMovimentacaoAsync(Guid movimentacaoId, Guid usuarioId)
         {
             var movimentacao = await _movimentacaoRepository.ObterPorIdAsync(movimentacaoId);
-            
+
             if (movimentacao == null)
                 return false;
 
