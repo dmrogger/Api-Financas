@@ -6,7 +6,6 @@ namespace ApiFinancas.Src.Infrastructure.Repositories
 {
     public class UsuárioRepository : IUsuarioRepository
     {
-        private readonly AppDbContext _contex;
 
         public UsuárioRepository(AppDbContext context)
         {
