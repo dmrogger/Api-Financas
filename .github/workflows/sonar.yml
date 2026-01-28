@@ -50,7 +50,7 @@ jobs:
       # ==========================
       - name: Build
         working-directory: ApiFinancas
-        run: dotnet build ApiFinancas.sln --no-restore --configuration Release
+        run: dotnet build --no-restore --configuration Release
 
       # ==========================
       # TEST + COVERAGE
