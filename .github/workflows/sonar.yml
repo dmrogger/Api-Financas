@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-    name: Build, Test and Analyze
     runs-on: ubuntu-latest
 
     steps:
@@ -26,7 +25,7 @@ jobs:
         run: dotnet tool install --global dotnet-sonarscanner
 
       - name: Restore
-        run: dotnet restore "$PROJECT_DIR"
+        run: dotnet restore ApiFinancas.sln
 
       - name: Sonar Begin
         run: |
