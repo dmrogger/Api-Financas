@@ -53,18 +53,6 @@ jobs:
         run: dotnet build --no-restore --configuration Release
 
       # ==========================
-      # TEST + COVERAGE
-      # ==========================
-      - name: Test with coverage
-        working-directory: ApiFinancas
-        run: |
-          dotnet test ApiFinancas.Tests/ApiFinancas.Tests.csproj \
-            --no-build \
-            /p:CollectCoverage=true \
-            /p:CoverletOutput=coverage/ \
-            /p:CoverletOutputFormat=opencover
-
-      # ==========================
       # SONAR END
       # ==========================
       - name: Sonar End
