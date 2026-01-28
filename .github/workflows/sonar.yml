@@ -30,7 +30,7 @@ jobs:
           echo "Detected project folder: $PROJECT_DIR"
 
       - name: Restore
-        run: dotnet restore "$PROJECT_DIR"
+        run: dotnet restore ApiFinancas.sln
 
       - name: Build
         run: dotnet build "$PROJECT_DIR" --configuration Release --no-restore
