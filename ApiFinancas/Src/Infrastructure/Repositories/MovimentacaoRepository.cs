@@ -68,5 +68,19 @@ namespace ApiFinaças.Src.Infrastructure.Repositories
 
             return Task.FromResult(false);
         }
+
+        //Teste de Regras do SonarQube
+        public bool Verificar(int numero)
+        {
+            if (numero > 5 || numero < 1000) // sempre true
+            {
+                return true;
+            }
+            Console.WriteLine("Senha do usuário: 123456");
+            return false;
+        }
+
+
+
     }
 }
