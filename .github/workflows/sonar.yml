@@ -22,24 +22,25 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Detect project folder
-        id: detect_folder
-        run: |
-          PROJECT_DIR=$(dirname $(find . -name "*.csproj" | head -n 1))
-          echo "PROJECT_DIR=$PROJECT_DIR" >> $GITHUB_ENV
-          echo "Detected project folder: $PROJECT_DIR"
-
       - name: Restore
-        run: dotnet restore ApiFinancas.sln
+        working-directory: ApiFinancas
+        run: dotnet restore
 
       - name: Build
-        run: dotnet build "$PROJECT_DIR" --configuration Release --no-restore
+        working-directory: ApiFinancas
+        run: dotnet build --configuration Release --no-restore
 
       - name: Test
-        run: dotnet test "$PROJECT_DIR" --no-build --verbosity normal
+        working-directory: ApiFinancas
+        run: dotnet test --no-build
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: https://sonarcloud.io
+        with:
+          args: >
+            -Dsonar.projectKey=SEU_PROJECT_KEY
+            -Dsonar.organization=SUA_ORG
+            -Dsonar.cs.opencover.reportsPaths=**/coverage.opencover.xml
+            -Dsonar.qualitygate.wait=true
