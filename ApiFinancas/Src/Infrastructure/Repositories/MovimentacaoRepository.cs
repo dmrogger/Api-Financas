@@ -5,7 +5,6 @@ namespace ApiFinaças.Src.Infrastructure.Repositories
 {
     /// <summary>
     /// Implementação do repositório de movimentações (em memória)
-    /// TODO: Substituir por implementação com Entity Framework
     /// </summary>
     public class MovimentacaoRepository : IMovimentacaoRepository
     {
