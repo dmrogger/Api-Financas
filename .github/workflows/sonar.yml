@@ -47,7 +47,7 @@ jobs:
       # BUILD
       # ==========================
       - name: Build
-        run: dotnet build ApiFinancas.sln --no-restore --configuration Release
+        run: dotnet build ApiFinancas.sln --configuration Release
 
       # ==========================
       # SONAR END
