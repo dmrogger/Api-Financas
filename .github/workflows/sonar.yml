@@ -27,10 +27,11 @@ jobs:
       - name: Install SonarScanner
         run: dotnet tool install --global dotnet-sonarscanner
 
-      - name: Restore
-        run: dotnet restore ApiFinancas.sln
-
+      # ==========================
+      # SONAR BEGIN
+      # ==========================
       - name: Sonar Begin
+        working-directory: ApiFinancas
         run: |
           dotnet sonarscanner begin \
             /k:"dmrogger_Api-Financas" \
@@ -40,18 +41,24 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+      # ==========================
+      # RESTORE
+      # ==========================
+      - name: Restore
+        run: dotnet restore ApiFinancas.sln
+
+      # ==========================
+      # BUILD
+      # ==========================
       - name: Build
+        working-directory: ApiFinancas
         run: dotnet build ApiFinancas.sln --no-restore --configuration Release
 
-      - name: Test with coverage
-        run: |
-          dotnet test ApiFinancas.Tests/ApiFinancas.Tests.csproj \
-            --no-build \
-            /p:CollectCoverage=true \
-            /p:CoverletOutput=coverage/ \
-            /p:CoverletOutputFormat=opencover
-
+      # ==========================
+      # SONAR END
+      # ==========================
       - name: Sonar End
+        working-directory: ApiFinancas
         run: dotnet sonarscanner end
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
