@@ -1,8 +1,13 @@
+using ApiFinaças.Src.Infrastructure.Persistence;
 using ApiFinaças.Src.Infrastructure.Repositories;
 using ApiFinancas.Src.Application.Interfaces.Movimentacoes;
+using ApiFinancas.Src.Application.Interfaces.Usuario;
 using ApiFinancas.Src.Application.Services.Movimentacoes;
+using ApiFinancas.Src.Application.Services.Usuarios;
 using ApiFinancas.Src.Domain.Interfaces;
+using ApiFinancas.Src.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,9 +19,13 @@ builder.Services.AddEndpointsApiExplorer();
 
 // Repositories
 builder.Services.AddScoped<IMovimentacaoRepository, MovimentacaoRepository>();
+builder.Services.AddScoped<IUsuarioRepository, UsuárioRepository>();
 
 // Services
 builder.Services.AddScoped<IMovimentacaoService, MovimentacaoService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(
+    builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -81,4 +90,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();
