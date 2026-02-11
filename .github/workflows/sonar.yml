@@ -25,13 +25,6 @@ jobs:
         run: dotnet tool install --global dotnet-sonarscanner
 
       # ==========================
-      # RESTORE
-      # ==========================
-      - name: Restore
-        working-directory: ApiFinancas
-        run: dotnet restore ApiFinancas.sln
-
-      # ==========================
       # SONAR BEGIN
       # ==========================
       - name: Sonar Begin
@@ -44,6 +37,12 @@ jobs:
             /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      # ==========================
+      # RESTORE
+      # ==========================
+      - name: Restore
+        run: dotnet restore ApiFinancas.sln
 
       # ==========================
       # BUILD
