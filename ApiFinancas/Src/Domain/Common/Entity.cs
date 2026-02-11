@@ -74,27 +74,5 @@ namespace ApiFinancas.Src.Domain.Common
         {
             return Id.GetHashCode();
         }
-
-        /// <summary>
-        /// Operador de igualdade
-        /// </summary>
-        public static bool operator ==(Entity? left, Entity? right)
-        {
-            if (left is null && right is null)
-                return true;
-
-            if (left is null || right is null)
-                return false;
-
-            return left.Equals(right);
-        }
-
-        /// <summary>
-        /// Operador de desigualdade
-        /// </summary>
-        public static bool operator !=(Entity? left, Entity? right)
-        {
-            return !(left == right);
-        }
     }
 }
