@@ -5,6 +5,10 @@ namespace ApiFinancas.Src.Domain.Entities
 {
     public class Conta : AggregateRoot
     {
+        private Conta()
+        {
+               
+        }
         public Conta(string nomeConta, TipoConta tipoConta, Usuario usuario)
         {
             if (string.IsNullOrWhiteSpace(nomeConta))

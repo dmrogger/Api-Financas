@@ -1,4 +1,5 @@
 ﻿using ApiFinancas.Src.Application.DTOs.Requests.Usuario;
+using ApiFinancas.Src.Application.Interfaces.Usuario;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -9,6 +10,12 @@ namespace ApiFinaças.Src.Presentation.Controllers.Usuario
     [Produces("application/json")]
     public class UsuariosController : ControllerBase
     {
+        private readonly IUsuarioService _usuarioService;
+        public UsuariosController(IUsuarioService usuarioService)
+        {
+            _usuarioService = usuarioService;
+        }
+
         /// <summary>
         /// Cria um novo usuário
         /// </summary>
@@ -17,7 +24,9 @@ namespace ApiFinaças.Src.Presentation.Controllers.Usuario
         public async Task<IActionResult> CriarUsuario([FromBody]CriaUsuarioRequest request, 
                                                       CancellationToken cancellationToken)
         {
-            return Created(string.Empty, null);
+           var usuario = await _usuarioService.CriarUsuarioAsync(request);
+
+            return Created("Usuario Criado:", usuario);
         }
 
         /// <summary>
