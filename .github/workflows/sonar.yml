@@ -9,9 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ApiFinancas
 
     steps:
       - name: Checkout repository
@@ -31,7 +28,6 @@ jobs:
       # SONAR BEGIN
       # ==========================
       - name: Sonar Begin
-        working-directory: ApiFinancas
         run: |
           dotnet sonarscanner begin \
             /k:"dmrogger_Api-Financas" \
@@ -51,14 +47,12 @@ jobs:
       # BUILD
       # ==========================
       - name: Build
-        working-directory: ApiFinancas
         run: dotnet build ApiFinancas.sln --no-restore --configuration Release
 
       # ==========================
       # SONAR END
       # ==========================
       - name: Sonar End
-        working-directory: ApiFinancas
         run: dotnet sonarscanner end
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
