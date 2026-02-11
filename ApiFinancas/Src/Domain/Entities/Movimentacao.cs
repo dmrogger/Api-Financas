@@ -6,7 +6,7 @@ namespace ApiFinancas.Src.Domain.Entities
         public Guid Id { get; private set; }
         public decimal Valor { get; private set; }
         public DateTime Data { get; private set; }
-        public Categoria ?Categoria { get; private set; }
+        public Categoria ?Categoria { get; set; }
         public Guid ?UsuarioId { get; private set; }
 
 

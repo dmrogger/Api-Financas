@@ -12,7 +12,7 @@ namespace ApiFinancas.Src.Domain.Entities
         public Conta(string nomeConta, TipoConta tipoConta, Usuario usuario)
         {
             if (string.IsNullOrWhiteSpace(nomeConta))
-                throw new ArgumentNullException("Nome da conta é obrigatório!");
+                throw new ArgumentNullException(nameof(nomeConta), "Nome da conta é obrigatório!");
 
             NomeConta = nomeConta;
             TipoConta = tipoConta;
