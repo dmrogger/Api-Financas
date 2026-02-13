@@ -2,6 +2,10 @@
 {
     public class UsuarioResponse
     {
+        public UsuarioResponse()
+        {
+        }
+
         public UsuarioResponse(Guid id, string nome, string email)
         {
             idUsuario = id;
@@ -9,7 +13,7 @@
             Email = email;
         }
         public Guid idUsuario { get; set; }
-        public string Nome {  get; set; }
+        public string Nome { get; set; }
         public string Email { get; set; }
     }
 }

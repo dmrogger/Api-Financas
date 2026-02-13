@@ -27,11 +27,6 @@ namespace ApiFinancas.Src.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> ExisteEmailAsync(string email)
-        {
-            return await _context.Usuarios.AnyAsync(u => u.Email == email);
-        }
-
         public async Task<Usuario?> ObterPorEmailAsync(string email)
         {
             return await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);

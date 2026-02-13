@@ -24,9 +24,12 @@ namespace ApiFinaças.Src.Presentation.Controllers.Usuario
         public async Task<IActionResult> CriarUsuario([FromBody]CriaUsuarioRequest request, 
                                                       CancellationToken cancellationToken)
         {
-           var usuario = await _usuarioService.CriarUsuarioAsync(request);
+           var result = await _usuarioService.CriarUsuarioAsync(request);
 
-            return Created("Usuario Criado:", usuario);
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
         }
 
         /// <summary>
