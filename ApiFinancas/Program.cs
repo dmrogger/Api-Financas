@@ -19,7 +19,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 // Repositories
 builder.Services.AddScoped<IMovimentacaoRepository, MovimentacaoRepository>();
-builder.Services.AddScoped<IUsuarioRepository, UsuárioRepository>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
 // Services
 builder.Services.AddScoped<IMovimentacaoService, MovimentacaoService>();
@@ -41,8 +41,8 @@ builder.Services.AddSwaggerGen(c =>
     });
 
     // Incluir comentários XML no Swagger
-    var xmlFile = "ApiFinaças.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     if (File.Exists(xmlPath))
     {
         c.IncludeXmlComments(xmlPath);

@@ -32,14 +32,63 @@ namespace ApiFinancas.Src.Application.Services.Usuarios
 
             if (usuarioCriado == Guid.Empty)
                 return Result<UsuarioResponse>.Fail("Erro desconhecido ao criar usuário!");
-            
+
             var response = new UsuarioResponse(usuario.Id, usuario.Nome, usuario.Email);
             return Result<UsuarioResponse>.Ok(response);
-    
+
         }
-        public Task<bool> ValidaLogin(LoginRequest request)
+        public async Task<bool> ValidaLogin(LoginRequest request)
         {
-            throw new NotImplementedException();
+            var usuario = await _usuarioRepository.ObterPorEmailAsync(request.Email);
+
+            if (usuario == null)
+                return false;
+
+            return _passwordService.ValidaSenha(request.Senha, usuario.Senha);
+        }
+
+        public async Task<Result<string>> AtualizaSenha(EditaUsuarioRequest request)
+        {
+            var usuario = await _usuarioRepository.ObterPorEmailAsync(request.Email);
+            if (usuario == null)
+                return Result<string>.Fail("Usário não localizado!");
+
+            var senhaValida =  _passwordService.ValidaSenha(request.SenhaAtual, usuario.Senha);
+            if (!senhaValida)
+                return Result<string>.Fail("Erro: Email ou senha inválidos!");
+
+            var senhaAlterada = _usuarioRepository.AtualizarAsync(usuario);
+            if (senhaAlterada.IsCompletedSuccessfully)
+                return Result<string>.Ok("Senha alterada com sucesso!");
+
+            return Result<string>.Fail("Erro interno ao alterar senha do usuário");
+        }
+
+        public async Task<Result<UsuarioResponse>> ConsultaUsuario(string email)
+        {
+            var usuario = await _usuarioRepository.ObterPorEmailAsync(email);
+            if (usuario != null)
+                return Result<UsuarioResponse>.Ok(new UsuarioResponse(usuario.Id, usuario.Nome, usuario.Email));
+
+            return Result<UsuarioResponse>.Fail("Usuário não localizado");
+        }
+
+        public async Task<Result<string>> DeletaUsuario(ExcluiUsuarioRequest request)
+        {
+            var usuario = await _usuarioRepository.ObterPorEmailAsync(request.Email);
+            if (usuario == null)
+                return Result<string>.Fail("Usuário não localizado, não foi possível deletar");
+
+
+            var senhaValida = _passwordService.ValidaSenha(request.Senha, usuario.Senha);
+            if (!senhaValida)
+                return Result<string>.Fail("Erro: Email ou senha inválidos!");
+            
+            if (_usuarioRepository.DeletarAsync(usuario).IsCompletedSuccessfully)
+                return Result<string>.Ok("Usuário excluído com sucesso!");
+
+            return Result<string>.Fail("Erro interno ao excluír o usuário");
+
         }
     }
 }

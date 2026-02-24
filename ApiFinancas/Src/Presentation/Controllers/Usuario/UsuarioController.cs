@@ -21,36 +21,48 @@ namespace ApiFinaças.Src.Presentation.Controllers.Usuario
         /// </summary>
         [HttpPost("usuario")]
         [ProducesResponseType((int)HttpStatusCode.Created)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> CriarUsuario([FromBody]CriaUsuarioRequest request, 
                                                       CancellationToken cancellationToken)
         {
            var result = await _usuarioService.CriarUsuarioAsync(request);
 
-            if (!result.Success)
-                return BadRequest(result);
+            if (result.Success)
+                return Ok(result);
 
-            return Ok(result);
+            return BadRequest(result);
         }
 
         /// <summary>
-        /// Consulta um usuário por id
+        /// Consulta um usuário por E-mail
         /// </summary>
-        [HttpGet("usuario{id:guid}")]
+        [HttpGet("usuario{email}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> ConsultarUsuario(Guid id)
+        public async Task<IActionResult> ConsultarUsuario(string email)
         {
-            return Ok();
+            var result = await _usuarioService.ConsultaUsuario(email);
+            if(result.Success)
+                return Ok(result);
+            
+            return BadRequest(result);
+            
+   
         }
 
         /// <summary>
         /// Remove um usuário
         /// </summary>
-        [HttpDelete("usuario{id:guid}")]
+        [HttpDelete("usuario")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
-        public async Task<IActionResult> DeletarUsuario(Guid id)
+        public async Task<IActionResult> DeletarUsuario([FromBody]ExcluiUsuarioRequest request)
         {
-            return NoContent();
+            var result = await _usuarioService.DeletaUsuario(request);
+            if (result.Success)
+                return Ok(result);
+
+            return BadRequest(result);
         }
     }
 }

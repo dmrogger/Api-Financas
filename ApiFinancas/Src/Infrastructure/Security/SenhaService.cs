@@ -20,6 +20,7 @@ namespace ApiFinancas.Src.Infrastructure.Security
         public bool ValidaSenha(string senha, string senhaHash)
         {
             var result = _passwordHasher.VerifyHashedPassword(null!, senhaHash, senha);
+
             return result == PasswordVerificationResult.Success;
         }
     }

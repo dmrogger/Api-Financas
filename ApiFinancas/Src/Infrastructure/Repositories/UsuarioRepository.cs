@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApiFinancas.Src.Infrastructure.Repositories
 {
-    public class UsuárioRepository : IUsuarioRepository
+    public class UsuarioRepository : IUsuarioRepository
     {
         private readonly AppDbContext _context;
-        public UsuárioRepository(AppDbContext context)
+        public UsuarioRepository(AppDbContext context)
         {
             _context = context;
         }
@@ -21,10 +21,12 @@ namespace ApiFinancas.Src.Infrastructure.Repositories
            return usuario.Id;
         }
 
-        public async Task AtualizarAsync(Usuario usuario)
+       public async Task AtualizarAsync(Usuario usuario)
         {
-            _context.Usuarios.Update(usuario);
-            await _context.SaveChangesAsync();
+            _context.Attach(usuario);
+            _context.Entry(usuario).Property(u => u.Senha).IsModified = true;
+
+             await _context.SaveChangesAsync();
         }
 
         public async Task<Usuario?> ObterPorEmailAsync(string email)
@@ -32,9 +34,11 @@ namespace ApiFinancas.Src.Infrastructure.Repositories
             return await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        public Task<Usuario?> ObterPorIdAsync(string id)
+        public async Task DeletarAsync(Usuario usuario)
         {
-            return _context.Usuarios.FirstOrDefaultAsync(u => u.Id.ToString() == id);
+            _context.Remove(usuario);
+
+           await _context.SaveChangesAsync();
         }
     }
 }
