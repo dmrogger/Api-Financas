@@ -1,5 +1,5 @@
-﻿using ApiFinancas.Src.Application.DTOs.Common;
-using ApiFinancas.Src.Application.DTOs.Requests.Usuario;
+﻿using ApiFinancas.Src.Application.DTOs.Autenticacao;
+using ApiFinancas.Src.Application.DTOs.Common;
 using ApiFinancas.Src.Application.DTOs.Responses.Usuario;
 using ApiFinancas.Src.Application.Interfaces.Usuario;
 using ApiFinancas.Src.Domain.Entities;
@@ -89,6 +89,16 @@ namespace ApiFinancas.Src.Application.Services.Usuarios
 
             return Result<string>.Fail("Erro interno ao excluír o usuário");
 
+        }
+
+        Task<Result<LoginResponse>> IUsuarioService.ConsultaUsuario(string email)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<Result<LoginResponse>> IUsuarioService.CriarUsuarioAsync(CriaUsuarioRequest request)
+        {
+            throw new NotImplementedException();
         }
     }
 }

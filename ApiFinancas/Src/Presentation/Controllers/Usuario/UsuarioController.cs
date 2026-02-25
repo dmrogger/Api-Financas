@@ -1,4 +1,4 @@
-﻿using ApiFinancas.Src.Application.DTOs.Requests.Usuario;
+﻿using ApiFinancas.Src.Application.DTOs.Autenticacao;
 using ApiFinancas.Src.Application.Interfaces.Usuario;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -33,6 +33,7 @@ namespace ApiFinaças.Src.Presentation.Controllers.Usuario
 
             return BadRequest(result);
         }
+
 
         /// <summary>
         /// Consulta um usuário por E-mail
