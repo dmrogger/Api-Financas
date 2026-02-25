@@ -51,6 +51,17 @@ jobs:
         run: dotnet build ApiFinancas.sln --configuration Release
 
       # ==========================
+      # TEST WITH COVERAGE
+      # ==========================
+      - name: Test with coverage
+        run: |
+          dotnet test ApiFinancas.sln \
+            --no-build \
+            --configuration Release \
+            /p:CollectCoverage=true \
+            /p:CoverletOutputFormat=opencover
+
+      # ==========================
       # SONAR END
       # ==========================
       - name: Sonar End
