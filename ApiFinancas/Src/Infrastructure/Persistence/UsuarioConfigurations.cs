@@ -19,6 +19,9 @@ namespace ApiFinancas.Src.Infrastructure.Persistence
 
             builder.Property(u => u.Email)
                 .HasColumnName("email");
+
+            builder.Property(u => u.Senha)
+                .HasColumnName("password_hash");
         }
     }
 }

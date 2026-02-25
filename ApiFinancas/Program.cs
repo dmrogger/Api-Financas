@@ -1,13 +1,18 @@
 using ApiFinaças.Src.Infrastructure.Persistence;
 using ApiFinaças.Src.Infrastructure.Repositories;
+using ApiFinancas.Src.Application.Interfaces.Autenticacao;
 using ApiFinancas.Src.Application.Interfaces.Movimentacoes;
 using ApiFinancas.Src.Application.Interfaces.Usuario;
+using ApiFinancas.Src.Application.Services.Autenticacao;
 using ApiFinancas.Src.Application.Services.Movimentacoes;
 using ApiFinancas.Src.Application.Services.Usuarios;
 using ApiFinancas.Src.Domain.Interfaces;
 using ApiFinancas.Src.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,13 +24,14 @@ builder.Services.AddEndpointsApiExplorer();
 
 // Repositories
 builder.Services.AddScoped<IMovimentacaoRepository, MovimentacaoRepository>();
-builder.Services.AddScoped<IUsuarioRepository, UsuárioRepository>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
 // Services
 builder.Services.AddScoped<IMovimentacaoService, MovimentacaoService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(
     builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IAutenticacaoService, AutenticacaoService>();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -41,13 +47,34 @@ builder.Services.AddSwaggerGen(c =>
     });
 
     // Incluir comentários XML no Swagger
-    var xmlFile = "ApiFinaças.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     if (File.Exists(xmlPath))
     {
         c.IncludeXmlComments(xmlPath);
     }
 });
+
+//Autenticação via token jwt
+var jwtKey = builder.Configuration["Jwt:Key"];
+
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtKey!))
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -85,9 +112,8 @@ app.UseHealthChecks("/health", new HealthCheckOptions
 });
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 await app.RunAsync();

@@ -1,12 +1,12 @@
 ﻿using ApiFinancas.Src.Application.DTOs.Requests;
 using System.ComponentModel.DataAnnotations;
 
-namespace ApiFinancas.Src.Application.DTOs.Requests.Usuario
+namespace ApiFinancas.Src.Application.DTOs.Autenticacao
 {
     /// <summary>
     /// Request para criação de usuário
     /// </summary>
-    public class CriaUsuarioRequest : BaseRequest
+    public class CriaUsuarioRequest
     {
         public CriaUsuarioRequest(string email, string nome, string senha)
         {

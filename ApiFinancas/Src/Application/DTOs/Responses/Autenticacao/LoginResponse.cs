@@ -1,19 +1,21 @@
 ﻿namespace ApiFinancas.Src.Application.DTOs.Responses.Usuario
 {
-    public class UsuarioResponse
+    public class LoginResponse
     {
-        public UsuarioResponse()
+        public LoginResponse()
         {
         }
 
-        public UsuarioResponse(Guid id, string nome, string email)
+        public LoginResponse(Guid id, string nome, string email, string token)
         {
             idUsuario = id;
             Nome = nome;
             Email = email;
+            Token = token;
         }
         public Guid idUsuario { get; set; }
         public string Nome { get; set; }
         public string Email { get; set; }
+        public string Token { get; set; }
     }
 }
