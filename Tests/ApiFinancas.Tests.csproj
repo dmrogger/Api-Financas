@@ -27,6 +27,7 @@
     <Folder Include="Application\" />
     <Folder Include="Infraestructure\" />
     <Folder Include="Controllers\" />
+	<ProjectReference Include="..\ApiFinancas\ApiFinancas.csproj" />
   </ItemGroup>
 
 </Project>
