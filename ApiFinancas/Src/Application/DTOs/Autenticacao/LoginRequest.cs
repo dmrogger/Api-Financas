@@ -1,9 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ApiFinancas.Src.Application.DTOs.Requests;
+using System.ComponentModel.DataAnnotations;
 
-namespace ApiFinancas.Src.Application.DTOs.Requests.Usuario
+namespace ApiFinancas.Src.Application.DTOs.Autenticacao
 {
-    public class ExcluiUsuarioRequest : BaseRequest
+    public class LoginRequest
     {
+        public LoginRequest(string email, string senha)
+        {
+            Email = email;
+            Senha = senha;
+        }
+
         [Required(ErrorMessage = "O Campo E-mail é obrigatório")]
         [EmailAddress(ErrorMessage = "E-mail precisa ser válido")]
         public required string Email { get; set; }
@@ -12,4 +19,3 @@ namespace ApiFinancas.Src.Application.DTOs.Requests.Usuario
         public required string Senha { get; set; }
     }
 }
-
