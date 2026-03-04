@@ -7,9 +7,9 @@ namespace ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes
     /// <summary>
     /// Request de adição de entradas
     /// </summary>
-    public class MovimentaçõesRequest : BaseRequest
+    public class MovimentacoesRequest : BaseRequest
     {
-        public MovimentaçõesRequest(decimal valor, DateTime dataOperacao)
+        public MovimentacoesRequest(decimal valor, DateTime dataOperacao)
         {
             Valor = valor;
             DataOperacao = dataOperacao;

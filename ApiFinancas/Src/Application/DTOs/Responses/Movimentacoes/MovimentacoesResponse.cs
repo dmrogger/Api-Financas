@@ -3,7 +3,7 @@
     /// <summary>
     /// Response de adição de entrada
     /// </summary>
-    public class MovimentaçõesResponse
+    public class MovimentacoesResponse
     {
         /// <summary>
         /// ID da movimentação criada

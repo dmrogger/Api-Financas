@@ -11,7 +11,7 @@ namespace ApiFinancas.Src.Application.Interfaces.Movimentacoes
         /// <summary>
         /// Cria uma nova movimentação de entrada
         /// </summary>
-        Task<MovimentaçõesResponse> CriarEntradaAsync(MovimentaçõesRequest request);
+        Task<MovimentacoesResponse> CriarEntradaAsync(MovimentacoesRequest request);
 
         /// <summary>
         /// Obtém movimentações de um usuário

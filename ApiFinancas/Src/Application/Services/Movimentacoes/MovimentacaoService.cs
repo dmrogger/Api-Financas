@@ -18,7 +18,7 @@ namespace ApiFinancas.Src.Application.Services.Movimentacoes
             _movimentacaoRepository = movimentacaoRepository ?? throw new ArgumentNullException(nameof(movimentacaoRepository));
         }
 
-        public async Task<MovimentaçõesResponse> CriarEntradaAsync(MovimentaçõesRequest request)
+        public async Task<MovimentacoesResponse> CriarEntradaAsync(MovimentacoesRequest request)
         {
             try
             {
@@ -30,7 +30,7 @@ namespace ApiFinancas.Src.Application.Services.Movimentacoes
 
                 var movimentacaoCriada = await _movimentacaoRepository.CriarAsync(movimentacao);
 
-                return new MovimentaçõesResponse
+                return new MovimentacoesResponse
                 {
                     MovimentacaoId = movimentacaoCriada.Id,
                     Sucesso = true,
@@ -39,7 +39,7 @@ namespace ApiFinancas.Src.Application.Services.Movimentacoes
             }
             catch (Exception ex)
             {
-                return new MovimentaçõesResponse
+                return new MovimentacoesResponse
                 {
                     MovimentacaoId = Guid.Empty,
                     Sucesso = false,

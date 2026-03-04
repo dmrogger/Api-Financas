@@ -30,9 +30,9 @@ namespace ApiFinancas.Src.Presentation.Controllers.Movimentacoes
         /// <param name="request">Dados da entrada</param>
         /// <returns>Resultado da operação</returns>
         [HttpPost("Entrada")]
-        [ProducesResponseType(typeof(MovimentaçõesResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MovimentacoesResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AdicionarEntrada([FromBody] MovimentaçõesRequest request)
+        public async Task<IActionResult> AdicionarEntrada([FromBody] MovimentacoesRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
