@@ -18,7 +18,7 @@ namespace ApiFinancas.Src.Application.Services.Movimentacoes
             _movimentacaoRepository = movimentacaoRepository ?? throw new ArgumentNullException(nameof(movimentacaoRepository));
         }
 
-        public async Task<AdicionarEntradaResponse> CriarEntradaAsync(AdicionarEntradaRequest request)
+        public async Task<MovimentaçõesResponse> CriarEntradaAsync(MovimentaçõesRequest request)
         {
             try
             {
@@ -30,7 +30,7 @@ namespace ApiFinancas.Src.Application.Services.Movimentacoes
 
                 var movimentacaoCriada = await _movimentacaoRepository.CriarAsync(movimentacao);
 
-                return new AdicionarEntradaResponse
+                return new MovimentaçõesResponse
                 {
                     MovimentacaoId = movimentacaoCriada.Id,
                     Sucesso = true,
@@ -39,41 +39,11 @@ namespace ApiFinancas.Src.Application.Services.Movimentacoes
             }
             catch (Exception ex)
             {
-                return new AdicionarEntradaResponse
+                return new MovimentaçõesResponse
                 {
                     MovimentacaoId = Guid.Empty,
                     Sucesso = false,
                     Mensagem = $"Erro ao criar entrada: {ex.Message}"
-                };
-            }
-        }
-
-        public async Task<AdicionarSaidaResponse> CriarSaidaAsync(AdicionarSaidaRequest request)
-        {
-            try
-            {
-
-                var movimentacao = new Movimentacao(
-                    request.Valor,
-                    request.DataOperacao,
-                    request.idUsuario);
-
-                var movimentacaoCriada = await _movimentacaoRepository.CriarAsync(movimentacao);
-
-                return new AdicionarSaidaResponse
-                {
-                    MovimentacaoId = movimentacaoCriada.Id,
-                    Sucesso = true,
-                    Mensagem = "Saída criada com sucesso."
-                };
-            }
-            catch (Exception ex)
-            {
-                return new AdicionarSaidaResponse
-                {
-                    MovimentacaoId = Guid.Empty,
-                    Sucesso = false,
-                    Mensagem = $"Erro ao criar saída: {ex.Message}"
                 };
             }
         }
