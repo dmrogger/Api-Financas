@@ -9,15 +9,17 @@ namespace ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes
     /// </summary>
     public class MovimentacoesRequest : BaseRequest
     {
-        public MovimentacoesRequest(decimal valor, DateTime dataOperacao)
+        public MovimentacoesRequest(decimal valor, string? descricao, Guid categoriaId, ETipoOperacao tipo)
         {
             Valor = valor;
-            DataOperacao = dataOperacao;
+            Descricao = descricao;
+            CategoriaId = categoriaId;
+            Tipo = tipo;
         }
 
         public decimal Valor { get; set; }
         public DateTime DataOperacao { get; set; } = DateTime.Now;
-        public string Descricao { get; set; }
+        public string? Descricao { get; set; }
         public Guid CategoriaId { get; set; }
         public ETipoOperacao Tipo {  get; set; }
     }
