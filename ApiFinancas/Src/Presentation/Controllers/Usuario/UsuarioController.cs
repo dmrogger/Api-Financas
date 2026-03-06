@@ -1,7 +1,9 @@
 ﻿using ApiFinancas.Src.Application.DTOs.Autenticacao;
 using ApiFinancas.Src.Application.Interfaces.Usuario;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Security.Claims;
 
 namespace ApiFinaças.Src.Presentation.Controllers.Usuario
 {
@@ -38,11 +40,14 @@ namespace ApiFinaças.Src.Presentation.Controllers.Usuario
         /// <summary>
         /// Consulta um usuário por E-mail
         /// </summary>
+        [Authorize]
         [HttpGet("usuario{email}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> ConsultarUsuario(string email)
+        public async Task<IActionResult> ConsultarUsuario()
         {
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+
             var result = await _usuarioService.ConsultaUsuario(email);
             if(result.Success)
                 return Ok(result);
@@ -55,6 +60,7 @@ namespace ApiFinaças.Src.Presentation.Controllers.Usuario
         /// <summary>
         /// Remove um usuário
         /// </summary>
+        [Authorize]
         [HttpDelete("usuario")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public async Task<IActionResult> DeletarUsuario([FromBody]ExcluiUsuarioRequest request)
