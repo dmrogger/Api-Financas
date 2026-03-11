@@ -27,7 +27,7 @@ namespace ApiFinancas.Src.Application.Services.Autenticacao
         public async Task<LoginResponse> LoginAsync(LoginRequest request)
         {
             var usuario = await _usuarioRepository.ObterPorEmailAsync(request.Email);
-
+            
             if (usuario == null)
                 throw new Exception("Usuário ou senha inválidos");
 

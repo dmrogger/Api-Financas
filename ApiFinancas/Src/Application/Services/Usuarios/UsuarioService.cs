@@ -64,13 +64,13 @@ namespace ApiFinancas.Src.Application.Services.Usuarios
             return Result<string>.Fail("Erro interno ao alterar senha do usuário");
         }
 
-        public async Task<Result<UsuarioResponse>> ConsultaUsuario(string email)
+        public async Task<Result<LoginResponse>> c(string email)
         {
             var usuario = await _usuarioRepository.ObterPorEmailAsync(email);
             if (usuario != null)
-                return Result<UsuarioResponse>.Ok(new UsuarioResponse(usuario.Id, usuario.Nome, usuario.Email));
+                return Result<LoginResponse>.Ok(new LoginResponse(usuario.Id, usuario.Nome, usuario.Email));
 
-            return Result<UsuarioResponse>.Fail("Usuário não localizado");
+            return Result<LoginResponse>.Fail("Usuário não localizado");
         }
 
         public async Task<Result<string>> DeletaUsuario(ExcluiUsuarioRequest request)
@@ -92,11 +92,6 @@ namespace ApiFinancas.Src.Application.Services.Usuarios
         }
 
         Task<Result<LoginResponse>> IUsuarioService.ConsultaUsuario(string email)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<Result<LoginResponse>> IUsuarioService.CriarUsuarioAsync(CriaUsuarioRequest request)
         {
             throw new NotImplementedException();
         }
