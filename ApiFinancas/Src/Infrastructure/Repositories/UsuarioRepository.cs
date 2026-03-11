@@ -31,7 +31,9 @@ namespace ApiFinancas.Src.Infrastructure.Repositories
 
         public async Task<Usuario?> ObterPorEmailAsync(string email)
         {
-            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
+            var usuario = await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.Email == email.ToLower().Trim());
+            return usuario;
         }
 
         public async Task DeletarAsync(Usuario usuario)

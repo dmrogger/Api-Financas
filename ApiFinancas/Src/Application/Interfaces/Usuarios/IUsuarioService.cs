@@ -10,6 +10,6 @@ namespace ApiFinancas.Src.Application.Interfaces.Usuario
         Task<Result<LoginResponse>> ConsultaUsuario(string email);
         Task<Result<string>> AtualizaSenha(EditaUsuarioRequest request);
         Task<Result<string>> DeletaUsuario(ExcluiUsuarioRequest request);
-        Task<Result<LoginResponse>> CriarUsuarioAsync(CriaUsuarioRequest request);
+        Task<Result<UsuarioResponse>> CriarUsuarioAsync(CriaUsuarioRequest request);
     }
 }

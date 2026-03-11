@@ -6,7 +6,7 @@
         {
         }
 
-        public LoginResponse(Guid id, string nome, string email, string token)
+        public LoginResponse(Guid id, string nome, string email, string? token = null)
         {
             idUsuario = id;
             Nome = nome;
@@ -16,6 +16,6 @@
         public Guid idUsuario { get; set; }
         public string Nome { get; set; }
         public string Email { get; set; }
-        public string Token { get; set; }
+        public string? Token { get; set; }
     }
 }
