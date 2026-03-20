@@ -2,12 +2,14 @@ using ApiFinaças.Src.Infrastructure.Persistence;
 using ApiFinaças.Src.Infrastructure.Repositories;
 using ApiFinancas.Src.Application.Interfaces.Autenticacao;
 using ApiFinancas.Src.Application.Interfaces.Movimentacoes;
+using ApiFinancas.Src.Application.Interfaces.Segurança;
 using ApiFinancas.Src.Application.Interfaces.Usuario;
 using ApiFinancas.Src.Application.Services.Autenticacao;
 using ApiFinancas.Src.Application.Services.Movimentacoes;
 using ApiFinancas.Src.Application.Services.Usuarios;
 using ApiFinancas.Src.Domain.Interfaces;
 using ApiFinancas.Src.Infrastructure.Repositories;
+using ApiFinancas.Src.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +31,7 @@ builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 // Services
 builder.Services.AddScoped<IMovimentacaoService, MovimentacaoService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<ISenhaService, SenhaService>();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(
     builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IAutenticacaoService, AutenticacaoService>();
