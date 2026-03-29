@@ -5,7 +5,6 @@ using ApiFinancas.Src.Application.Interfaces.Segurança;
 using ApiFinancas.Src.Application.Interfaces.Usuario;
 using ApiFinancas.Src.Domain.Entities;
 using ApiFinancas.Src.Domain.Interfaces;
-using ApiFinancas.Src.Infrastructure.Security;
 
 namespace ApiFinancas.Src.Application.Services.Usuarios
 {
@@ -38,15 +37,6 @@ namespace ApiFinancas.Src.Application.Services.Usuarios
             return Result<UsuarioResponse>.Ok(response);
 
         }
-        public async Task<bool> ValidaLogin(LoginRequest request)
-        {
-            var usuario = await _usuarioRepository.ObterPorEmailAsync(request.Email);
-
-            if (usuario == null)
-                return false;
-
-            return _passwordService.ValidaSenha(request.Senha, usuario.Senha);
-        }
 
         public async Task<Result<string>> AtualizaSenha(EditaUsuarioRequest request)
         {
@@ -58,21 +48,13 @@ namespace ApiFinancas.Src.Application.Services.Usuarios
             if (!senhaValida)
                 return Result<string>.Fail("Erro: Email ou senha inválidos!");
 
-            var senhaAlterada = _usuarioRepository.AtualizarAsync(usuario);
+            var senhaAlterada = _usuarioRepository.AtualizarSenhaAsync(usuario);
             if (senhaAlterada.IsCompletedSuccessfully)
                 return Result<string>.Ok("Senha alterada com sucesso!");
 
             return Result<string>.Fail("Erro interno ao alterar senha do usuário");
         }
 
-        public async Task<Result<LoginResponse>> c(string email)
-        {
-            var usuario = await _usuarioRepository.ObterPorEmailAsync(email);
-            if (usuario != null)
-                return Result<LoginResponse>.Ok(new LoginResponse(usuario.Id, usuario.Nome, usuario.Email));
-
-            return Result<LoginResponse>.Fail("Usuário não localizado");
-        }
 
         public async Task<Result<string>> DeletaUsuario(ExcluiUsuarioRequest request)
         {

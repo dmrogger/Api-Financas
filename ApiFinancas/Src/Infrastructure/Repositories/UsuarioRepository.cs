@@ -21,7 +21,7 @@ namespace ApiFinancas.Src.Infrastructure.Repositories
            return usuario.Id;
         }
 
-       public async Task AtualizarAsync(Usuario usuario)
+       public async Task AtualizarSenhaAsync(Usuario usuario)
         {
             _context.Attach(usuario);
             _context.Entry(usuario).Property(u => u.Senha).IsModified = true;
