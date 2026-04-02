@@ -1,4 +1,5 @@
 ﻿using ApiFinancas.Src.Application.DTOs.Autenticacao;
+using ApiFinancas.Src.Application.DTOs.Common;
 using ApiFinancas.Src.Application.Interfaces.Segurança;
 using ApiFinancas.Src.Application.Services.Usuarios;
 using ApiFinancas.Src.Domain.Entities;
@@ -138,9 +139,13 @@ namespace ApiFinancas.Tests.Application.Services.Usuarios
             _senhaServiceMock.Setup(x => x.ValidaSenha(request.SenhaAtual, Usuario.Senha))
                 .Returns(true);
 
-            _repositoryMock.Setup(x => x.AtualizarSenhaAsync(Usuario));
+            _repositoryMock.Setup(x => x.AtualizarSenhaAsync(Usuario))
+                .Returns(Task.CompletedTask);
 
+            var result = await _usuarioService.AtualizaSenha(request);
 
+            Assert.True(result.Success);
+            Assert.Null(result.Error);
         }
 
 

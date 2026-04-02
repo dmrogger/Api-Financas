@@ -24,7 +24,7 @@ namespace ApiFinancas.Tests.Application.Services.Autenticacao
             };
 
             _configuration = new ConfigurationBuilder()
-                .AddInMemoryCollection(settings)
+                .AddInMemoryCollection(settings!)
                 .Build();
 
             _autenticaoservice = new AutenticacaoService(_repositoryMock.Object, _configuration);

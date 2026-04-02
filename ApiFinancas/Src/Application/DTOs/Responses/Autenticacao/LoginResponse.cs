@@ -2,9 +2,6 @@
 {
     public class LoginResponse
     {
-        public LoginResponse()
-        {
-        }
 
         public LoginResponse(Guid id, string nome, string email, string? token = null)
         {
