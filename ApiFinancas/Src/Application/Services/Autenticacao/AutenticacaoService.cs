@@ -49,15 +49,20 @@ namespace ApiFinancas.Src.Application.Services.Autenticacao
 
         private string GerarToken(Usuario usuario)
         {
+            var keyValue = _configuration["Jwt:Key"];
+
+            if (string.IsNullOrWhiteSpace(keyValue))
+                throw new Exception("JWT Key não configurada");
+
             var claims = new[]
             {
-            new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-            new Claim(ClaimTypes.Email, usuario.Email),
-            new Claim(ClaimTypes.Name, usuario.Nome)
-        };
+                new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
+                new Claim(ClaimTypes.Email, usuario.Email),
+                new Claim(ClaimTypes.Name, usuario.Nome)
+            };
 
             var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+                Encoding.UTF8.GetBytes(keyValue));
 
             var creds = new SigningCredentials(
                 key,
