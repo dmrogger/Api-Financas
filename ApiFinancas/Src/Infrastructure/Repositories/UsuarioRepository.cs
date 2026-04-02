@@ -21,7 +21,7 @@ namespace ApiFinancas.Src.Infrastructure.Repositories
            return usuario.Id;
         }
 
-       public async Task AtualizarAsync(Usuario usuario)
+       public async Task AtualizarSenhaAsync(Usuario usuario)
         {
             _context.Attach(usuario);
             _context.Entry(usuario).Property(u => u.Senha).IsModified = true;
@@ -31,7 +31,9 @@ namespace ApiFinancas.Src.Infrastructure.Repositories
 
         public async Task<Usuario?> ObterPorEmailAsync(string email)
         {
-            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
+            var usuario = await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.Email == email.ToLower().Trim());
+            return usuario;
         }
 
         public async Task DeletarAsync(Usuario usuario)

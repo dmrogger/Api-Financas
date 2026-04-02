@@ -1,27 +1,27 @@
 ﻿using ApiFinancas.Src.Application.DTOs.Autenticacao;
 using ApiFinancas.Src.Application.DTOs.Common;
 using ApiFinancas.Src.Application.DTOs.Responses.Usuario;
+using ApiFinancas.Src.Application.Interfaces.Segurança;
 using ApiFinancas.Src.Application.Interfaces.Usuario;
 using ApiFinancas.Src.Domain.Entities;
 using ApiFinancas.Src.Domain.Interfaces;
-using ApiFinancas.Src.Infrastructure.Security;
 
 namespace ApiFinancas.Src.Application.Services.Usuarios
 {
     public class UsuarioService : IUsuarioService
     {
         private readonly IUsuarioRepository _usuarioRepository;
-        private readonly SenhaService _passwordService;
-        public UsuarioService(IUsuarioRepository usuarioRepository)
+        private readonly ISenhaService _passwordService;
+        public UsuarioService(IUsuarioRepository usuarioRepository, ISenhaService passwordService)
         {
             _usuarioRepository = usuarioRepository;
-            _passwordService = new SenhaService();
+            _passwordService = passwordService;
         }
         public async Task<Result<UsuarioResponse>> CriarUsuarioAsync(CriaUsuarioRequest request)
         {
-            var usuarioExiste = await _usuarioRepository.ObterPorEmailAsync(request.Email);
+            var usuarioExistestente = await _usuarioRepository.ObterPorEmailAsync(request.Email);
 
-            if (usuarioExiste != null)
+            if (usuarioExistestente != null)
                 return Result<UsuarioResponse>.Fail("E-mail já cadastrado! Tente criar a conta usando outro E-mail");
 
             var senhaHash = _passwordService.HashSenha(request.Senha);
@@ -33,18 +33,9 @@ namespace ApiFinancas.Src.Application.Services.Usuarios
             if (usuarioCriado == Guid.Empty)
                 return Result<UsuarioResponse>.Fail("Erro desconhecido ao criar usuário!");
 
-            var response = new UsuarioResponse(usuario.Id, usuario.Nome, usuario.Email);
+            var response = new UsuarioResponse(usuarioCriado, usuario.Nome, usuario.Email);
             return Result<UsuarioResponse>.Ok(response);
 
-        }
-        public async Task<bool> ValidaLogin(LoginRequest request)
-        {
-            var usuario = await _usuarioRepository.ObterPorEmailAsync(request.Email);
-
-            if (usuario == null)
-                return false;
-
-            return _passwordService.ValidaSenha(request.Senha, usuario.Senha);
         }
 
         public async Task<Result<string>> AtualizaSenha(EditaUsuarioRequest request)
@@ -57,21 +48,13 @@ namespace ApiFinancas.Src.Application.Services.Usuarios
             if (!senhaValida)
                 return Result<string>.Fail("Erro: Email ou senha inválidos!");
 
-            var senhaAlterada = _usuarioRepository.AtualizarAsync(usuario);
+            var senhaAlterada = _usuarioRepository.AtualizarSenhaAsync(usuario);
             if (senhaAlterada.IsCompletedSuccessfully)
                 return Result<string>.Ok("Senha alterada com sucesso!");
 
             return Result<string>.Fail("Erro interno ao alterar senha do usuário");
         }
 
-        public async Task<Result<UsuarioResponse>> ConsultaUsuario(string email)
-        {
-            var usuario = await _usuarioRepository.ObterPorEmailAsync(email);
-            if (usuario != null)
-                return Result<UsuarioResponse>.Ok(new UsuarioResponse(usuario.Id, usuario.Nome, usuario.Email));
-
-            return Result<UsuarioResponse>.Fail("Usuário não localizado");
-        }
 
         public async Task<Result<string>> DeletaUsuario(ExcluiUsuarioRequest request)
         {
@@ -92,11 +75,6 @@ namespace ApiFinancas.Src.Application.Services.Usuarios
         }
 
         Task<Result<LoginResponse>> IUsuarioService.ConsultaUsuario(string email)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<Result<LoginResponse>> IUsuarioService.CriarUsuarioAsync(CriaUsuarioRequest request)
         {
             throw new NotImplementedException();
         }

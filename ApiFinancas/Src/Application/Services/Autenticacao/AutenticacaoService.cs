@@ -1,4 +1,5 @@
 ﻿using ApiFinancas.Src.Application.DTOs.Autenticacao;
+using ApiFinancas.Src.Application.DTOs.Common;
 using ApiFinancas.Src.Application.DTOs.Responses.Usuario;
 using ApiFinancas.Src.Application.Interfaces.Autenticacao;
 using ApiFinancas.Src.Domain.Entities;
@@ -24,37 +25,44 @@ namespace ApiFinancas.Src.Application.Services.Autenticacao
             _configuration = configuration;
         }
 
-        public async Task<LoginResponse> LoginAsync(LoginRequest request)
+        public async Task<Result<LoginResponse>> LoginAsync(LoginRequest request)
         {
             var usuario = await _usuarioRepository.ObterPorEmailAsync(request.Email);
 
             if (usuario == null)
-                throw new Exception("Usuário ou senha inválidos");
+                return Result<LoginResponse>.Fail("Usuário ou senha inválidos");
 
             if (!BCrypt.Net.BCrypt.Verify(request.Senha, usuario.Senha))
-                throw new Exception("Usuário ou senha inválidos");
+                 return Result<LoginResponse>.Fail("Usuário ou senha inválidos");
 
             var token = GerarToken(usuario);
 
-            return new LoginResponse(
+            var response = new LoginResponse(
                 usuario.Id,
                 usuario.Nome,
                 usuario.Email,
                 token
             );
+
+            return Result<LoginResponse>.Ok(response);
         }
 
         private string GerarToken(Usuario usuario)
         {
+            var keyValue = _configuration["Jwt:Key"];
+
+            if (string.IsNullOrWhiteSpace(keyValue))
+                throw new Exception("JWT Key não configurada");
+
             var claims = new[]
             {
-            new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-            new Claim(ClaimTypes.Email, usuario.Email),
-            new Claim(ClaimTypes.Name, usuario.Nome)
-        };
+                new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
+                new Claim(ClaimTypes.Email, usuario.Email),
+                new Claim(ClaimTypes.Name, usuario.Nome)
+            };
 
             var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+                Encoding.UTF8.GetBytes(keyValue));
 
             var creds = new SigningCredentials(
                 key,
