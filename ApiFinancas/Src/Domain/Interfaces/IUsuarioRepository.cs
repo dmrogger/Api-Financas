@@ -6,7 +6,7 @@ namespace ApiFinancas.Src.Domain.Interfaces
     {
         Task<Usuario?> ObterPorEmailAsync(string email);
         Task<Guid> AdicionarAsync(Usuario usuario);
-        Task AtualizarAsync(Usuario usuario);
+        Task AtualizarSenhaAsync(Usuario usuario);
         Task DeletarAsync(Usuario usuario);
     }
 }

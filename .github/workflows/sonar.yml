@@ -57,7 +57,7 @@ jobs:
       # BUILD
       # ==========================
       - name: Build
-        run: dotnet build ApiFinancas.sln --configuration Release
+        run: dotnet build ApiFinancas.sln --configuration Release --no-incremental
 
       # ==========================
       # TEST WITH COVERAGE (Coverlet console → OpenCover)
