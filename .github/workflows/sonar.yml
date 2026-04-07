@@ -24,6 +24,9 @@ jobs:
       - name: Install SonarScanner
         run: dotnet tool install --global dotnet-sonarscanner
 
+      - name: Install dotnet-coverage
+        run: dotnet tool install --global dotnet-coverage
+
       # ==========================
       # SONAR BEGIN
       # ==========================
@@ -33,7 +36,7 @@ jobs:
             /k:"dmrogger_Api-Financas" \
             /o:"dmrogger" \
             /d:sonar.host.url="https://sonarcloud.io" \
-            /d:sonar.cs.opencover.reportsPaths="**/coverage/coverage.opencover.xml" \
+            /d:sonar.cs.vscoveragexml.reportsPaths="${{ github.workspace }}/coverage.xml" \
             /d:sonar.exclusions="**/bin/**,**/obj/**,**/*Dto.cs,**/*Request.cs,**/*Response.cs"
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -48,19 +51,22 @@ jobs:
       # BUILD
       # ==========================
       - name: Build
-        run: dotnet build ApiFinancas.sln --configuration Release
+        run: dotnet build ApiFinancas.sln --configuration Release --no-incremental
 
       # ==========================
       # TEST WITH COVERAGE
       # ==========================
       - name: Test with coverage
         run: |
-         dotnet test ApiFinancas.sln \
-              --no-build \
-              --configuration Release \
-              /p:CollectCoverage=true \
-              /p:CoverletOutput=./coverage/ \
-              /p:CoverletOutputFormat=opencover
+          dotnet-coverage collect \
+            "dotnet test ApiFinancas.sln --no-build --configuration Release" \
+            -f xml \
+            -o "${{ github.workspace }}/coverage.xml"
+
+      - name: Verificar relatório de cobertura
+        run: |
+          ls -la "${{ github.workspace }}/coverage.xml" || true
+          test -f "${{ github.workspace }}/coverage.xml" || (echo "::error::coverage.xml não encontrado (dotnet-coverage)" && exit 1)
 
       # ==========================
       # SONAR END
