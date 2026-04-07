@@ -1,3 +1,8 @@
+# SonarCloud: use apenas ESTE workflow para análise com cobertura.
+# Se no SonarCloud estiver ativa a "Automatic Analysis" do repositório,
+# uma segunda análise (sem coverage) pode sobrescrever a métrica — desative
+# em Administration → Analysis Method (deixe só CI / GitHub Actions).
+
 name: SonarCloud Analysis
 
 on:
@@ -24,6 +29,11 @@ jobs:
       - name: Install SonarScanner
         run: dotnet tool install --global dotnet-sonarscanner
 
+      # Doc oficial: Coverlet → OpenCover + sonar.cs.opencover.reportsPaths (caminho relativo)
+      # https://docs.sonarsource.com/sonarqube-cloud/analyzing-source-code/test-coverage/dotnet-test-coverage
+      - name: Install coverlet.console
+        run: dotnet tool install --global coverlet.console
+
       # ==========================
       # SONAR BEGIN
       # ==========================
@@ -33,10 +43,9 @@ jobs:
             /k:"dmrogger_Api-Financas" \
             /o:"dmrogger" \
             /d:sonar.host.url="https://sonarcloud.io" \
-            /d:sonar.cs.opencover.reportsPaths="**/coverage/coverage.opencover.xml" \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+            /d:sonar.cs.opencover.reportsPaths=coverage.xml \
             /d:sonar.exclusions="**/bin/**,**/obj/**,**/*Dto.cs,**/*Request.cs,**/*Response.cs"
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       # ==========================
       # RESTORE
@@ -51,21 +60,25 @@ jobs:
         run: dotnet build ApiFinancas.sln --configuration Release
 
       # ==========================
-      # TEST WITH COVERAGE
+      # TEST WITH COVERAGE (Coverlet console → OpenCover)
       # ==========================
       - name: Test with coverage
         run: |
-         dotnet test ApiFinancas.sln \
-              --no-build \
-              --configuration Release \
-              /p:CollectCoverage=true \
-              /p:CoverletOutput=./coverage/ \
-              /p:CoverletOutputFormat=opencover
+          coverlet "Tests/bin/Release/net8.0/ApiFinancas.Tests.dll" \
+            --target dotnet \
+            --targetargs "test ApiFinancas.sln --no-build --configuration Release" \
+            -f opencover \
+            -o coverage.xml
+
+      - name: Verificar relatório OpenCover
+        run: |
+          ls -la coverage.xml
+          head -n 3 coverage.xml
+          grep -q "CoverageSession" coverage.xml || (echo "::error::coverage.xml não é OpenCover (Coverlet) esperado" && exit 1)
 
       # ==========================
       # SONAR END
       # ==========================
       - name: Sonar End
-        run: dotnet sonarscanner end
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
