@@ -13,9 +13,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiFinancas.Tests", "Tests\ApiFinancas.Tests.csproj", "{668C76BC-A148-482C-9BFB-B1ADA1554AA4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Itens de Solução", "Itens de Solução", "{5BDAE1F0-5FC3-4216-B0A5-A8F0C67D12E2}"
-	ProjectSection(SolutionItems) = preProject
-		sonar-project.properties = sonar-project.properties
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
