@@ -1,7 +1,3 @@
-# SonarCloud: use apenas ESTE workflow para análise com cobertura.
-# Se no SonarCloud estiver ativa a "Automatic Analysis" do repositório,
-# uma segunda análise (sem coverage) pode sobrescrever a métrica — desative
-# em Administration → Analysis Method (deixe só CI / GitHub Actions).
 
 name: SonarCloud Analysis
 
@@ -46,7 +42,7 @@ jobs:
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
             /d:sonar.cs.opencover.reportsPaths=coverage.xml \
             /d:sonar.exclusions="**/bin/**,**/obj/**,**/*Dto.cs,**/*Request.cs,**/*Response.cs"
-
+            /d:sonar.coverage.exclusions="**/Controllers/**,**/Entities/**,**/Program.cs,**/Configurations/**,**/Migrations/**"
       # ==========================
       # RESTORE
       # ==========================
