@@ -1,5 +1,5 @@
 
-name: SonarCloud Analysis
+name: Build e testes SonarCloud
 
 on:
   push:
@@ -12,27 +12,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 📥 Checkout Código
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      # ⚙️ Setup .NET
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
 
+      # 📦 Restore
+      - name: Restore
+        run: dotnet restore ApiFinancas.sln
+
+      # 🔧 Instalação SonarScanner
       - name: Install SonarScanner
         run: dotnet tool install --global dotnet-sonarscanner
 
-      # Doc oficial: Coverlet → OpenCover + sonar.cs.opencover.reportsPaths (caminho relativo)
-      # https://docs.sonarsource.com/sonarqube-cloud/analyzing-source-code/test-coverage/dotnet-test-coverage
-      - name: Install coverlet.console
-        run: dotnet tool install --global coverlet.console
-
-      # ==========================
-      # SONAR BEGIN
-      # ==========================
+      # 🔍 Sonar Begin
       - name: Sonar Begin
         run: |
           dotnet sonarscanner begin \
@@ -40,41 +40,32 @@ jobs:
             /o:"dmrogger" \
             /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
-            /d:sonar.cs.opencover.reportsPaths=coverage.xml \
+            /d:sonar.cs.opencover.reportsPaths=TestResults/coverage.opencover.xml
             /d:sonar.exclusions="**/bin/**,**/obj/**,**/*Dto.cs,**/*Request.cs,**/*Response.cs" \
             /d:sonar.coverage.exclusions="**/Controllers/**,**/Entities/**,**/Program.cs,**/Configurations/**,**/Migrations/**"
-      # ==========================
-      # RESTORE
-      # ==========================
-      - name: Restore
-        run: dotnet restore ApiFinancas.sln
 
-      # ==========================
-      # BUILD
-      # ==========================
+      # 🏗️ Build
       - name: Build
-        run: dotnet build ApiFinancas.sln --configuration Release --no-incremental
+        run: dotnet build --configuration Release --no-restore
 
-      # ==========================
-      # TEST WITH COVERAGE (Coverlet console → OpenCover)
-      # ==========================
+      # 🧪 Test + Coverage
       - name: Test with coverage
         run: |
-          coverlet "Tests/bin/Release/net8.0/ApiFinancas.Tests.dll" \
-            --target dotnet \
-            --targetargs "test ApiFinancas.sln --no-build --configuration Release" \
-            -f opencover \
-            -o coverage.xml
+          dotnet test ApiFinancas.sln \
+            --configuration Release \
+            --no-build \
+            /p:CollectCoverage=true \
+            /p:CoverletOutput=./TestResults/coverage \
+            /p:CoverletOutputFormat=opencover
 
-      - name: Verificar relatório OpenCover
+      # 🔎 Debug (opcional, mas MUITO útil)
+      - name: Debug coverage file
         run: |
-          ls -la coverage.xml
-          head -n 3 coverage.xml
-          grep -q "CoverageSession" coverage.xml || (echo "::error::coverage.xml não é OpenCover (Coverlet) esperado" && exit 1)
+          echo "Arquivos gerados:"
+          ls -R
+          echo "Preview coverage:"
+          head -n 20 TestResults/coverage.xml || echo "Arquivo não encontrado"
 
-      # ==========================
-      # SONAR END
-      # ==========================
-      - name: Sonar End
-        run: |
-          dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+      # 🔍 Sonar END
+      - name: SonarCloud End
+        run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
