@@ -40,8 +40,8 @@ jobs:
             /o:"dmrogger" \
             /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
-            /d:sonar.cs.opencover.reportsPaths=TestResults/coverage.opencover.xml
-            /d:sonar.exclusions="**/bin/**,**/obj/**,**/*Dto.cs,**/*Request.cs,**/*Response.cs" \
+            /d:sonar.cs.opencover.reportsPaths=TestResults/coverage.opencover.xml \
+            /d:sonar.exclusions="**/bin/**,**/obj/**" \
             /d:sonar.coverage.exclusions="**/Controllers/**,**/Entities/**,**/Program.cs,**/Configurations/**,**/Migrations/**"
 
       # 🏗️ Build
@@ -64,7 +64,7 @@ jobs:
           echo "Arquivos gerados:"
           ls -R
           echo "Preview coverage:"
-          head -n 20 TestResults/coverage.xml || echo "Arquivo não encontrado"
+          head -n 20 TestResults/coverage.opencover.xml || echo "Arquivo não encontrado"
 
       # 🔍 Sonar END
       - name: SonarCloud End
