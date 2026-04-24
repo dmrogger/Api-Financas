@@ -45,7 +45,7 @@ jobs:
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
             /d:sonar.cs.opencover.reportsPaths=**/TestResults/*.opencover.xml \
             /d:sonar.exclusions="**/bin/**,**/obj/**" \
-            /d:sonar.coverage.exclusions="**/Controllers/**,**/Entities/**,**/Program.cs,**/Configurations/**,**/Migrations/**"
+            /d:sonar.coverage.exclusions="**/Application/DTOs/**,**/*Request.cs,**/*Response.cs,**/Infrastructure/Persistence/*Configurations.cs,**/Migrations/**,**/Program.cs"
 
       # 🏗️ Build
       - name: Build
