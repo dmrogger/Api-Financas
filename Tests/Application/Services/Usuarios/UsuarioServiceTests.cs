@@ -179,6 +179,7 @@ namespace ApiFinancas.Tests.Application.Services.Usuarios
             Assert.Equal("Usuário não localizado!", result.Error);
         }
 
+
         [Fact(DisplayName = "Não deve atualizar a senha e deve retornar erro quando email ou senha inválidos")]
         public async Task NaoDeveAtualizarSenhaeRetornarErroQuando()
         {
@@ -211,6 +212,7 @@ namespace ApiFinancas.Tests.Application.Services.Usuarios
             Assert.Equal("Erro: Email ou senha inválidos!", result.Error);
         }
 
+
         [Fact(DisplayName = "Não deve atualizar a senha quando houver erro interno")]
         public async Task NaoDeveAtualizarSenhaQuandoErroInterno()
         {
@@ -241,6 +243,135 @@ namespace ApiFinancas.Tests.Application.Services.Usuarios
             Assert.False(result.Success);
             Assert.NotNull(result.Error);
             Assert.Equal("Erro interno ao alterar senha do usuário", result.Error);
+        }
+
+
+        [Fact(DisplayName = "Deve deletar usuario com sucesso")]
+        public async Task DeveDeletarUmusuarioComSucesso()
+        {
+            var request = new ExcluiUsuarioRequest
+            {
+                Email = "teste@email.com",
+                Senha = "teste123"
+            };
+
+            var usuario = new Usuario(
+                "teste@email.com",
+                "Teste da Silva",
+                "teste123");
+
+            _repositoryMock
+                .Setup(x => x.ObterPorEmailAsync(request.Email))
+                .ReturnsAsync(usuario);
+
+            _senhaServiceMock.Setup(x => x.ValidaSenha(request.Senha, usuario.Senha))
+                 .Returns(true);
+
+            _repositoryMock
+                .Setup(x => x.DeletarAsync(usuario));
+
+            var result = await _usuarioService.DeletaUsuario(request);
+
+            Assert.True(result.Success);
+            Assert.Null(result.Error);
+            Assert.Equal("Usuário excluído com sucesso!", result.Data);
+        }
+
+
+        [Fact(DisplayName = "Não deve deletar o usuário e deve retornar erro de senha")]
+        public async Task NaoDeveDeletarUsuarioeDeveRetornarErroDeSenha()
+        {
+            var request = new ExcluiUsuarioRequest
+            {
+                Email = "teste@email.com",
+                Senha = "teste123"
+            };
+
+            var usuario = new Usuario(
+                "teste@email.com",
+                "Teste da Silva",
+                "teste123");
+
+            _repositoryMock
+                .Setup(x => x.ObterPorEmailAsync(request.Email))
+                .ReturnsAsync(usuario);
+
+            _senhaServiceMock.Setup(x => x.ValidaSenha(request.Senha, usuario.Senha))
+                 .Returns(false);
+
+            _repositoryMock
+                .Setup(x => x.DeletarAsync(usuario));
+
+            var result = await _usuarioService.DeletaUsuario(request);
+
+            Assert.False(result.Success);
+            Assert.NotNull(result.Error);
+            Assert.Equal("Erro: Email ou senha inválidos!", result.Error);
+        }
+
+
+        [Fact(DisplayName = "Não deve deletar o usuário e deve retornar erro de usuario não localizado")]
+        public async Task NaoDeveDeletarUsuarioeDeveRetornarErroUsuarioNaoLocalizado()
+        {
+            var request = new ExcluiUsuarioRequest
+            {
+                Email = "teste@email.com",
+                Senha = "teste123"
+            };
+
+            var usuario = new Usuario(
+                "teste@email.com",
+                "Teste da Silva",
+                "teste123");
+
+            _repositoryMock
+                .Setup(x => x.ObterPorEmailAsync(request.Email))
+                .ReturnsAsync((Usuario?)null);
+
+            _senhaServiceMock.Setup(x => x.ValidaSenha(request.Senha, usuario.Senha))
+                 .Returns(true);
+
+            _repositoryMock
+                .Setup(x => x.DeletarAsync(usuario));
+
+            var result = await _usuarioService.DeletaUsuario(request);
+
+            Assert.False(result.Success);
+            Assert.NotNull(result.Error);
+            Assert.Equal("Usuário não localizado, não foi possível deletar", result.Error);
+        }
+
+
+        [Fact(DisplayName = "Não deve deletar o usuário e deve retornar erro interno")]
+        public async Task NaoDeveDeletarUsuarioeDeveRetornarErroInterno()
+        {
+            var request = new ExcluiUsuarioRequest
+            {
+                Email = "teste@email.com",
+                Senha = "teste123"
+            };
+
+            var usuario = new Usuario(
+                "teste@email.com",
+                "Teste da Silva",
+                "teste123");
+
+            _repositoryMock
+                .Setup(x => x.ObterPorEmailAsync(request.Email))
+                .ReturnsAsync(usuario);
+
+            _senhaServiceMock.Setup(x => x.ValidaSenha(request.Senha, usuario.Senha))
+                 .Returns(true);
+
+            _repositoryMock
+                .Setup(x => x.DeletarAsync(usuario))
+                .ThrowsAsync(new Exception("Erro interno qualquer"));
+
+            var result = await _usuarioService.DeletaUsuario(request);
+
+            Assert.False(result.Success);
+            Assert.NotNull(result.Error);
+            Assert.Equal("Erro interno ao excluír o usuário", result.Error);
         }
     }
 }
