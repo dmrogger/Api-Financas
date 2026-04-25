@@ -79,6 +79,28 @@ namespace ApiFinancas.Tests.Application.Services.Autenticacao
             Assert.Null(result.Data);
         }
 
+        [Fact(DisplayName = "Deve retornar um login inválido quando não existir")]
+        public async Task LoginAsync_DeveRetornarErro_QuandoUsuarioNaoExistir()
+        {
+            var senhaHash = BCrypt.Net.BCrypt.HashPassword("654321");
+            var usuario = new Usuario("Teste", "teste@gmail.com", senhaHash);
+
+            _repositoryMock.Setup(x => x.ObterPorEmailAsync(It.IsAny<string>()))
+                .ReturnsAsync((Usuario)null!);
+
+            var login = new LoginRequest
+            {
+                Email = "teste@gmail.com",
+                Senha = "123456" //Senha Incorreta para verificação 
+            };
+
+            var result = await _autenticaoservice.LoginAsync(login);
+
+            // Assert
+            Assert.False(result.Success);
+            Assert.Equal("Usuário ou senha inválidos", result.Error);
+        }
+
         [Fact(DisplayName = "Deve gerar token no login válido")]
         public async Task LoginDeveGerarToken()
         {

@@ -42,17 +42,21 @@ namespace ApiFinancas.Src.Application.Services.Usuarios
         {
             var usuario = await _usuarioRepository.ObterPorEmailAsync(request.Email);
             if (usuario == null)
-                return Result<string>.Fail("Usário não localizado!");
+                return Result<string>.Fail("Usuário não localizado!");
 
             var senhaValida =  _passwordService.ValidaSenha(request.SenhaAtual, usuario.Senha);
             if (!senhaValida)
                 return Result<string>.Fail("Erro: Email ou senha inválidos!");
 
-            var senhaAlterada = _usuarioRepository.AtualizarSenhaAsync(usuario);
-            if (senhaAlterada.IsCompletedSuccessfully)
+            try
+            {
+                await _usuarioRepository.AtualizarSenhaAsync(usuario);
                 return Result<string>.Ok("Senha alterada com sucesso!");
-
-            return Result<string>.Fail("Erro interno ao alterar senha do usuário");
+            }
+            catch
+            {
+                return Result<string>.Fail("Erro interno ao alterar senha do usuário");
+            }
         }
 
 
