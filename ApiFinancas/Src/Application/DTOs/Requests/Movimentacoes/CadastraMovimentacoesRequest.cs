@@ -7,9 +7,9 @@ namespace ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes
     /// <summary>
     /// Request de adição de entradas
     /// </summary>
-    public class MovimentacaoRequest : BaseRequest
+    public class CadastraMovimentacoesRequest : BaseRequest
     {
-        public MovimentacaoRequest(decimal valor, string? descricao, Guid categoriaId, ETipoOperacao tipo)
+        public CadastraMovimentacoesRequest(decimal valor, string? descricao, Guid categoriaId, ETipoOperacao tipo)
         {
             Valor = valor;
             Descricao = descricao;
@@ -22,5 +22,6 @@ namespace ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes
         public string? Descricao { get; set; }
         public Guid CategoriaId { get; set; }
         public ETipoOperacao Tipo {  get; set; }
+        public Guid IdTransacao { get; private set; } = Guid.NewGuid();
     }
 }

@@ -1,4 +1,5 @@
-﻿using ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes;
+﻿using ApiFinancas.Src.Application.DTOs.Common;
+using ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes;
 using ApiFinancas.Src.Application.DTOs.Responses.Base;
 using ApiFinancas.Src.Application.DTOs.Responses.Movimentacoes;
 using ApiFinancas.Src.Application.Interfaces.Movimentacoes;
@@ -14,6 +15,19 @@ namespace ApiFinancas.Src.Application.Services.Movimentacoes
     /// </summary>
     public class MovimentacaoService : IMovimentacaoService
     {
+        public Task<Result<CadastrarMovimentacoesResponse>> CadastraMovimentacao(CadastraMovimentacoesRequest movimentacaoRequest)
+        {
+            throw new NotImplementedException();
+        }
 
+        public Task<Result<CadastrarMovimentacoesResponse>> DeletaMovimentacao(DeletarMovimentacoesRequest deletarMovimentacaoRequest)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Result<CadastrarMovimentacoesResponse>> ObterMovimentacoes(ObterMovimentacoesRequest obterMovimentacoesRequest)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

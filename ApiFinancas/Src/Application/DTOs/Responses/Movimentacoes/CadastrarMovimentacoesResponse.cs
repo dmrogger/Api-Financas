@@ -5,9 +5,9 @@ namespace ApiFinancas.Src.Application.DTOs.Responses.Movimentacoes
     /// <summary>
     /// Response de adição de entrada
     /// </summary>
-    public class MovimentacaoResponse
+    public class CadastrarMovimentacoesResponse
     {
-        public MovimentacaoResponse(Guid movimentacaoId)
+        public CadastrarMovimentacoesResponse(Guid movimentacaoId)
         {
             MovimentacaoId = movimentacaoId;
         }
