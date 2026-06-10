@@ -10,6 +10,7 @@ namespace ApiFinaças.Src.Infrastructure.Persistence
             : base(options) { }
 
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Movimentacao> Movimentacao { get; set; }
         public DbSet<Conta> Contas { get; set; }
         public DbSet<TipoConta> TiposConta { get; set; }
 

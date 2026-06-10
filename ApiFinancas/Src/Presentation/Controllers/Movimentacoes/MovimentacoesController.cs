@@ -1,7 +1,9 @@
-﻿using ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes;
+﻿using ApiFinancas.Src.Application.DTOs.Autenticacao;
+using ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes;
 using ApiFinancas.Src.Application.DTOs.Responses.Movimentacoes;
 using ApiFinancas.Src.Application.Interfaces.Movimentacoes;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace ApiFinancas.Src.Presentation.Controllers.Movimentacoes
 {
@@ -22,6 +24,24 @@ namespace ApiFinancas.Src.Presentation.Controllers.Movimentacoes
         public MovimentacoesController(IMovimentacaoService movimentacaoService)
         {
             _movimentacaoService = movimentacaoService ?? throw new ArgumentNullException(nameof(movimentacaoService));
+        }
+
+        /// <summary>
+        /// Cria uma nova movimentação
+        /// </summary>
+        [HttpPost("movimentacao")]
+        [ProducesResponseType((int)HttpStatusCode.Created)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> CriaMovimentacao([FromBody]  CadastraMovimentacoesRequest request,
+                                                      CancellationToken cancellationToken)
+        {
+            var result = await _movimentacaoService.CadastraMovimentacao(request);
+
+            if (result.Success)
+                return Ok(result);
+
+            return BadRequest(result);
         }
 
 

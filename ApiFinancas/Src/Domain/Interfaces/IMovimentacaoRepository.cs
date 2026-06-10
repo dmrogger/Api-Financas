@@ -10,7 +10,7 @@ namespace ApiFinancas.Src.Domain.Interfaces
         /// <summary>
         /// Cria uma nova movimentação
         /// </summary>
-        Task<Movimentacao> CriarAsync(Movimentacao movimentacao);
+        Task<Guid> CriarAsync(Movimentacao movimentacao);
 
         /// <summary>
         /// Obtém uma movimentação pelo ID
@@ -20,12 +20,12 @@ namespace ApiFinancas.Src.Domain.Interfaces
         /// <summary>
         /// Obtém todas as movimentações de um usuário
         /// </summary>
-        Task<IEnumerable<Movimentacao>> ObterPorUsuarioAsync(Guid usuarioId);
+        Task<List<Movimentacao>> ObterPorUsuarioAsync(Guid usuarioId);
 
         /// <summary>
         /// Obtém movimentações de um usuário com filtros opcionais
         /// </summary>
-        Task<IEnumerable<Movimentacao>> ObterPorUsuarioComFiltrosAsync(
+        Task<List<Movimentacao>> ObterPorUsuarioComFiltrosAsync(
             Guid usuarioId, 
             DateTime? dataInicial = null, 
             DateTime? dataFinal = null);

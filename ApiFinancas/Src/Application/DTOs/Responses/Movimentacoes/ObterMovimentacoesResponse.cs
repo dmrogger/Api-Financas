@@ -7,7 +7,7 @@ namespace ApiFinancas.Src.Application.DTOs.Responses.Movimentacoes
 {
     public class ObterMovimentacoesResponse
     {
-        public ObterMovimentacoesResponse(decimal valor, string? descricao, Guid categoriaId, ETipoOperacao tipo, Guid idMovimentacao)
+        public ObterMovimentacoesResponse(decimal valor, string? descricao, int categoriaId, ETipoOperacao tipo, int idMovimentacao)
         {
             Valor = valor;
             Descricao = descricao;
@@ -19,8 +19,8 @@ namespace ApiFinancas.Src.Application.DTOs.Responses.Movimentacoes
         public decimal Valor { get; set; }
         public DateTime DataOperacao { get; set; } = DateTime.Now;
         public string? Descricao { get; set; }
-        public Guid CategoriaId { get; set; }
+        public int CategoriaId { get; set; }
         public ETipoOperacao Tipo { get; set; }
-        public Guid IdTransacao { get; set; } 
+        public int IdTransacao { get; set; } 
     }
 }
