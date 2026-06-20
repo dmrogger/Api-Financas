@@ -11,7 +11,7 @@ namespace ApiFinancas.Src.Application.Interfaces.Movimentacoes
     public interface IMovimentacaoService
     {
         Task<Result<CadastrarMovimentacoesResponse>>CadastraMovimentacao(CadastraMovimentacoesRequest movimentacaoRequest);
-        Task<Result<CadastrarMovimentacoesResponse>> ObterMovimentacoes(ObterMovimentacoesRequest obterMovimentacoesRequest);
+        Task<Result<List<CadastrarMovimentacoesResponse>>> ObterMovimentacoes(ObterMovimentacoesRequest obterMovimentacoesRequest);
         Task<Result<CadastrarMovimentacoesResponse>>DeletaMovimentacao(DeletarMovimentacoesRequest deletarMovimentacaoRequest);
     }
 }

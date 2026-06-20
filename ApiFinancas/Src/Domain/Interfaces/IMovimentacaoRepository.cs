@@ -26,7 +26,7 @@ namespace ApiFinancas.Src.Domain.Interfaces
         /// Obtém movimentações de um usuário com filtros opcionais
         /// </summary>
         Task<List<Movimentacao>> ObterPorUsuarioComFiltrosAsync(
-            Guid usuarioId, 
+            Guid? usuarioId, 
             DateTime? dataInicial = null, 
             DateTime? dataFinal = null);
 

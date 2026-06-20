@@ -7,6 +7,10 @@ namespace ApiFinancas.Src.Application.DTOs.Responses.Movimentacoes
     /// </summary>
     public class CadastrarMovimentacoesResponse
     {
+        public CadastrarMovimentacoesResponse()
+        {
+            
+        }
         public CadastrarMovimentacoesResponse(Guid movimentacaoId)
         {
             MovimentacaoId = movimentacaoId;

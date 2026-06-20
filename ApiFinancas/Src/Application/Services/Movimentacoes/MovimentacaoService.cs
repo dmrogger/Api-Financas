@@ -40,9 +40,27 @@ namespace ApiFinancas.Src.Application.Services.Movimentacoes
             throw new NotImplementedException();
         }
 
-        public Task<Result<CadastrarMovimentacoesResponse>> ObterMovimentacoes(ObterMovimentacoesRequest obterMovimentacoesRequest)
+        public async Task<Result<List<CadastrarMovimentacoesResponse>>> ObterMovimentacoes(ObterMovimentacoesRequest obterMovimentacoesRequest)
         {
-            throw new NotImplementedException();
+            if (obterMovimentacoesRequest.idUsuario == Guid.Empty)
+                return Result<List<CadastrarMovimentacoesResponse>>.Fail("id de usuário não informado na requisição");
+
+            var movimentacoesEncontradas = await _movimentacaoRepository.ObterPorUsuarioComFiltrosAsync
+                (obterMovimentacoesRequest.idUsuario, 
+                obterMovimentacoesRequest.DataInicial, 
+                obterMovimentacoesRequest.DataFinal);
+
+            var movimentacoes = new List<CadastrarMovimentacoesResponse>();
+
+            foreach(var movimentacao in movimentacoesEncontradas)
+            {
+                movimentacoes.Add(new CadastrarMovimentacoesResponse
+                {
+                    MovimentacaoId = movimentacao.Id
+                });
+            }
+
+            return Result<List<CadastrarMovimentacoesResponse>>.Ok(movimentacoes);
         }
     }
 }

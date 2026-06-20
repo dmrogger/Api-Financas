@@ -42,7 +42,7 @@ namespace ApiFinaças.Src.Infrastructure.Repositories
         }
 
         public Task<List<Movimentacao>> ObterPorUsuarioComFiltrosAsync(
-            Guid usuarioId, 
+            Guid? usuarioId, 
             DateTime? dataInicial = null, 
             DateTime? dataFinal = null)
         {
