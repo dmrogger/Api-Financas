@@ -3,10 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes
 {
-    public class ObterOperacoesRequest : BaseRequest
+    public class ObterMovimentacoesRequest : BaseRequest
     {
         public DateTime DataInicial { get; set; }
-
         public DateTime DataFinal { get; set; }
 
     }
