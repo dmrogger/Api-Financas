@@ -19,5 +19,8 @@ namespace ApiFinancas.Src.Application.DTOs.Responses.Movimentacoes
         /// ID da movimentação criada
         /// </summary>
         public Guid MovimentacaoId { get; set; }
+        public int? CategoriaId { get; set; }
+        public decimal Valor {  get; set; }
+        public DateTime DataTransacao { get; set; }
     }
 }

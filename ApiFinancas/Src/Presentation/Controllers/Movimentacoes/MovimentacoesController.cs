@@ -2,6 +2,7 @@
 using ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes;
 using ApiFinancas.Src.Application.DTOs.Responses.Movimentacoes;
 using ApiFinancas.Src.Application.Interfaces.Movimentacoes;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -44,6 +45,18 @@ namespace ApiFinancas.Src.Presentation.Controllers.Movimentacoes
             return BadRequest(result);
         }
 
+        [HttpGet("movimentacoes")]
+        [ProducesResponseType((int)HttpStatusCode.Created)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> ObtemMovimentacoes([FromBody] ObterMovimentacoesRequest request, CancellationToken cancellationToken)
+        {
+            var result = await _movimentacaoService.ObterMovimentacoes(request);
 
+            if (result.Success)
+                return Ok(result);
+
+            return BadRequest(result);
+        }
     }
 }

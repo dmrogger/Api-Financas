@@ -56,7 +56,10 @@ namespace ApiFinancas.Src.Application.Services.Movimentacoes
             {
                 movimentacoes.Add(new CadastrarMovimentacoesResponse
                 {
-                    MovimentacaoId = movimentacao.Id
+                    MovimentacaoId = movimentacao.Id,
+                    CategoriaId = movimentacao.CategoriaId,
+                    Valor = movimentacao.Valor,
+                    DataTransacao = movimentacao.Data
                 });
             }
 
