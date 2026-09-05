@@ -10,8 +10,8 @@ namespace ApiFinancas.Src.Application.Interfaces.Movimentacoes
     /// </summary>
     public interface IMovimentacaoService
     {
-        Task<Result<CadastrarMovimentacoesResponse>>CadastraMovimentacao(CadastraMovimentacoesRequest movimentacaoRequest);
-        Task<Result<List<CadastrarMovimentacoesResponse>>> ObterMovimentacoes(ObterMovimentacoesRequest obterMovimentacoesRequest);
+        Task<Result<CadastrarMovimentacoesResponse>>CadastraMovimentacao(CadastraMovimentacoesRequest movimentacaoRequest, Guid idUsuario);
+        Task<Result<List<CadastrarMovimentacoesResponse>>> ObterMovimentacoes(ObterMovimentacoesRequest obterMovimentacoesRequest, Guid idUsuario);
         Task<Result<CadastrarMovimentacoesResponse>>DeletaMovimentacao(DeletarMovimentacoesRequest deletarMovimentacaoRequest);
     }
 }

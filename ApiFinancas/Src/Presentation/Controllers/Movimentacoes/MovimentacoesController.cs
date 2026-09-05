@@ -2,15 +2,18 @@
 using ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes;
 using ApiFinancas.Src.Application.DTOs.Responses.Movimentacoes;
 using ApiFinancas.Src.Application.Interfaces.Movimentacoes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Security.Claims;
 
 namespace ApiFinancas.Src.Presentation.Controllers.Movimentacoes
 {
     /// <summary>
     /// Controller para gerenciamento de movimentações financeiras
     /// </summary>
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     [Produces("application/json")]
@@ -37,7 +40,12 @@ namespace ApiFinancas.Src.Presentation.Controllers.Movimentacoes
         public async Task<IActionResult> CriaMovimentacao([FromBody]  CadastraMovimentacoesRequest request,
                                                       CancellationToken cancellationToken)
         {
-            var result = await _movimentacaoService.CadastraMovimentacao(request);
+            var idUsuarioClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(idUsuarioClaim, out var idUsuario))
+                return Unauthorized("Token inválido!");
+
+            var result = await _movimentacaoService.CadastraMovimentacao(request, idUsuario);
 
             if (result.Success)
                 return Ok(result);
@@ -51,7 +59,12 @@ namespace ApiFinancas.Src.Presentation.Controllers.Movimentacoes
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> ObtemMovimentacoes([FromBody] ObterMovimentacoesRequest request, CancellationToken cancellationToken)
         {
-            var result = await _movimentacaoService.ObterMovimentacoes(request);
+            var idUsuarioClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(idUsuarioClaim, out var idUsuario))
+                return Unauthorized("Token inválido!");
+
+            var result = await _movimentacaoService.ObterMovimentacoes(request, idUsuario);
 
             if (result.Success)
                 return Ok(result);
