@@ -1,10 +1,10 @@
-﻿using ApiFinaças.Src.Infrastructure.Persistence;
+﻿using ApiFinancas.Src.Infrastructure.Persistence;
 using ApiFinancas.Src.Domain.Entities;
 using ApiFinancas.Src.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.Design.Serialization;
 
-namespace ApiFinaças.Src.Infrastructure.Repositories
+namespace ApiFinancas.Src.Infrastructure.Repositories
 {
     /// <summary>
     /// Implementação do repositório de movimentações (em memória)

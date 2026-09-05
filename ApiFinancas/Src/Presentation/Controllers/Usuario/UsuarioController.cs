@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Security.Claims;
 
-namespace ApiFinaças.Src.Presentation.Controllers.Usuario
+namespace ApiFinancas.Src.Presentation.Controllers.Usuario
 {
     [ApiController]
     [Route("api/v1/usuarios")]

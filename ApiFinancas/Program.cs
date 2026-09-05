@@ -1,5 +1,5 @@
-using ApiFinaças.Src.Infrastructure.Persistence;
-using ApiFinaças.Src.Infrastructure.Repositories;
+using ApiFinancas.Src.Infrastructure.Persistence;
+using ApiFinancas.Src.Infrastructure.Repositories;
 using ApiFinancas.Src.Application.Interfaces.Autenticacao;
 using ApiFinancas.Src.Application.Interfaces.Movimentacoes;
 using ApiFinancas.Src.Application.Interfaces.Segurança;

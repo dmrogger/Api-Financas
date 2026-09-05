@@ -1,4 +1,4 @@
-﻿using ApiFinaças.Src.Infrastructure.Persistence;
+﻿using ApiFinancas.Src.Infrastructure.Persistence;
 using ApiFinancas.Src.Domain.Entities;
 using ApiFinancas.Src.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
