@@ -1,4 +1,5 @@
-﻿using ApiFinancas.Src.Domain.Entities;
+﻿using ApiFinancas.Src.Application.DTOs.Autenticacao;
+using ApiFinancas.Src.Domain.Entities;
 
 namespace ApiFinancas.Src.Domain.Interfaces
 {
@@ -6,6 +7,7 @@ namespace ApiFinancas.Src.Domain.Interfaces
     {
         Task<Usuario?> ObterPorEmailAsync(string email);
         Task<Guid> AdicionarAsync(Usuario usuario);
+        Task EditaUsuarioAsync (Usuario usuario);
         Task AtualizarSenhaAsync(Usuario usuario);
         Task DeletarAsync(Usuario usuario);
     }

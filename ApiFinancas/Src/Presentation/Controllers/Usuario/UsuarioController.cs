@@ -57,6 +57,23 @@ namespace ApiFinancas.Src.Presentation.Controllers.Usuario
    
         }
 
+
+        /// <summary>
+        /// Edita um usuário
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPatch("usuario")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> EditaUsuario([FromBody]EditaUsuarioRequest request)
+        { 
+            var  result = await _usuarioService.EditaUsuario(request);
+            return Ok(result);
+        }
+
+
         /// <summary>
         /// Remove um usuário
         /// </summary>

@@ -42,5 +42,11 @@ namespace ApiFinancas.Src.Infrastructure.Repositories
 
            await _context.SaveChangesAsync();
         }
+
+        public async Task EditaUsuarioAsync(Usuario usuario)
+        {
+            _context.Usuarios.Update(usuario);
+            await _context.SaveChangesAsync();
+        }
     }
 }

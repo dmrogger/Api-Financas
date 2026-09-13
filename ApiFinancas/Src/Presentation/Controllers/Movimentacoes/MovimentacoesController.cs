@@ -1,9 +1,6 @@
-﻿using ApiFinancas.Src.Application.DTOs.Autenticacao;
-using ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes;
-using ApiFinancas.Src.Application.DTOs.Responses.Movimentacoes;
+﻿using ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes;
 using ApiFinancas.Src.Application.Interfaces.Movimentacoes;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Security.Claims;
@@ -31,8 +28,11 @@ namespace ApiFinancas.Src.Presentation.Controllers.Movimentacoes
         }
 
         /// <summary>
-        /// Cria uma nova movimentação
+        /// Cria uma movimentação 
         /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpPost("movimentacao")]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
@@ -43,7 +43,7 @@ namespace ApiFinancas.Src.Presentation.Controllers.Movimentacoes
             var idUsuarioClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (!Guid.TryParse(idUsuarioClaim, out var idUsuario))
-                return Unauthorized("Token inválido!");
+                return Unauthorized("Token inválido ou incompleto!");
 
             var result = await _movimentacaoService.CadastraMovimentacao(request, idUsuario);
 
@@ -53,16 +53,23 @@ namespace ApiFinancas.Src.Presentation.Controllers.Movimentacoes
             return BadRequest(result);
         }
 
+
+        /// <summary>
+        /// Obtem uma ou mais movimentações 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpGet("movimentacoes")]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> ObtemMovimentacoes([FromBody] ObterMovimentacoesRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> ObtemMovimentacoes([FromQuery] ObterMovimentacoesRequest request, CancellationToken cancellationToken)
         {
             var idUsuarioClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (!Guid.TryParse(idUsuarioClaim, out var idUsuario))
-                return Unauthorized("Token inválido!");
+                return Unauthorized("Token inválido ou incompleto!");
 
             var result = await _movimentacaoService.ObterMovimentacoes(request, idUsuario);
 
