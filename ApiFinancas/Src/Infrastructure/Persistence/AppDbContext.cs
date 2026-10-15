@@ -1,8 +1,8 @@
-﻿using ApiFinacas.Src.Domain.Entities;
+﻿using ApiFinancas.Src.Domain.Entities;
 using ApiFinancas.Src.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace ApiFinaças.Src.Infrastructure.Persistence
+namespace ApiFinancas.Src.Infrastructure.Persistence
 {
     public class AppDbContext : DbContext
     {

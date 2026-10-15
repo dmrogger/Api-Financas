@@ -11,8 +11,6 @@ namespace ApiFinancas.Src.Application.DTOs.Requests
 
         public DateTime DataRequisicao { get; set; }
 
-        public Guid? idUsuario { get; set; }
-
         [Required(ErrorMessage = "A origem deve ser informada")]
         public string Origem { get; set; } = string.Empty;
     }

@@ -38,25 +38,33 @@ namespace ApiFinancas.Src.Application.Services.Usuarios
 
         }
 
-        public async Task<Result<string>> AtualizaSenha(EditaUsuarioRequest request)
+        public async Task<Result<string>> EditaUsuario(EditaUsuarioRequest request)
         {
             var usuario = await _usuarioRepository.ObterPorEmailAsync(request.Email);
+            
             if (usuario == null)
                 return Result<string>.Fail("Usuário não localizado!");
 
-            var senhaValida =  _passwordService.ValidaSenha(request.SenhaAtual, usuario.Senha);
-            if (!senhaValida)
+            var senhaValida = _passwordService.ValidaSenha(request.SenhaAtual, usuario.Senha);
+            if(!senhaValida)
                 return Result<string>.Fail("Erro: Email ou senha inválidos!");
 
             try
             {
-                await _usuarioRepository.AtualizarSenhaAsync(usuario);
-                return Result<string>.Ok("Senha alterada com sucesso!");
+                await _usuarioRepository.EditaUsuarioAsync(usuario);
+
+                if (!string.IsNullOrWhiteSpace(request.SenhaNova))
+                {
+                    await _usuarioRepository.AtualizarSenhaAsync(usuario);
+                }
             }
             catch
             {
-                return Result<string>.Fail("Erro interno ao alterar senha do usuário");
+
+                throw;
             }
+            
+            return null;
         }
 
 
@@ -78,9 +86,16 @@ namespace ApiFinancas.Src.Application.Services.Usuarios
 
         }
 
-        Task<Result<LoginResponse>> IUsuarioService.ConsultaUsuario(string email)
+
+        async Task<Result<UsuarioResponse>> IUsuarioService.ConsultaUsuario(string email)
         {
-            throw new NotImplementedException();
+           var usuario = await _usuarioRepository.ObterPorEmailAsync(email);
+            var result = new UsuarioResponse();
+
+            if (usuario != null)
+                 result = new UsuarioResponse(usuario.Id,usuario.Nome, usuario.Email);
+
+            return Result<UsuarioResponse>.Ok(result);
         }
     }
 }

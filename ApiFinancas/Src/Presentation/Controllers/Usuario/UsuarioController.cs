@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Security.Claims;
 
-namespace ApiFinaças.Src.Presentation.Controllers.Usuario
+namespace ApiFinancas.Src.Presentation.Controllers.Usuario
 {
     [ApiController]
     [Route("api/v1/usuarios")]
@@ -44,9 +44,8 @@ namespace ApiFinaças.Src.Presentation.Controllers.Usuario
         [HttpGet("usuario{email}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> ConsultarUsuario()
+        public async Task<IActionResult> ConsultarUsuario(string email)
         {
-            var email = User.FindFirst(ClaimTypes.Email)?.Value;
 
             var result = await _usuarioService.ConsultaUsuario(email);
             if(result.Success)
@@ -54,8 +53,24 @@ namespace ApiFinaças.Src.Presentation.Controllers.Usuario
             
             return BadRequest(result);
             
-   
         }
+
+
+        /// <summary>
+        /// Edita um usuário
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPatch("usuario")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> EditaUsuario([FromBody]EditaUsuarioRequest request)
+        { 
+            var  result = await _usuarioService.EditaUsuario(request);
+            return Ok(result);
+        }
+
 
         /// <summary>
         /// Remove um usuário

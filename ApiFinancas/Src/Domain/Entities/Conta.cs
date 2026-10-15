@@ -1,4 +1,4 @@
-﻿using ApiFinacas.Src.Domain.Entities;
+﻿using ApiFinancas.Src.Domain.Entities;
 using ApiFinancas.Src.Domain.Common;
 
 namespace ApiFinancas.Src.Domain.Entities

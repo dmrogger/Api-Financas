@@ -18,12 +18,12 @@ namespace ApiFinancas.Src.Application.Services.Movimentacoes
         {
             _movimentacaoRepository = movimentacaoRepository;
         }
-        public async Task<Result<CadastrarMovimentacoesResponse>> CadastraMovimentacao(CadastraMovimentacoesRequest movimentacaoRequest)
+        public async Task<Result<CadastrarMovimentacoesResponse>> CadastraMovimentacao(CadastraMovimentacoesRequest movimentacaoRequest, Guid idUsuario)
         {
             if (movimentacaoRequest.Valor < 0)
                 return Result<CadastrarMovimentacoesResponse>.Fail("Erro ao cadastrar movimentação");
 
-           var movimentacao = new Movimentacao(movimentacaoRequest.Valor,movimentacaoRequest.DataRequisicao,movimentacaoRequest.idUsuario, movimentacaoRequest.CategoriaId);
+           var movimentacao = new Movimentacao(movimentacaoRequest.Valor,movimentacaoRequest.DataRequisicao, idUsuario, movimentacaoRequest.CategoriaId);
 
            var movimentacaoCadastrada = await _movimentacaoRepository.CriarAsync(movimentacao);
 
@@ -40,13 +40,11 @@ namespace ApiFinancas.Src.Application.Services.Movimentacoes
             throw new NotImplementedException();
         }
 
-        public async Task<Result<List<CadastrarMovimentacoesResponse>>> ObterMovimentacoes(ObterMovimentacoesRequest obterMovimentacoesRequest)
+        public async Task<Result<List<CadastrarMovimentacoesResponse>>> ObterMovimentacoes(ObterMovimentacoesRequest obterMovimentacoesRequest, Guid idUsuario)
         {
-            if (obterMovimentacoesRequest.idUsuario == Guid.Empty)
-                return Result<List<CadastrarMovimentacoesResponse>>.Fail("id de usuário não informado na requisição");
 
             var movimentacoesEncontradas = await _movimentacaoRepository.ObterPorUsuarioComFiltrosAsync
-                (obterMovimentacoesRequest.idUsuario, 
+                (idUsuario, 
                 obterMovimentacoesRequest.DataInicial, 
                 obterMovimentacoesRequest.DataFinal);
 
@@ -56,7 +54,10 @@ namespace ApiFinancas.Src.Application.Services.Movimentacoes
             {
                 movimentacoes.Add(new CadastrarMovimentacoesResponse
                 {
-                    MovimentacaoId = movimentacao.Id
+                    MovimentacaoId = movimentacao.Id,
+                    CategoriaId = movimentacao.CategoriaId,
+                    Valor = movimentacao.Valor,
+                    DataTransacao = movimentacao.Data
                 });
             }
 

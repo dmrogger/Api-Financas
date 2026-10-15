@@ -1,4 +1,4 @@
-﻿using ApiFinaças.Src.Infrastructure.Persistence;
+﻿using ApiFinancas.Src.Infrastructure.Persistence;
 using ApiFinancas.Src.Domain.Entities;
 using ApiFinancas.Src.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -41,6 +41,12 @@ namespace ApiFinancas.Src.Infrastructure.Repositories
             _context.Remove(usuario);
 
            await _context.SaveChangesAsync();
+        }
+
+        public async Task EditaUsuarioAsync(Usuario usuario)
+        {
+            _context.Usuarios.Update(usuario);
+            await _context.SaveChangesAsync();
         }
     }
 }
