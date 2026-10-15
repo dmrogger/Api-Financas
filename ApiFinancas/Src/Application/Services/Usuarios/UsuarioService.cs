@@ -67,6 +67,7 @@ namespace ApiFinancas.Src.Application.Services.Usuarios
             return null;
         }
 
+
         public async Task<Result<string>> DeletaUsuario(ExcluiUsuarioRequest request)
         {
             var usuario = await _usuarioRepository.ObterPorEmailAsync(request.Email);
@@ -85,9 +86,16 @@ namespace ApiFinancas.Src.Application.Services.Usuarios
 
         }
 
-        Task<Result<LoginResponse>> IUsuarioService.ConsultaUsuario(string email)
+
+        async Task<Result<UsuarioResponse>> IUsuarioService.ConsultaUsuario(string email)
         {
-            throw new NotImplementedException();
+           var usuario = await _usuarioRepository.ObterPorEmailAsync(email);
+            var result = new UsuarioResponse();
+
+            if (usuario != null)
+                 result = new UsuarioResponse(usuario.Id,usuario.Nome, usuario.Email);
+
+            return Result<UsuarioResponse>.Ok(result);
         }
     }
 }
