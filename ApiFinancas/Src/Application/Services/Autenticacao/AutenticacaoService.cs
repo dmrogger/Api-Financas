@@ -33,7 +33,7 @@ namespace ApiFinancas.Src.Application.Services.Autenticacao
                 return Result<LoginResponse>.Fail("Usuário ou senha inválidos");
 
             if (!BCrypt.Net.BCrypt.Verify(request.Senha, usuario.Senha))
-                 return Result<LoginResponse>.Fail("Usuário ou senha inválidos");
+                return Result<LoginResponse>.Fail("Usuário ou senha inválidos");
 
             var token = GerarToken(usuario);
 
@@ -47,36 +47,71 @@ namespace ApiFinancas.Src.Application.Services.Autenticacao
             return Result<LoginResponse>.Ok(response);
         }
 
+
         private string GerarToken(Usuario usuario)
         {
-            var keyValue = _configuration["Jwt:Key"];
+            ArgumentNullException.ThrowIfNull(usuario);
 
-            if (string.IsNullOrWhiteSpace(keyValue))
-                throw new Exception("JWT Key não configurada");
+            var keyValue = _configuration["Jwt:Key"]
+                ?? throw new InvalidOperationException(
+                    "A chave JWT não foi configurada.");
+
+            var issuer = _configuration["Jwt:Issuer"]
+                ?? throw new InvalidOperationException(
+                    "O Issuer JWT não foi configurado.");
+
+            var audience = _configuration["Jwt:Audience"]
+                ?? throw new InvalidOperationException(
+                    "O Audience JWT não foi configurado.");
+
+            if (string.IsNullOrWhiteSpace(usuario.Email) ||
+                string.IsNullOrWhiteSpace(usuario.Nome))
+            {
+                throw new ArgumentException(
+                    "O usuário deve possuir e-mail e nome.");
+            }
+
+            var keyBytes = Encoding.UTF8.GetBytes(keyValue);
+
+            if (keyBytes.Length < 32)
+            {
+                throw new InvalidOperationException(
+                    "A chave JWT deve possuir pelo menos 32 bytes.");
+            }
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-                new Claim(ClaimTypes.Email, usuario.Email),
-                new Claim(ClaimTypes.Name, usuario.Nome)
-            };
+                new Claim(
+                    ClaimTypes.NameIdentifier,
+                    usuario.Id.ToString()),
 
-            var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(keyValue));
+                new Claim(
+                    ClaimTypes.Email,
+                    usuario.Email),
 
-            var creds = new SigningCredentials(
+                new Claim(
+                    ClaimTypes.Name,
+                    usuario.Nome)
+             };
+
+            var key = new SymmetricSecurityKey(keyBytes);
+
+            var credentials = new SigningCredentials(
                 key,
                 SecurityAlgorithms.HmacSha256);
 
+            var agora = DateTime.UtcNow;
+
             var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
+                issuer: issuer,
+                audience: audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(2),
-                signingCredentials: creds
+                notBefore: agora,
+                expires: agora.AddHours(2),
+                signingCredentials: credentials
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
-}
+ }
