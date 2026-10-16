@@ -80,19 +80,19 @@ namespace ApiFinancas.Src.Application.Services.Autenticacao
             }
 
             var claims = new[]
-            {
-                new Claim(
-                    ClaimTypes.NameIdentifier,
-                    usuario.Id.ToString()),
+                  {
+                    new Claim(
+                        ClaimTypes.NameIdentifier,
+                        usuario.Id.ToString()),
 
-                new Claim(
-                    ClaimTypes.Email,
-                    usuario.Email),
+                    new Claim(
+                        ClaimTypes.Email,
+                        usuario.Email),
 
-                new Claim(
-                    ClaimTypes.Name,
-                    usuario.Nome)
-             };
+                    new Claim(
+                        ClaimTypes.Name,
+                        usuario.Nome)
+                  };
 
             var key = new SymmetricSecurityKey(keyBytes);
 
