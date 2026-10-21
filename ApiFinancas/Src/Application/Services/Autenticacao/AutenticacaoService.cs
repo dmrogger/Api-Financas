@@ -94,7 +94,7 @@ namespace ApiFinancas.Src.Application.Services.Autenticacao
                         usuario.Nome)
                   };
 
-            var key = new SymmetricSecurityKey(keyBytes);
+            var key = new SymmetricSecurityKey(keyBytes); // NOSONAR - chave vem de User Secrets / variável de ambiente
 
             var credentials = new SigningCredentials(
                 key,

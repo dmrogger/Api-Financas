@@ -12,7 +12,7 @@ namespace ApiFinancas.Src.Domain.Entities
         public Guid ?UsuarioId { get; private set; }
 
 
-        public Movimentacao(decimal valor, DateTime data, Guid? usuarioId, int categoriaId)
+        public Movimentacao(decimal valor, DateTime? data, Guid? usuarioId, int categoriaId)
         {
             if (usuarioId == Guid.Empty)
                 throw new ArgumentException("O id do usuário não pode ser vazio", nameof(usuarioId));
@@ -22,7 +22,7 @@ namespace ApiFinancas.Src.Domain.Entities
 
             Id = Guid.NewGuid();
             Valor = valor;
-            Data = data;
+            Data = data ?? DateTime.UtcNow;
             UsuarioId = usuarioId;
             CategoriaId = categoriaId;
         }
