@@ -8,7 +8,6 @@ using ApiFinancas.Src.Application.Services.Autenticacao;
 using ApiFinancas.Src.Application.Services.Movimentacoes;
 using ApiFinancas.Src.Application.Services.Usuarios;
 using ApiFinancas.Src.Domain.Interfaces;
-using ApiFinancas.Src.Infrastructure.Repositories;
 using ApiFinancas.Src.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
