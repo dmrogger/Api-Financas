@@ -1,6 +1,4 @@
-﻿using ApiFinancas.Src.Application.DTOs.Requests;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace ApiFinancas.Src.Application.DTOs.Autenticacao
 {

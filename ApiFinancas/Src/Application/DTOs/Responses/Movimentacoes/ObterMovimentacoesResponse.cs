@@ -1,26 +1,25 @@
-﻿using ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes;
 using ApiFinancas.Src.Domain.Entities;
 using ApiFinancas.Src.Domain.Enums;
-using System.Drawing;
 
 namespace ApiFinancas.Src.Application.DTOs.Responses.Movimentacoes
 {
     public class ObterMovimentacoesResponse
     {
-        public ObterMovimentacoesResponse(decimal valor, string? descricao, int categoriaId, ETipoOperacao tipo, int idMovimentacao)
+        public ObterMovimentacoesResponse(Movimentacao movimentacao)
         {
-            Valor = valor;
-            Descricao = descricao;
-            CategoriaId = categoriaId;
-            Tipo = tipo;
-            IdTransacao = idMovimentacao;
+            MovimentacaoId = movimentacao.Id;
+            Valor = movimentacao.Valor;
+            DataTransacao = movimentacao.Data;
+            Tipo = movimentacao.Tipo;
+            Descricao = movimentacao.Descricao;
+            CategoriaId = movimentacao.CategoriaId;
         }
 
+        public Guid MovimentacaoId { get; set; }
         public decimal Valor { get; set; }
-        public DateTime DataOperacao { get; set; } = DateTime.Now;
+        public DateTime DataTransacao { get; set; }
+        public ETipoMovimentacao Tipo { get; set; }
         public string? Descricao { get; set; }
-        public int CategoriaId { get; set; }
-        public ETipoOperacao Tipo { get; set; }
-        public int IdTransacao { get; set; } 
+        public int? CategoriaId { get; set; }
     }
 }

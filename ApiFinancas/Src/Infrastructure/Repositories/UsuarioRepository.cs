@@ -1,4 +1,4 @@
-﻿using ApiFinancas.Src.Infrastructure.Persistence;
+using ApiFinancas.Src.Infrastructure.Persistence;
 using ApiFinancas.Src.Domain.Entities;
 using ApiFinancas.Src.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -15,32 +15,29 @@ namespace ApiFinancas.Src.Infrastructure.Repositories
 
         public async Task<Guid> AdicionarAsync(Usuario usuario)
         {
-           await _context.Usuarios.AddAsync(usuario);
-           await _context.SaveChangesAsync();
+            await _context.Usuarios.AddAsync(usuario);
+            await _context.SaveChangesAsync();
 
-           return usuario.Id;
+            return usuario.Id;
         }
 
-       public async Task AtualizarSenhaAsync(Usuario usuario)
+        public async Task<Usuario?> ObterPorIdAsync(Guid id)
         {
-            _context.Attach(usuario);
-            _context.Entry(usuario).Property(u => u.Senha).IsModified = true;
-
-             await _context.SaveChangesAsync();
+            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task<Usuario?> ObterPorEmailAsync(string email)
         {
-            var usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(u => u.Email == email.ToLower().Trim());
-            return usuario;
+            var emailNormalizado = Usuario.NormalizarEmail(email);
+
+            return await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.Email == emailNormalizado);
         }
 
         public async Task DeletarAsync(Usuario usuario)
         {
-            _context.Remove(usuario);
-
-           await _context.SaveChangesAsync();
+            _context.Usuarios.Remove(usuario);
+            await _context.SaveChangesAsync();
         }
 
         public async Task EditaUsuarioAsync(Usuario usuario)

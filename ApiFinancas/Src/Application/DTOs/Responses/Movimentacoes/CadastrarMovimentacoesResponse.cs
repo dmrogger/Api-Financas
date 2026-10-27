@@ -1,26 +1,18 @@
-﻿using ApiFinancas.Src.Application.DTOs.Responses.Base;
-
 namespace ApiFinancas.Src.Application.DTOs.Responses.Movimentacoes
 {
     /// <summary>
-    /// Response de adição de entrada
+    /// Response de cadastro de movimentação
     /// </summary>
     public class CadastrarMovimentacoesResponse
     {
-        public CadastrarMovimentacoesResponse()
-        {
-            
-        }
         public CadastrarMovimentacoesResponse(Guid movimentacaoId)
         {
             MovimentacaoId = movimentacaoId;
         }
+
         /// <summary>
         /// ID da movimentação criada
         /// </summary>
         public Guid MovimentacaoId { get; set; }
-        public int? CategoriaId { get; set; }
-        public decimal Valor {  get; set; }
-        public DateTime DataTransacao { get; set; }
     }
 }

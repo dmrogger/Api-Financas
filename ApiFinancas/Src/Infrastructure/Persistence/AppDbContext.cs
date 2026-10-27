@@ -1,4 +1,3 @@
-﻿using ApiFinancas.Src.Domain.Entities;
 using ApiFinancas.Src.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
