@@ -1,4 +1,5 @@
-﻿
+using ApiFinancas.Src.Domain.Enums;
+
 namespace ApiFinancas.Src.Domain.Entities
 {
     public class Movimentacao
@@ -8,11 +9,13 @@ namespace ApiFinancas.Src.Domain.Entities
         public Guid Id { get; private set; }
         public decimal Valor { get; private set; }
         public DateTime Data { get; private set; }
-        public int? CategoriaId { get; set; }
-        public Guid ?UsuarioId { get; private set; }
+        public ETipoMovimentacao Tipo { get; private set; }
+        public string? Descricao { get; private set; }
+        public int? CategoriaId { get; private set; }
+        public Guid UsuarioId { get; private set; }
 
-
-        public Movimentacao(decimal valor, DateTime? data, Guid? usuarioId, int categoriaId)
+        public Movimentacao(decimal valor, DateTime? data, Guid usuarioId, int? categoriaId,
+                            ETipoMovimentacao tipo, string? descricao)
         {
             if (usuarioId == Guid.Empty)
                 throw new ArgumentException("O id do usuário não pode ser vazio", nameof(usuarioId));
@@ -20,11 +23,16 @@ namespace ApiFinancas.Src.Domain.Entities
             if (valor <= 0)
                 throw new ArgumentException("O valor da movimentação deve ser maior que zero.", nameof(valor));
 
+            if (!Enum.IsDefined(tipo))
+                throw new ArgumentException("O tipo da movimentação é inválido.", nameof(tipo));
+
             Id = Guid.NewGuid();
             Valor = valor;
             Data = data ?? DateTime.UtcNow;
             UsuarioId = usuarioId;
             CategoriaId = categoriaId;
+            Tipo = tipo;
+            Descricao = descricao?.Trim();
         }
 
         public void AtualizarValor(decimal novoValor)

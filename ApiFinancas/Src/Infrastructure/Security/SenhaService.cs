@@ -1,6 +1,5 @@
 ﻿
 using ApiFinancas.Src.Application.Interfaces.Segurança;
-using Microsoft.AspNetCore.Identity;
 
 namespace ApiFinancas.Src.Infrastructure.Security
 {

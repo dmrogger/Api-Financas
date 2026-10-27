@@ -1,13 +1,12 @@
-﻿using ApiFinancas.Src.Infrastructure.Persistence;
+using ApiFinancas.Src.Infrastructure.Persistence;
 using ApiFinancas.Src.Domain.Entities;
 using ApiFinancas.Src.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.Design.Serialization;
 
 namespace ApiFinancas.Src.Infrastructure.Repositories
 {
     /// <summary>
-    /// Implementação do repositório de movimentações (em memória)
+    /// Implementação do repositório de movimentações (PostgreSQL via EF Core)
     /// </summary>
     public class MovimentacaoRepository : IMovimentacaoRepository
     {
@@ -19,34 +18,34 @@ namespace ApiFinancas.Src.Infrastructure.Repositories
 
         public async Task<Guid> CriarAsync(Movimentacao movimentacao)
         {
-           await _context.Movimentacao.AddAsync(movimentacao);
-           await _context.SaveChangesAsync();
+            await _context.Movimentacao.AddAsync(movimentacao);
+            await _context.SaveChangesAsync();
 
-           return movimentacao.Id;
+            return movimentacao.Id;
         }
 
         public async Task<Movimentacao?> ObterPorIdAsync(Guid id)
         {
-            var movimentacao = await _context.Movimentacao.FirstOrDefaultAsync(x => x.Id == id);
-            
-            return movimentacao;
+            return await _context.Movimentacao.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Task<List<Movimentacao>> ObterPorUsuarioAsync(Guid usuarioId)
+        public async Task<List<Movimentacao>> ObterPorUsuarioAsync(Guid usuarioId)
         {
-            var movimentacoes = _context.Movimentacao
+            return await _context.Movimentacao
+                .AsNoTracking()
                 .Where(x => x.UsuarioId == usuarioId)
+                .OrderByDescending(x => x.Data)
                 .ToListAsync();
-            
-            return movimentacoes;
         }
 
-        public Task<List<Movimentacao>> ObterPorUsuarioComFiltrosAsync(
-            Guid? usuarioId, 
-            DateTime? dataInicial = null, 
+        public async Task<List<Movimentacao>> ObterPorUsuarioComFiltrosAsync(
+            Guid usuarioId,
+            DateTime? dataInicial = null,
             DateTime? dataFinal = null)
         {
-            var query = _context.Movimentacao.Where(m => m.UsuarioId == usuarioId);
+            var query = _context.Movimentacao
+                .AsNoTracking()
+                .Where(m => m.UsuarioId == usuarioId);
 
             if (dataInicial.HasValue)
                 query = query.Where(m => m.Data >= dataInicial.Value);
@@ -54,28 +53,27 @@ namespace ApiFinancas.Src.Infrastructure.Repositories
             if (dataFinal.HasValue)
                 query = query.Where(m => m.Data <= dataFinal.Value);
 
-            return query.ToListAsync();
+            return await query.OrderByDescending(m => m.Data).ToListAsync();
         }
 
         public async Task<Movimentacao> AtualizarAsync(Movimentacao movimentacao)
         {
             _context.Movimentacao.Update(movimentacao);
+            await _context.SaveChangesAsync();
 
-            await _context.SaveChangesAsync();  
-
-            throw new KeyNotFoundException($"Movimentação com ID {movimentacao.Id} não encontrada.");
+            return movimentacao;
         }
 
-        public Task<bool> DeletarAsync(Guid id)
+        public async Task<bool> DeletarAsync(Guid id)
         {
-            var movimentacao = _context.Movimentacao.FirstOrDefault(m => m.Id == id);
-            if (movimentacao != null)
-            {
-                _context.Movimentacao.Remove(movimentacao);
-                return Task.FromResult(true);
-            }
+            var movimentacao = await _context.Movimentacao.FirstOrDefaultAsync(m => m.Id == id);
+            if (movimentacao == null)
+                return false;
 
-            return Task.FromResult(false);
+            _context.Movimentacao.Remove(movimentacao);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
     }
 }

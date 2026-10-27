@@ -1,9 +1,8 @@
-﻿using ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes;
+using ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes;
 using ApiFinancas.Src.Application.Interfaces.Movimentacoes;
+using ApiFinancas.Src.Presentation.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Security.Claims;
 
 namespace ApiFinancas.Src.Presentation.Controllers.Movimentacoes
 {
@@ -12,13 +11,14 @@ namespace ApiFinancas.Src.Presentation.Controllers.Movimentacoes
     /// </summary>
     [Authorize]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/movimentacoes")]
     [Produces("application/json")]
     public class MovimentacoesController : ControllerBase
     {
         private readonly IMovimentacaoService _movimentacaoService;
+
         /// <summary>
-        /// Controller responsável pelas movimentações 
+        /// Controller responsável pelas movimentações
         /// </summary>
         /// <param name="movimentacaoService"></param>
         /// <exception cref="ArgumentNullException"></exception>
@@ -28,47 +28,35 @@ namespace ApiFinancas.Src.Presentation.Controllers.Movimentacoes
         }
 
         /// <summary>
-        /// Cria uma movimentação 
+        /// Cria uma movimentação do usuário autenticado
         /// </summary>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [HttpPost("movimentacao")]
-        [ProducesResponseType((int)HttpStatusCode.Created)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> CriaMovimentacao([FromBody]  CadastraMovimentacoesRequest request,
-                                                      CancellationToken cancellationToken)
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> CriaMovimentacao([FromBody] CadastraMovimentacoesRequest request)
         {
-            var idUsuarioClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (!Guid.TryParse(idUsuarioClaim, out var idUsuario))
+            if (!User.TryObterIdUsuario(out var idUsuario))
                 return Unauthorized("Token inválido ou incompleto!");
 
             var result = await _movimentacaoService.CadastraMovimentacao(request, idUsuario);
 
             if (result.Success)
-                return Ok(result);
+                return StatusCode(StatusCodes.Status201Created, result);
 
             return BadRequest(result);
         }
 
-
         /// <summary>
-        /// Obtem uma ou mais movimentações 
+        /// Obtém as movimentações do usuário autenticado, com filtro opcional por período
         /// </summary>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [HttpGet("movimentacoes")]
-        [ProducesResponseType((int)HttpStatusCode.Created)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> ObtemMovimentacoes([FromQuery] ObterMovimentacoesRequest request, CancellationToken cancellationToken)
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> ObtemMovimentacoes([FromQuery] ObterMovimentacoesRequest request)
         {
-            var idUsuarioClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (!Guid.TryParse(idUsuarioClaim, out var idUsuario))
+            if (!User.TryObterIdUsuario(out var idUsuario))
                 return Unauthorized("Token inválido ou incompleto!");
 
             var result = await _movimentacaoService.ObterMovimentacoes(request, idUsuario);

@@ -13,7 +13,7 @@ namespace ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes
         public DateTime DataOperacao { get; set; }
         public string? Descricao { get; set; }
         public int CategoriaId { get; set; }
-        public ETipoOperacao Tipo { get; set; }
+        public ETipoMovimentacao Tipo { get; set; }
         public Guid IdTransacao { get; set; }
     }
 }

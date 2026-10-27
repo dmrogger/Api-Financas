@@ -1,9 +1,8 @@
-﻿using ApiFinancas.Src.Application.DTOs.Autenticacao;
+using ApiFinancas.Src.Application.DTOs.Autenticacao;
 using ApiFinancas.Src.Application.Interfaces.Usuario;
+using ApiFinancas.Src.Presentation.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Security.Claims;
 
 namespace ApiFinancas.Src.Presentation.Controllers.Usuario
 {
@@ -21,14 +20,54 @@ namespace ApiFinancas.Src.Presentation.Controllers.Usuario
         /// <summary>
         /// Cria um novo usuário
         /// </summary>
-        [HttpPost("usuario")]
-        [ProducesResponseType((int)HttpStatusCode.Created)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> CriarUsuario([FromBody]CriaUsuarioRequest request, 
-                                                      CancellationToken cancellationToken)
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CriarUsuario([FromBody] CriaUsuarioRequest request)
         {
-           var result = await _usuarioService.CriarUsuarioAsync(request);
+            var result = await _usuarioService.CriarUsuarioAsync(request);
+
+            if (result.Success)
+                return CreatedAtAction(nameof(ConsultarUsuario), null, result);
+
+            return BadRequest(result);
+        }
+
+        /// <summary>
+        /// Consulta os dados do usuário autenticado
+        /// </summary>
+        [Authorize]
+        [HttpGet("me")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ConsultarUsuario()
+        {
+            if (!User.TryObterIdUsuario(out var idUsuario))
+                return Unauthorized("Token inválido ou incompleto!");
+
+            var result = await _usuarioService.ConsultaUsuario(idUsuario);
+
+            if (result.Success)
+                return Ok(result);
+
+            return NotFound(result);
+        }
+
+        /// <summary>
+        /// Edita o nome e/ou a senha do usuário autenticado
+        /// </summary>
+        [Authorize]
+        [HttpPatch("me")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> EditaUsuario([FromBody] EditaUsuarioRequest request)
+        {
+            if (!User.TryObterIdUsuario(out var idUsuario))
+                return Unauthorized("Token inválido ou incompleto!");
+
+            var result = await _usuarioService.EditaUsuario(request, idUsuario);
 
             if (result.Success)
                 return Ok(result);
@@ -36,51 +75,21 @@ namespace ApiFinancas.Src.Presentation.Controllers.Usuario
             return BadRequest(result);
         }
 
-
         /// <summary>
-        /// Consulta um usuário por E-mail
+        /// Remove o usuário autenticado (exige confirmação da senha)
         /// </summary>
         [Authorize]
-        [HttpGet("usuario{email}")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> ConsultarUsuario(string email)
+        [HttpDelete("me")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> DeletarUsuario([FromBody] ExcluiUsuarioRequest request)
         {
+            if (!User.TryObterIdUsuario(out var idUsuario))
+                return Unauthorized("Token inválido ou incompleto!");
 
-            var result = await _usuarioService.ConsultaUsuario(email);
-            if(result.Success)
-                return Ok(result);
-            
-            return BadRequest(result);
-            
-        }
+            var result = await _usuarioService.DeletaUsuario(request, idUsuario);
 
-
-        /// <summary>
-        /// Edita um usuário
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        [Authorize]
-        [HttpPatch("usuario")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> EditaUsuario([FromBody]EditaUsuarioRequest request)
-        { 
-            var  result = await _usuarioService.EditaUsuario(request);
-            return Ok(result);
-        }
-
-
-        /// <summary>
-        /// Remove um usuário
-        /// </summary>
-        [Authorize]
-        [HttpDelete("usuario")]
-        [ProducesResponseType((int)HttpStatusCode.NoContent)]
-        public async Task<IActionResult> DeletarUsuario([FromBody]ExcluiUsuarioRequest request)
-        {
-            var result = await _usuarioService.DeletaUsuario(request);
             if (result.Success)
                 return Ok(result);
 

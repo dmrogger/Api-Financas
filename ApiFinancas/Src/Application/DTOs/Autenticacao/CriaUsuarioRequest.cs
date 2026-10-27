@@ -1,4 +1,3 @@
-﻿using ApiFinancas.Src.Application.DTOs.Requests;
 using System.ComponentModel.DataAnnotations;
 
 namespace ApiFinancas.Src.Application.DTOs.Autenticacao
@@ -22,10 +21,10 @@ namespace ApiFinancas.Src.Application.DTOs.Autenticacao
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Campo Senha é obrigatório para criação do usuário")]
-        [MinLength(8, ErrorMessage = "Senha precisa ter no minímo de 8 caracteres e ao menos, " +
+        [MinLength(8, ErrorMessage = "Senha precisa ter no mínimo 8 caracteres e ao menos " +
             "1 caracter especial e 1 letra maiúscula")]
-        [MaxLength(20, ErrorMessage = "Senha não pode exceder 20 caracteres")]
-        [RegularExpression(@"^(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,20}$",
+        [MaxLength(64, ErrorMessage = "Senha não pode exceder 64 caracteres")]
+        [RegularExpression(@"^(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,64}$",
         ErrorMessage = "Senha deve conter ao menos 1 letra maiúscula e 1 caractere especial.")]
         public string Senha { get; set; }
 
