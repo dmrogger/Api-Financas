@@ -1,8 +1,8 @@
 ﻿using ApiFinancas.Src.Application.DTOs.Autenticacao;
+using ApiFinancas.Src.Application.Interfaces.Segurança;
 using ApiFinancas.Src.Application.Services.Autenticacao;
 using ApiFinancas.Src.Domain.Entities;
 using ApiFinancas.Src.Domain.Interfaces;
-using Microsoft.Extensions.Configuration;
 using Moq;
 
 namespace ApiFinancas.Tests.Application.Services.Autenticacao
@@ -10,34 +10,35 @@ namespace ApiFinancas.Tests.Application.Services.Autenticacao
     public class AutenticacaoServiceTests
     {
         private readonly Mock<IUsuarioRepository> _repositoryMock;
+        private readonly Mock<ISenhaService> _senhaServiceMock;
+        private readonly Mock<ITokenService> _tokenServiceMock;
         private readonly AutenticacaoService _autenticaoservice;
-        private readonly IConfiguration _configuration;
 
         public AutenticacaoServiceTests()
         {
             _repositoryMock = new Mock<IUsuarioRepository>();
-            var settings = new Dictionary<string, string>
-            {
-                { "Jwt:Key", "uma-chave-super-secreta-para-testes" },
-                { "Jwt:Issuer", "ApiFinancas" },
-                { "Jwt:Audience", "ApiFinancasUsers" }
-            };
+            _senhaServiceMock = new Mock<ISenhaService>();
+            _tokenServiceMock = new Mock<ITokenService>();
 
-            _configuration = new ConfigurationBuilder()
-                .AddInMemoryCollection(settings!)
-                .Build();
-
-            _autenticaoservice = new AutenticacaoService(_repositoryMock.Object, _configuration);
+            _autenticaoservice = new AutenticacaoService(
+                _repositoryMock.Object,
+                _senhaServiceMock.Object,
+                _tokenServiceMock.Object);
         }
 
-        [Fact(DisplayName = "Deve retornar login com usuário válido sem token")]
+        [Fact(DisplayName = "Deve retornar login com usuário válido")]
         public async Task LoginDeveRetornarUsuarioValido()
         {
-            var senhaHash = BCrypt.Net.BCrypt.HashPassword("123456");
-            var usuario = new Usuario("Teste", "teste@gmail.com", senhaHash);
+            var usuario = new Usuario("Teste", "teste@gmail.com", "hash");
 
             _repositoryMock.Setup(x => x.ObterPorEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(usuario);
+
+            _senhaServiceMock.Setup(x => x.ValidaSenha("123456", usuario.Senha))
+                .Returns(true);
+
+            _tokenServiceMock.Setup(x => x.GerarToken(usuario))
+                .Returns("token-teste");
 
             var login = new LoginRequest
             {
@@ -57,16 +58,18 @@ namespace ApiFinancas.Tests.Application.Services.Autenticacao
         [Fact(DisplayName = "Deve retornar um login inválido e não gerar token")]
         public async Task LoginDeveRetornarInvalido()
         {
-            var senhaHash = BCrypt.Net.BCrypt.HashPassword("654321");
-            var usuario = new Usuario("Teste", "teste@gmail.com", senhaHash);
+            var usuario = new Usuario("Teste", "teste@gmail.com", "hash");
 
             _repositoryMock.Setup(x => x.ObterPorEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(usuario);
 
+            _senhaServiceMock.Setup(x => x.ValidaSenha(It.IsAny<string>(), usuario.Senha))
+                .Returns(false); //Senha Incorreta para verificação
+
             var login = new LoginRequest
             {
                 Email = "teste@gmail.com",
-                Senha = "123456" //Senha Incorreta para verificação 
+                Senha = "123456"
             };
 
             var result = await _autenticaoservice.LoginAsync(login);
@@ -77,21 +80,19 @@ namespace ApiFinancas.Tests.Application.Services.Autenticacao
             Assert.NotNull(result.Error);
             Assert.Equal(result.Error, esperado);
             Assert.Null(result.Data);
+            _tokenServiceMock.Verify(x => x.GerarToken(It.IsAny<Usuario>()), Times.Never);
         }
 
         [Fact(DisplayName = "Deve retornar um login inválido quando não existir")]
         public async Task LoginAsync_DeveRetornarErro_QuandoUsuarioNaoExistir()
         {
-            var senhaHash = BCrypt.Net.BCrypt.HashPassword("654321");
-            var usuario = new Usuario("Teste", "teste@gmail.com", senhaHash);
-
             _repositoryMock.Setup(x => x.ObterPorEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync((Usuario)null!);
 
             var login = new LoginRequest
             {
                 Email = "teste@gmail.com",
-                Senha = "123456" //Senha Incorreta para verificação 
+                Senha = "123456"
             };
 
             var result = await _autenticaoservice.LoginAsync(login);
@@ -99,16 +100,22 @@ namespace ApiFinancas.Tests.Application.Services.Autenticacao
             // Assert
             Assert.False(result.Success);
             Assert.Equal("Usuário ou senha inválidos", result.Error);
+            _tokenServiceMock.Verify(x => x.GerarToken(It.IsAny<Usuario>()), Times.Never);
         }
 
         [Fact(DisplayName = "Deve gerar token no login válido")]
         public async Task LoginDeveGerarToken()
         {
-            var senhaHash = BCrypt.Net.BCrypt.HashPassword("123456");
-            var usuario = new Usuario("Teste", "teste@gmail.com", senhaHash);
+            var usuario = new Usuario("Teste", "teste@gmail.com", "hash");
 
             _repositoryMock.Setup(x => x.ObterPorEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(usuario);
+
+            _senhaServiceMock.Setup(x => x.ValidaSenha("123456", usuario.Senha))
+                .Returns(true);
+
+            _tokenServiceMock.Setup(x => x.GerarToken(usuario))
+                .Returns("token-teste");
 
             var login = new LoginRequest
             {
@@ -120,7 +127,8 @@ namespace ApiFinancas.Tests.Application.Services.Autenticacao
 
             Assert.True(result.Success);
             Assert.NotNull(result.Data);
-            Assert.False(string.IsNullOrEmpty(result.Data.Token));
+            Assert.Equal("token-teste", result.Data.Token);
+            _tokenServiceMock.Verify(x => x.GerarToken(usuario), Times.Once);
         }
     }
 }

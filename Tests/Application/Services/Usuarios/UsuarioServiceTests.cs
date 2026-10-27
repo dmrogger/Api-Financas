@@ -120,9 +120,9 @@ namespace ApiFinancas.Tests.Application.Services.Usuarios
         [Fact(DisplayName = "Deve deletar usuario com sucesso")]
         public async Task DeveDeletarUmusuarioComSucesso()
         {
+            var idUsuario = Guid.NewGuid();
             var request = new ExcluiUsuarioRequest
             {
-                Email = "teste@email.com",
                 Senha = "teste123"
             };
 
@@ -132,7 +132,7 @@ namespace ApiFinancas.Tests.Application.Services.Usuarios
                 "teste123");
 
             _repositoryMock
-                .Setup(x => x.ObterPorEmailAsync(request.Email))
+                .Setup(x => x.ObterPorIdAsync(idUsuario))
                 .ReturnsAsync(usuario);
 
             _senhaServiceMock.Setup(x => x.ValidaSenha(request.Senha, usuario.Senha))
@@ -141,7 +141,7 @@ namespace ApiFinancas.Tests.Application.Services.Usuarios
             _repositoryMock
                 .Setup(x => x.DeletarAsync(usuario));
 
-            var result = await _usuarioService.DeletaUsuario(request);
+            var result = await _usuarioService.DeletaUsuario(request, idUsuario);
 
             Assert.True(result.Success);
             Assert.Null(result.Error);
@@ -152,9 +152,9 @@ namespace ApiFinancas.Tests.Application.Services.Usuarios
         [Fact(DisplayName = "Não deve deletar o usuário e deve retornar erro de senha")]
         public async Task NaoDeveDeletarUsuarioeDeveRetornarErroDeSenha()
         {
+            var idUsuario = Guid.NewGuid();
             var request = new ExcluiUsuarioRequest
             {
-                Email = "teste@email.com",
                 Senha = "teste123"
             };
 
@@ -164,7 +164,7 @@ namespace ApiFinancas.Tests.Application.Services.Usuarios
                 "teste123");
 
             _repositoryMock
-                .Setup(x => x.ObterPorEmailAsync(request.Email))
+                .Setup(x => x.ObterPorIdAsync(idUsuario))
                 .ReturnsAsync(usuario);
 
             _senhaServiceMock.Setup(x => x.ValidaSenha(request.Senha, usuario.Senha))
@@ -173,7 +173,7 @@ namespace ApiFinancas.Tests.Application.Services.Usuarios
             _repositoryMock
                 .Setup(x => x.DeletarAsync(usuario));
 
-            var result = await _usuarioService.DeletaUsuario(request);
+            var result = await _usuarioService.DeletaUsuario(request, idUsuario);
 
             Assert.False(result.Success);
             Assert.NotNull(result.Error);
@@ -184,9 +184,9 @@ namespace ApiFinancas.Tests.Application.Services.Usuarios
         [Fact(DisplayName = "Não deve deletar o usuário e deve retornar erro de usuario não localizado")]
         public async Task NaoDeveDeletarUsuarioeDeveRetornarErroUsuarioNaoLocalizado()
         {
+            var idUsuario = Guid.NewGuid();
             var request = new ExcluiUsuarioRequest
             {
-                Email = "teste@email.com",
                 Senha = "teste123"
             };
 
@@ -196,7 +196,7 @@ namespace ApiFinancas.Tests.Application.Services.Usuarios
                 "teste123");
 
             _repositoryMock
-                .Setup(x => x.ObterPorEmailAsync(request.Email))
+                .Setup(x => x.ObterPorIdAsync(idUsuario))
                 .ReturnsAsync((Usuario?)null);
 
             _senhaServiceMock.Setup(x => x.ValidaSenha(request.Senha, usuario.Senha))
@@ -205,7 +205,7 @@ namespace ApiFinancas.Tests.Application.Services.Usuarios
             _repositoryMock
                 .Setup(x => x.DeletarAsync(usuario));
 
-            var result = await _usuarioService.DeletaUsuario(request);
+            var result = await _usuarioService.DeletaUsuario(request, idUsuario);
 
             Assert.False(result.Success);
             Assert.NotNull(result.Error);
@@ -216,9 +216,9 @@ namespace ApiFinancas.Tests.Application.Services.Usuarios
         [Fact(DisplayName = "Não deve deletar o usuário e deve retornar erro interno")]
         public async Task NaoDeveDeletarUsuarioeDeveRetornarErroInterno()
         {
+            var idUsuario = Guid.NewGuid();
             var request = new ExcluiUsuarioRequest
             {
-                Email = "teste@email.com",
                 Senha = "teste123"
             };
 
@@ -228,7 +228,7 @@ namespace ApiFinancas.Tests.Application.Services.Usuarios
                 "teste123");
 
             _repositoryMock
-                .Setup(x => x.ObterPorEmailAsync(request.Email))
+                .Setup(x => x.ObterPorIdAsync(idUsuario))
                 .ReturnsAsync(usuario);
 
             _senhaServiceMock.Setup(x => x.ValidaSenha(request.Senha, usuario.Senha))
@@ -238,11 +238,11 @@ namespace ApiFinancas.Tests.Application.Services.Usuarios
                 .Setup(x => x.DeletarAsync(usuario))
                 .ThrowsAsync(new Exception("Erro interno qualquer"));
 
-            var result = await _usuarioService.DeletaUsuario(request);
+            var result = await _usuarioService.DeletaUsuario(request, idUsuario);
 
             Assert.False(result.Success);
             Assert.NotNull(result.Error);
-            Assert.Equal("Erro interno ao excluír o usuário", result.Error);
+            Assert.Equal("Erro interno ao excluir o usuário", result.Error);
         }
     }
 }
