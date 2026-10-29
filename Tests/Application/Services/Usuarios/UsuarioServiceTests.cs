@@ -1,4 +1,5 @@
 ﻿using ApiFinancas.Src.Application.DTOs.Autenticacao;
+using ApiFinancas.Src.Application.DTOs.Common;
 using ApiFinancas.Src.Application.Interfaces.Segurança;
 using ApiFinancas.Src.Application.Services.Usuarios;
 using ApiFinancas.Src.Domain.Entities;
@@ -243,6 +244,124 @@ namespace ApiFinancas.Tests.Application.Services.Usuarios
             Assert.False(result.Success);
             Assert.NotNull(result.Error);
             Assert.Equal("Erro interno ao excluir o usuário", result.Error);
+        }
+
+        [Theory(DisplayName = "Não deve editar o usuário quando senha atual inválida")]
+        [InlineData("Teste", "teste@gmail.com", "")]
+        [InlineData("Teste", "Teste@", "Teste123")]
+        public async Task NaoDeveEfetivarEdicaoDoUsuario(string nome, string senha, string senhaNova)
+        {
+
+            var idUsuario = Guid.NewGuid();
+            var request = new EditaUsuarioRequest
+            {
+                Nome = nome,
+                SenhaAtual = senha,
+                SenhaNova = senhaNova
+            };
+
+            var usuario = new Usuario("Nome Antigo", "teste@email.com", "hashAtual");
+
+            _repositoryMock.Setup(x => x.ObterPorIdAsync(idUsuario)).ReturnsAsync(usuario);
+
+            _senhaServiceMock.Setup(x => x.ValidaSenha(senha, usuario.Senha)).Returns(false);
+
+            var result = await _usuarioService.EditaUsuario(request, idUsuario);
+
+            Assert.False(result.Success);
+            Assert.Equal("Erro: Email ou senha inválidos!", result.Error);
+            Assert.Equal("Nome Antigo", usuario.Nome);
+            Assert.Equal("hashAtual", usuario.Senha);
+            _senhaServiceMock.Verify(x => x.HashSenha(It.IsAny<string>()), Times.Never);
+            _repositoryMock.Verify(x => x.EditaUsuarioAsync(It.IsAny<Usuario>()), Times.Never);
+        }
+
+        [Fact(DisplayName = "Deve editar somente o nome do usuário")]
+        public async Task DeveEditarSomenteNomeDoUsuario()
+        {
+
+            var idUsuario = Guid.NewGuid();
+            var request = new EditaUsuarioRequest
+            {
+                Nome = "Nome Novo",
+                SenhaAtual = "Senha@123",
+                SenhaNova = null
+            };
+
+            var usuario = new Usuario("Nome Antigo", "teste@email.com", "hashAtual");
+
+            _repositoryMock.Setup(x => x.ObterPorIdAsync(idUsuario)).ReturnsAsync(usuario);
+
+            _senhaServiceMock.Setup(x => x.ValidaSenha(request.SenhaAtual, usuario.Senha)).Returns(true);
+
+            var result = await _usuarioService.EditaUsuario(request, idUsuario);
+
+            Assert.True(result.Success);
+            Assert.Equal("Usuário atualizado com sucesso!", result.Data);
+            Assert.Equal("Nome Novo", usuario.Nome);
+            Assert.Equal("hashAtual", usuario.Senha);
+            _senhaServiceMock.Verify(x => x.HashSenha(It.IsAny<string>()), Times.Never);
+            _repositoryMock.Verify(x => x.EditaUsuarioAsync(usuario), Times.Once);
+        }
+
+        [Fact(DisplayName = "Deve editar somente a senha do usuário")]
+        public async Task DeveEditarSomenteSenhaDoUsuario()
+        {
+            var idUsuario = Guid.NewGuid();
+            var request = new EditaUsuarioRequest
+            {
+                Nome = null,
+                SenhaAtual = "Senha@123",
+                SenhaNova = "NovaSenha@123"
+            };
+
+            var usuario = new Usuario("Nome Antigo", "teste@email.com", "hashAtual");
+
+            _repositoryMock.Setup(x => x.ObterPorIdAsync(idUsuario)).ReturnsAsync(usuario);
+
+            _senhaServiceMock.Setup(x => x.ValidaSenha(request.SenhaAtual, usuario.Senha)).Returns(true);
+            _senhaServiceMock.Setup(x => x.HashSenha(request.SenhaNova)).Returns("hashNovo");
+
+            var result = await _usuarioService.EditaUsuario(request, idUsuario);
+
+            Assert.True(result.Success);
+            Assert.Equal("Usuário atualizado com sucesso!", result.Data);
+            Assert.Equal("Nome Antigo", usuario.Nome);
+            Assert.Equal("hashNovo", usuario.Senha);
+            _senhaServiceMock.Verify(x => x.HashSenha("NovaSenha@123"), Times.Once);
+            _repositoryMock.Verify(x => x.EditaUsuarioAsync(usuario), Times.Once);
+        }
+
+        [Theory(DisplayName = "Deve falhar ao consultar um usuário que não existe em banco ou com Id Inválido")]
+        [InlineData("00000000-0000-0000-0000-000000000000")]   
+        [InlineData("3f2504e0-4f89-11d3-9a0c-0305e82c3301")]
+        public async Task DeveFalharAoConsultarUsuarioInexistente(Guid idUsuario)
+        { 
+            var result = await _usuarioService.ConsultaUsuario(idUsuario);
+
+            Assert.False(result.Success);
+            Assert.Equal("Usuário não localizado!", result.Error);
+            _repositoryMock.Verify(x => x.ObterPorIdAsync(idUsuario), Times.Once);
+        }
+
+        [Fact(DisplayName = "Deve retornar usuário com sucesso quando existir")]
+        public async Task DeveRetornarUmUsuarioValido()
+        {
+            var idUsuario = Guid.NewGuid();
+
+            var usuario = new Usuario("Teste", "teste@gmail.com", "123@");
+
+            _repositoryMock.Setup(x => x.ObterPorIdAsync(idUsuario)).ReturnsAsync(usuario);
+
+            var result = await _usuarioService.ConsultaUsuario(idUsuario);
+
+            Assert.True(result.Success);
+            Assert.Null(result.Error);
+            Assert.Equal(usuario.Id, result.Data!.idUsuario);
+            Assert.Equal("Teste", result.Data.Nome);
+            Assert.Equal("teste@gmail.com", result.Data.Email);
+            _repositoryMock.Verify(x => x.ObterPorIdAsync(idUsuario), Times.Once);
+
         }
     }
 }
