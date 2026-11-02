@@ -363,5 +363,46 @@ namespace ApiFinancas.Tests.Application.Services.Usuarios
             _repositoryMock.Verify(x => x.ObterPorIdAsync(idUsuario), Times.Once);
 
         }
+
+        [Theory(DisplayName = "Não deve editar o usuário quando nome e senha nova não forem informados")]
+        [InlineData(null, null)]
+        [InlineData("", "")]
+        [InlineData("   ", "   ")]
+        public async Task NaoDeveEditarUsuarioQuandoNenhumCampoInformado(string? nome, string? senhaNova)
+        {
+            var request = new EditaUsuarioRequest
+            {
+                Nome = nome,
+                SenhaAtual = "Senha@123",
+                SenhaNova = senhaNova
+            };
+
+            var result = await _usuarioService.EditaUsuario(request, Guid.NewGuid());
+
+            Assert.False(result.Success);
+            Assert.Equal("Informe ao menos um campo para alterar (Nome ou SenhaNova).", result.Error);
+            _repositoryMock.Verify(x => x.ObterPorIdAsync(It.IsAny<Guid>()), Times.Never);
+            _repositoryMock.Verify(x => x.EditaUsuarioAsync(It.IsAny<Usuario>()), Times.Never);
+        }
+
+        [Fact(DisplayName = "Não deve editar o usuário quando ele não for localizado")]
+        public async Task NaoDeveEditarUsuarioNaoLocalizado()
+        {
+            var idUsuario = Guid.NewGuid();
+            var request = new EditaUsuarioRequest
+            {
+                Nome = "Nome Novo",
+                SenhaAtual = "Senha@123"
+            };
+
+            _repositoryMock.Setup(x => x.ObterPorIdAsync(idUsuario)).ReturnsAsync((Usuario?)null);
+
+            var result = await _usuarioService.EditaUsuario(request, idUsuario);
+
+            Assert.False(result.Success);
+            Assert.Equal("Usuário não localizado!", result.Error);
+            _senhaServiceMock.Verify(x => x.ValidaSenha(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+            _repositoryMock.Verify(x => x.EditaUsuarioAsync(It.IsAny<Usuario>()), Times.Never);
+        }
     }
 }

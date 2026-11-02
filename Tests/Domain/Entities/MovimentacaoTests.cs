@@ -52,6 +52,65 @@ namespace ApiFinancas.Tests.Domain.Entities
             Assert.StartsWith("O tipo da movimentação é inválido.", excecao.Message);
         }
 
+        [Fact(DisplayName = "Não deve instanciar movimentação sem usuário")]
+        public void NaoDeveInstanciarMovimentacaoSemUsuario()
+        {
+            var excecao = Assert.Throws<ArgumentException>(() =>
+                new Movimentacao(200, null, Guid.Empty, null, ETipoMovimentacao.Entrada, ""));
 
+            Assert.Equal("usuarioId", excecao.ParamName);
+            Assert.StartsWith("O id do usuário não pode ser vazio", excecao.Message);
+        }
+
+        [Fact(DisplayName = "Deve gerar ids diferentes para cada movimentação")]
+        public void DeveGerarIdsDiferentesParaCadaMovimentacao()
+        {
+            var primeira = new Movimentacao(200, null, Guid.NewGuid(), null, ETipoMovimentacao.Entrada, null);
+            var segunda = new Movimentacao(200, null, Guid.NewGuid(), null, ETipoMovimentacao.Entrada, null);
+
+            Assert.NotEqual(primeira.Id, segunda.Id);
+        }
+
+        [Fact(DisplayName = "Deve manter a data informada")]
+        public void DeveManterDataInformada()
+        {
+            var data = new DateTime(2026, 10, 27, 14, 30, 0, DateTimeKind.Utc);
+
+            var movimentacao = new Movimentacao(200, data, Guid.NewGuid(), null, ETipoMovimentacao.Entrada, null);
+
+            Assert.Equal(data, movimentacao.Data);
+        }
+
+        [Fact(DisplayName = "Deve usar a data atual em UTC quando data não informada")]
+        public void DeveUsarDataAtualQuandoDataNaoInformada()
+        {
+            var antes = DateTime.UtcNow;
+
+            var movimentacao = new Movimentacao(200, null, Guid.NewGuid(), null, ETipoMovimentacao.Entrada, null);
+
+            var depois = DateTime.UtcNow;
+
+            Assert.InRange(movimentacao.Data, antes, depois);
+            Assert.Equal(DateTimeKind.Utc, movimentacao.Data.Kind);
+        }
+
+        [Theory(DisplayName = "Deve remover os espaços da descrição")]
+        [InlineData("  Mercado  ", "Mercado")]
+        [InlineData("Mercado ", "Mercado")]
+        [InlineData("   ", "")]
+        public void DeveRemoverEspacosDaDescricao(string descricao, string descricaoEsperada)
+        {
+            var movimentacao = new Movimentacao(200, null, Guid.NewGuid(), null, ETipoMovimentacao.Entrada, descricao);
+
+            Assert.Equal(descricaoEsperada, movimentacao.Descricao);
+        }
+
+        [Fact(DisplayName = "Deve aceitar descrição nula")]
+        public void DeveAceitarDescricaoNula()
+        {
+            var movimentacao = new Movimentacao(200, null, Guid.NewGuid(), null, ETipoMovimentacao.Entrada, null);
+
+            Assert.Null(movimentacao.Descricao);
+        }
     }
 }
