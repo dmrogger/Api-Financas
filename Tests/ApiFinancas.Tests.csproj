@@ -34,4 +34,8 @@
 	<ProjectReference Include="..\ApiFinancas\ApiFinancas.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Domain\Entities\" />
+  </ItemGroup>
+
 </Project>
