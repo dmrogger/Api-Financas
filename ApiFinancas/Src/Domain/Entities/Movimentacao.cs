@@ -34,21 +34,5 @@ namespace ApiFinancas.Src.Domain.Entities
             Tipo = tipo;
             Descricao = descricao?.Trim();
         }
-
-        public void AtualizarValor(decimal novoValor)
-        {
-            if (novoValor <= 0)
-                throw new ArgumentException("O valor da movimentação deve ser maior que zero.", nameof(novoValor));
-
-            Valor = novoValor;
-        }
-
-        public void AtualizarData(DateTime novaData)
-        {
-            if (novaData == default)
-                throw new ArgumentException("A data da movimentação deve ser informada.", nameof(novaData));
-
-            Data = novaData;
-        }
     }
 }
