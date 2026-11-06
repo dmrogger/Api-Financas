@@ -1,6 +1,49 @@
-@ApiFinancas_HostAddress = http://localhost:5159
+# Requisições de exemplo (Visual Studio / extensão REST Client do VS Code)
+# 1) Crie o usuário  2) Faça login  3) Cole o token em @token
+@host = http://localhost:5159
+@token = cole-o-token-aqui
 
-GET {{ApiFinancas_HostAddress}}/apifinancas/
-Accept: application/json
+### Criar usuário
+POST {{host}}/api/v1/usuarios
+Content-Type: application/json
 
-###
+{
+  "nome": "Usuário Teste",
+  "email": "teste@email.com",
+  "senha": "Senha@123"
+}
+
+### Login
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "teste@email.com",
+  "senha": "Senha@123"
+}
+
+### Dados do usuário autenticado
+GET {{host}}/api/v1/usuarios/me
+Authorization: Bearer {{token}}
+
+### Cadastrar movimentação (Tipo: 1 = Entrada, 2 = Saída)
+POST {{host}}/api/v1/movimentacoes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "valor": 150.75,
+  "descricao": "Mercado",
+  "tipo": 2
+}
+
+### Listar movimentações por período
+GET {{host}}/api/v1/movimentacoes?dataInicial=2026-11-01&dataFinal=2026-11-30
+Authorization: Bearer {{token}}
+
+### Excluir movimentação
+DELETE {{host}}/api/v1/movimentacoes/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Health check
+GET {{host}}/health

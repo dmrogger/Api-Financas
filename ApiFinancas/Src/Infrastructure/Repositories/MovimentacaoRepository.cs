@@ -29,15 +29,6 @@ namespace ApiFinancas.Src.Infrastructure.Repositories
             return await _context.Movimentacao.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<List<Movimentacao>> ObterPorUsuarioAsync(Guid usuarioId)
-        {
-            return await _context.Movimentacao
-                .AsNoTracking()
-                .Where(x => x.UsuarioId == usuarioId)
-                .OrderByDescending(x => x.Data)
-                .ToListAsync();
-        }
-
         public async Task<List<Movimentacao>> ObterPorUsuarioComFiltrosAsync(
             Guid usuarioId,
             DateTime? dataInicial = null,
@@ -56,24 +47,10 @@ namespace ApiFinancas.Src.Infrastructure.Repositories
             return await query.OrderByDescending(m => m.Data).ToListAsync();
         }
 
-        public async Task<Movimentacao> AtualizarAsync(Movimentacao movimentacao)
+        public async Task DeletarAsync(Movimentacao movimentacao)
         {
-            _context.Movimentacao.Update(movimentacao);
-            await _context.SaveChangesAsync();
-
-            return movimentacao;
-        }
-
-        public async Task<bool> DeletarAsync(Guid id)
-        {
-            var movimentacao = await _context.Movimentacao.FirstOrDefaultAsync(m => m.Id == id);
-            if (movimentacao == null)
-                return false;
-
             _context.Movimentacao.Remove(movimentacao);
             await _context.SaveChangesAsync();
-
-            return true;
         }
     }
 }

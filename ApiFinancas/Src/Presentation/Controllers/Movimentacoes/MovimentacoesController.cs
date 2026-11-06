@@ -66,5 +66,26 @@ namespace ApiFinancas.Src.Presentation.Controllers.Movimentacoes
 
             return BadRequest(result);
         }
+
+        /// <summary>
+        /// Exclui uma movimentação do usuário autenticado
+        /// </summary>
+        /// <param name="id">ID da movimentação</param>
+        [HttpDelete("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeletaMovimentacao(Guid id)
+        {
+            if (!User.TryObterIdUsuario(out var idUsuario))
+                return Unauthorized("Token inválido ou incompleto!");
+
+            var result = await _movimentacaoService.DeletaMovimentacao(id, idUsuario);
+
+            if (result.Success)
+                return NoContent();
+
+            return NotFound(result);
+        }
     }
 }

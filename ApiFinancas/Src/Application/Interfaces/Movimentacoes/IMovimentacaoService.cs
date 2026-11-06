@@ -11,6 +11,9 @@ namespace ApiFinancas.Src.Application.Interfaces.Movimentacoes
     {
         Task<Result<CadastrarMovimentacoesResponse>> CadastraMovimentacao(CadastraMovimentacoesRequest movimentacaoRequest, Guid idUsuario);
         Task<Result<List<ObterMovimentacoesResponse>>> ObterMovimentacoes(ObterMovimentacoesRequest obterMovimentacoesRequest, Guid idUsuario);
-        Task<Result<CadastrarMovimentacoesResponse>> DeletaMovimentacao(DeletarMovimentacoesRequest deletarMovimentacaoRequest);
+        /// <summary>
+        /// Exclui uma movimentação, desde que pertença ao usuário informado
+        /// </summary>
+        Task<Result<string>> DeletaMovimentacao(Guid idMovimentacao, Guid idUsuario);
     }
 }

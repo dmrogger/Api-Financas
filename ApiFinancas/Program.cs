@@ -122,6 +122,14 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+// Aplica as migrations pendentes ao subir (ligado no docker-compose via Database__AplicarMigracoes=true)
+if (app.Configuration.GetValue<bool>("Database:AplicarMigracoes"))
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await db.Database.MigrateAsync();
+}
+
 app.UseExceptionHandler();
 
 // Configure the HTTP request pipeline

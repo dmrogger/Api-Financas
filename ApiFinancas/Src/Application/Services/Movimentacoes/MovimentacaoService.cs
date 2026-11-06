@@ -47,9 +47,18 @@ namespace ApiFinancas.Src.Application.Services.Movimentacoes
             return Result<CadastrarMovimentacoesResponse>.Ok(new CadastrarMovimentacoesResponse(movimentacaoCadastrada));
         }
 
-        public Task<Result<CadastrarMovimentacoesResponse>> DeletaMovimentacao(DeletarMovimentacoesRequest deletarMovimentacaoRequest)
+        public async Task<Result<string>> DeletaMovimentacao(Guid idMovimentacao, Guid idUsuario)
         {
-            throw new NotImplementedException();
+            var movimentacao = await _movimentacaoRepository.ObterPorIdAsync(idMovimentacao);
+
+            // Movimentação de outro usuário recebe a mesma resposta de "não encontrada",
+            // para não revelar que o ID existe
+            if (movimentacao == null || movimentacao.UsuarioId != idUsuario)
+                return Result<string>.Fail("Movimentação não encontrada.");
+
+            await _movimentacaoRepository.DeletarAsync(movimentacao);
+
+            return Result<string>.Ok("Movimentação excluída com sucesso!");
         }
 
         public async Task<Result<List<ObterMovimentacoesResponse>>> ObterMovimentacoes(ObterMovimentacoesRequest obterMovimentacoesRequest, Guid idUsuario)
