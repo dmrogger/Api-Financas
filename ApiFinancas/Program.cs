@@ -1,11 +1,15 @@
 using ApiFinancas.Src.Infrastructure.Persistence;
 using ApiFinancas.Src.Infrastructure.Repositories;
 using ApiFinancas.Src.Application.Interfaces.Autenticacao;
+using ApiFinancas.Src.Application.Interfaces.Categorias;
 using ApiFinancas.Src.Application.Interfaces.Movimentacoes;
+using ApiFinancas.Src.Application.Interfaces.Resumos;
 using ApiFinancas.Src.Application.Interfaces.Segurança;
 using ApiFinancas.Src.Application.Interfaces.Usuario;
 using ApiFinancas.Src.Application.Services.Autenticacao;
+using ApiFinancas.Src.Application.Services.Categorias;
 using ApiFinancas.Src.Application.Services.Movimentacoes;
+using ApiFinancas.Src.Application.Services.Resumos;
 using ApiFinancas.Src.Application.Services.Usuarios;
 using ApiFinancas.Src.Domain.Interfaces;
 using ApiFinancas.Src.Infrastructure.Security;
@@ -28,6 +32,7 @@ builder.Services.AddEndpointsApiExplorer();
 // Repositories
 builder.Services.AddScoped<IMovimentacaoRepository, MovimentacaoRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 
 // Services
 builder.Services.AddScoped<IMovimentacaoService, MovimentacaoService>();
@@ -35,6 +40,13 @@ builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<ISenhaService, SenhaService>();
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
 builder.Services.AddScoped<IAutenticacaoService, AutenticacaoService>();
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+builder.Services.AddScoped<IResumoService, ResumoService>();
+
+// Fuso usado para definir início e fim do mês nos resumos (falha na inicialização se o ID for inválido)
+var fusoHorario = TimeZoneInfo.FindSystemTimeZoneById(
+    builder.Configuration["Aplicacao:FusoHorario"] ?? "America/Sao_Paulo");
+builder.Services.AddSingleton(fusoHorario);
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(
     builder.Configuration.GetConnectionString("DefaultConnection")));

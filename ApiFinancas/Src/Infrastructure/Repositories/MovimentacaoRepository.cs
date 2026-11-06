@@ -1,5 +1,7 @@
 using ApiFinancas.Src.Infrastructure.Persistence;
+using ApiFinancas.Src.Domain.Consultas;
 using ApiFinancas.Src.Domain.Entities;
+using ApiFinancas.Src.Domain.Enums;
 using ApiFinancas.Src.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -51,6 +53,23 @@ namespace ApiFinancas.Src.Infrastructure.Repositories
         {
             _context.Movimentacao.Remove(movimentacao);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<TotalPorCategoria>> ObterTotaisPorCategoriaAsync(
+            Guid usuarioId,
+            DateTime inicioUtc,
+            DateTime fimUtcExclusivo)
+        {
+            // Vira um único SELECT ... GROUP BY category_id com SUM(CASE ...) no PostgreSQL
+            return await _context.Movimentacao
+                .AsNoTracking()
+                .Where(m => m.UsuarioId == usuarioId && m.Data >= inicioUtc && m.Data < fimUtcExclusivo)
+                .GroupBy(m => m.CategoriaId)
+                .Select(g => new TotalPorCategoria(
+                    g.Key,
+                    g.Sum(m => m.Tipo == ETipoMovimentacao.Entrada ? m.Valor : 0m),
+                    g.Sum(m => m.Tipo == ETipoMovimentacao.Saida ? m.Valor : 0m)))
+                .ToListAsync();
         }
     }
 }

@@ -11,10 +11,10 @@ namespace ApiFinancas.Src.Domain.Entities
         public DateTime Data { get; private set; }
         public ETipoMovimentacao Tipo { get; private set; }
         public string? Descricao { get; private set; }
-        public int? CategoriaId { get; private set; }
+        public Guid? CategoriaId { get; private set; }
         public Guid UsuarioId { get; private set; }
 
-        public Movimentacao(decimal valor, DateTime? data, Guid usuarioId, int? categoriaId,
+        public Movimentacao(decimal valor, DateTime? data, Guid usuarioId, Guid? categoriaId,
                             ETipoMovimentacao tipo, string? descricao)
         {
             if (usuarioId == Guid.Empty)

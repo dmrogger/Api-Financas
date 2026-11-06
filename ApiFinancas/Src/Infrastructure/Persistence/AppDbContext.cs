@@ -10,6 +10,7 @@ namespace ApiFinancas.Src.Infrastructure.Persistence
 
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Movimentacao> Movimentacao { get; set; }
+        public DbSet<Categoria> Categorias { get; set; }
 
         // Conta e TipoConta ainda não têm mapeamento nem endpoints;
         // entram no DbContext (e numa migration) quando a funcionalidade for implementada.

@@ -26,7 +26,33 @@ Content-Type: application/json
 GET {{host}}/api/v1/usuarios/me
 Authorization: Bearer {{token}}
 
-### Cadastrar movimentação (Tipo: 1 = Entrada, 2 = Saída)
+### Listar categorias (padrão + as suas)
+GET {{host}}/api/v1/categorias
+Authorization: Bearer {{token}}
+
+### Criar categoria personalizada
+POST {{host}}/api/v1/categorias
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "nome": "Pets"
+}
+
+### Renomear categoria personalizada
+PUT {{host}}/api/v1/categorias/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "nome": "Animais"
+}
+
+### Excluir categoria personalizada
+DELETE {{host}}/api/v1/categorias/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Cadastrar movimentação (Tipo: 1 = Entrada, 2 = Saída; categoria opcional, aqui "Alimentação")
 POST {{host}}/api/v1/movimentacoes
 Authorization: Bearer {{token}}
 Content-Type: application/json
@@ -34,7 +60,8 @@ Content-Type: application/json
 {
   "valor": 150.75,
   "descricao": "Mercado",
-  "tipo": 2
+  "tipo": 2,
+  "categoriaId": "8b1f6c1e-3f0a-4c2d-9a51-0c6f2a1d7e01"
 }
 
 ### Listar movimentações por período
@@ -43,6 +70,10 @@ Authorization: Bearer {{token}}
 
 ### Excluir movimentação
 DELETE {{host}}/api/v1/movimentacoes/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Resumo mensal por categoria
+GET {{host}}/api/v1/resumos/mensal?ano=2026&mes=11
 Authorization: Bearer {{token}}
 
 ### Health check

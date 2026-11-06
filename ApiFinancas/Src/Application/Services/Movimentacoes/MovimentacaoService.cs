@@ -12,11 +12,15 @@ namespace ApiFinancas.Src.Application.Services.Movimentacoes
     /// </summary>
     public class MovimentacaoService : IMovimentacaoService
     {
-        private readonly IMovimentacaoRepository _movimentacaoRepository;
+        public const string MensagemCategoriaInvalida = "Categoria inválida.";
 
-        public MovimentacaoService(IMovimentacaoRepository movimentacaoRepository)
+        private readonly IMovimentacaoRepository _movimentacaoRepository;
+        private readonly ICategoriaRepository _categoriaRepository;
+
+        public MovimentacaoService(IMovimentacaoRepository movimentacaoRepository, ICategoriaRepository categoriaRepository)
         {
             _movimentacaoRepository = movimentacaoRepository;
+            _categoriaRepository = categoriaRepository;
         }
 
         public async Task<Result<CadastrarMovimentacoesResponse>> CadastraMovimentacao(CadastraMovimentacoesRequest movimentacaoRequest, Guid idUsuario)
@@ -26,6 +30,15 @@ namespace ApiFinancas.Src.Application.Services.Movimentacoes
 
             if (!Enum.IsDefined(movimentacaoRequest.Tipo))
                 return Result<CadastrarMovimentacoesResponse>.Fail("Tipo de movimentação inválido. Use 1 (Entrada) ou 2 (Saída).");
+
+            if (movimentacaoRequest.CategoriaId.HasValue)
+            {
+                var categoria = await _categoriaRepository.ObterPorIdAsync(movimentacaoRequest.CategoriaId.Value);
+
+                // Mesma mensagem para categoria inexistente ou de outro usuário, para não revelar que o ID existe
+                if (categoria == null || !categoria.VisivelPara(idUsuario))
+                    return Result<CadastrarMovimentacoesResponse>.Fail(MensagemCategoriaInvalida);
+            }
 
             var data = movimentacaoRequest.DataOperacao.HasValue
                 ? ParaUtc(movimentacaoRequest.DataOperacao.Value)

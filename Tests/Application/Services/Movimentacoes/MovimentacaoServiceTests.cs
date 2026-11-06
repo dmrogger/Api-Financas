@@ -10,12 +10,14 @@ namespace ApiFinancas.Tests.Application.Services.Movimentacoes
     public class MovimentacaoServiceTests
     {
         private readonly Mock<IMovimentacaoRepository> _repositoryMock;
+        private readonly Mock<ICategoriaRepository> _categoriaRepositoryMock;
         private readonly MovimentacaoService _movimentacaoService;
 
         public MovimentacaoServiceTests()
         {
             _repositoryMock = new Mock<IMovimentacaoRepository>();
-            _movimentacaoService = new MovimentacaoService(_repositoryMock.Object);
+            _categoriaRepositoryMock = new Mock<ICategoriaRepository>();
+            _movimentacaoService = new MovimentacaoService(_repositoryMock.Object, _categoriaRepositoryMock.Object);
         }
 
         [Theory(DisplayName = "Não deve criar movimentação quando valor menor ou igual a zero")]
@@ -147,12 +149,14 @@ namespace ApiFinancas.Tests.Application.Services.Movimentacoes
             // Arrange
             var idUsuario = Guid.NewGuid();
             var idCriacao = Guid.NewGuid();
+            var categoria = new Categoria("Alimentação", null);
 
             var request = new CadastraMovimentacoesRequest(50,
                                                            "Mercado",
-                                                           5,
+                                                           categoria.Id,
                                                            ETipoMovimentacao.Saida);
 
+            _categoriaRepositoryMock.Setup(x => x.ObterPorIdAsync(categoria.Id)).ReturnsAsync(categoria);
             _repositoryMock.Setup(x => x.CriarAsync(It.IsAny<Movimentacao>())).ReturnsAsync(idCriacao);
 
 
@@ -164,7 +168,7 @@ namespace ApiFinancas.Tests.Application.Services.Movimentacoes
 
             _repositoryMock.Verify(x => x.CriarAsync(It.Is<Movimentacao>(m =>
                 m.Tipo == ETipoMovimentacao.Saida &&
-                m.CategoriaId == 5 &&
+                m.CategoriaId == categoria.Id &&
                 m.UsuarioId == idUsuario)), Times.Once);
         }
 
@@ -414,10 +418,11 @@ namespace ApiFinancas.Tests.Application.Services.Movimentacoes
 
             var idUsuario = Guid.NewGuid();
             var data = new DateTime(2026, 10, 27, 14, 30, 0, DateTimeKind.Utc);
+            var idCategoria = Guid.NewGuid();
 
             var movimentacoes = new List<Movimentacao>
             {
-                new Movimentacao(100, data, idUsuario, 1, ETipoMovimentacao.Entrada, "Salário"),
+                new Movimentacao(100, data, idUsuario, idCategoria, ETipoMovimentacao.Entrada, "Salário"),
                 new Movimentacao(35.5m, data, idUsuario, null, ETipoMovimentacao.Saida, "Lanche")
             };
 
@@ -437,7 +442,7 @@ namespace ApiFinancas.Tests.Application.Services.Movimentacoes
             Assert.Equal(data, primeira.DataTransacao);
             Assert.Equal(ETipoMovimentacao.Entrada, primeira.Tipo);
             Assert.Equal("Salário", primeira.Descricao);
-            Assert.Equal(1, primeira.CategoriaId);
+            Assert.Equal(idCategoria, primeira.CategoriaId);
 
             var segunda = result.Data[1];
             Assert.Equal(35.5m, segunda.Valor);
@@ -502,6 +507,64 @@ namespace ApiFinancas.Tests.Application.Services.Movimentacoes
             Assert.False(result.Success);
             Assert.Equal("Movimentação não encontrada.", result.Error);
             _repositoryMock.Verify(x => x.DeletarAsync(It.IsAny<Movimentacao>()), Times.Never);
+        }
+
+        [Fact(DisplayName = "Deve aceitar categoria personalizada do próprio usuário")]
+        public async Task DeveCadastrarComCategoriaDoProprioUsuario()
+        {
+            var idUsuario = Guid.NewGuid();
+            var categoria = new Categoria("Pets", idUsuario);
+            var request = new CadastraMovimentacoesRequest(80, "Ração", categoria.Id, ETipoMovimentacao.Saida);
+
+            _categoriaRepositoryMock.Setup(x => x.ObterPorIdAsync(categoria.Id)).ReturnsAsync(categoria);
+            _repositoryMock.Setup(x => x.CriarAsync(It.IsAny<Movimentacao>())).ReturnsAsync(Guid.NewGuid());
+
+            var result = await _movimentacaoService.CadastraMovimentacao(request, idUsuario);
+
+            Assert.True(result.Success);
+            _repositoryMock.Verify(x => x.CriarAsync(It.Is<Movimentacao>(m => m.CategoriaId == categoria.Id)), Times.Once);
+        }
+
+        [Fact(DisplayName = "Não deve cadastrar movimentação com categoria inexistente")]
+        public async Task NaoDeveCadastrarComCategoriaInexistente()
+        {
+            var request = new CadastraMovimentacoesRequest(80, "Teste", Guid.NewGuid(), ETipoMovimentacao.Saida);
+
+            _categoriaRepositoryMock.Setup(x => x.ObterPorIdAsync(It.IsAny<Guid>())).ReturnsAsync((Categoria?)null);
+
+            var result = await _movimentacaoService.CadastraMovimentacao(request, Guid.NewGuid());
+
+            Assert.False(result.Success);
+            Assert.Equal(MovimentacaoService.MensagemCategoriaInvalida, result.Error);
+            _repositoryMock.Verify(x => x.CriarAsync(It.IsAny<Movimentacao>()), Times.Never);
+        }
+
+        [Fact(DisplayName = "Não deve cadastrar movimentação com categoria de outro usuário")]
+        public async Task NaoDeveCadastrarComCategoriaDeOutroUsuario()
+        {
+            var categoriaDeOutro = new Categoria("Pets", Guid.NewGuid());
+            var request = new CadastraMovimentacoesRequest(80, "Teste", categoriaDeOutro.Id, ETipoMovimentacao.Saida);
+
+            _categoriaRepositoryMock.Setup(x => x.ObterPorIdAsync(categoriaDeOutro.Id)).ReturnsAsync(categoriaDeOutro);
+
+            var result = await _movimentacaoService.CadastraMovimentacao(request, Guid.NewGuid());
+
+            // Mesma mensagem da categoria inexistente, para não revelar que o ID existe
+            Assert.False(result.Success);
+            Assert.Equal(MovimentacaoService.MensagemCategoriaInvalida, result.Error);
+            _repositoryMock.Verify(x => x.CriarAsync(It.IsAny<Movimentacao>()), Times.Never);
+        }
+
+        [Fact(DisplayName = "Não deve consultar categoria quando não informada")]
+        public async Task NaoDeveConsultarCategoriaQuandoNaoInformada()
+        {
+            var request = new CadastraMovimentacoesRequest(80, "Teste", null, ETipoMovimentacao.Entrada);
+            _repositoryMock.Setup(x => x.CriarAsync(It.IsAny<Movimentacao>())).ReturnsAsync(Guid.NewGuid());
+
+            var result = await _movimentacaoService.CadastraMovimentacao(request, Guid.NewGuid());
+
+            Assert.True(result.Success);
+            _categoriaRepositoryMock.Verify(x => x.ObterPorIdAsync(It.IsAny<Guid>()), Times.Never);
         }
     }
 }

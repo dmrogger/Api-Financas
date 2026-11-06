@@ -42,6 +42,12 @@ namespace ApiFinancas.Src.Infrastructure.Persistence
                 .HasForeignKey(u => u.UsuarioId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // Excluir a categoria não apaga as movimentações: elas ficam sem categoria
+            builder.HasOne<Categoria>()
+                .WithMany()
+                .HasForeignKey(u => u.CategoriaId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             builder.HasIndex(u => new { u.UsuarioId, u.Data });
         }
     }
