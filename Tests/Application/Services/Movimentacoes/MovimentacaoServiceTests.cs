@@ -460,5 +460,48 @@ namespace ApiFinancas.Tests.Application.Services.Movimentacoes
             Assert.NotNull(result.Data);
             Assert.Empty(result.Data!);
         }
+
+        [Fact(DisplayName = "Deve excluir movimentação do próprio usuário")]
+        public async Task DeveExcluirMovimentacaoDoProprioUsuario()
+        {
+            var idUsuario = Guid.NewGuid();
+            var movimentacao = new Movimentacao(100, null, idUsuario, null, ETipoMovimentacao.Entrada, "Teste");
+
+            _repositoryMock.Setup(x => x.ObterPorIdAsync(movimentacao.Id)).ReturnsAsync(movimentacao);
+
+            var result = await _movimentacaoService.DeletaMovimentacao(movimentacao.Id, idUsuario);
+
+            Assert.True(result.Success);
+            _repositoryMock.Verify(x => x.DeletarAsync(movimentacao), Times.Once);
+        }
+
+        [Fact(DisplayName = "Não deve excluir movimentação inexistente")]
+        public async Task NaoDeveExcluirMovimentacaoInexistente()
+        {
+            _repositoryMock.Setup(x => x.ObterPorIdAsync(It.IsAny<Guid>())).ReturnsAsync((Movimentacao?)null);
+
+            var result = await _movimentacaoService.DeletaMovimentacao(Guid.NewGuid(), Guid.NewGuid());
+
+            Assert.False(result.Success);
+            Assert.Equal("Movimentação não encontrada.", result.Error);
+            _repositoryMock.Verify(x => x.DeletarAsync(It.IsAny<Movimentacao>()), Times.Never);
+        }
+
+        [Fact(DisplayName = "Não deve excluir movimentação de outro usuário")]
+        public async Task NaoDeveExcluirMovimentacaoDeOutroUsuario()
+        {
+            var donoDaMovimentacao = Guid.NewGuid();
+            var outroUsuario = Guid.NewGuid();
+            var movimentacao = new Movimentacao(100, null, donoDaMovimentacao, null, ETipoMovimentacao.Saida, "Teste");
+
+            _repositoryMock.Setup(x => x.ObterPorIdAsync(movimentacao.Id)).ReturnsAsync(movimentacao);
+
+            var result = await _movimentacaoService.DeletaMovimentacao(movimentacao.Id, outroUsuario);
+
+            // Mesma resposta de "não encontrada", para não revelar que o ID existe
+            Assert.False(result.Success);
+            Assert.Equal("Movimentação não encontrada.", result.Error);
+            _repositoryMock.Verify(x => x.DeletarAsync(It.IsAny<Movimentacao>()), Times.Never);
+        }
     }
 }

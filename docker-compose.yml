@@ -1,0 +1,35 @@
+# Ambiente local: API + PostgreSQL
+# Uso: docker compose up --build  →  Swagger em http://localhost:8080/swagger
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: apifinancas
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d apifinancas"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Host=db;Database=apifinancas;Username=postgres;Password=${POSTGRES_PASSWORD:-postgres}"
+      # Chave só para uso local. Para outro valor, defina JWT_KEY num arquivo .env (ignorado pelo Git)
+      Jwt__Key: ${JWT_KEY:-chave-local-de-desenvolvimento-nao-usar-em-producao}
+      Database__AplicarMigracoes: "true"
+    ports:
+      - "8080:8080"
+
+volumes:
+  pgdata:

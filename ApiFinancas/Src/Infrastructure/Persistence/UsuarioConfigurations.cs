@@ -15,13 +15,22 @@ namespace ApiFinancas.Src.Infrastructure.Persistence
                 .HasColumnName("id");
 
             builder.Property(u => u.Nome)
-                .HasColumnName("name");
+                .HasColumnName("name")
+                .HasMaxLength(150)
+                .IsRequired();
 
             builder.Property(u => u.Email)
-                .HasColumnName("email");
+                .HasColumnName("email")
+                .HasMaxLength(100)
+                .IsRequired();
 
             builder.Property(u => u.Senha)
-                .HasColumnName("password_hash");
+                .HasColumnName("password_hash")
+                .IsRequired();
+
+            // Garante no banco a regra de "e-mail já cadastrado", inclusive em requisições simultâneas
+            builder.HasIndex(u => u.Email)
+                .IsUnique();
         }
     }
 }

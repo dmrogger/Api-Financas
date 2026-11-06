@@ -37,6 +37,11 @@ namespace ApiFinancas.Src.Infrastructure.Persistence
                 .HasColumnName("description")
                 .HasMaxLength(255);
 
+            builder.HasOne<Usuario>()
+                .WithMany()
+                .HasForeignKey(u => u.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.HasIndex(u => new { u.UsuarioId, u.Data });
         }
     }

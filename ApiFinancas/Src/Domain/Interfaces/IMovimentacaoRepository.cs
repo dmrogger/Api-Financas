@@ -18,11 +18,6 @@ namespace ApiFinancas.Src.Domain.Interfaces
         Task<Movimentacao?> ObterPorIdAsync(Guid id);
 
         /// <summary>
-        /// Obtém todas as movimentações de um usuário
-        /// </summary>
-        Task<List<Movimentacao>> ObterPorUsuarioAsync(Guid usuarioId);
-
-        /// <summary>
         /// Obtém movimentações de um usuário com filtros opcionais
         /// </summary>
         Task<List<Movimentacao>> ObterPorUsuarioComFiltrosAsync(
@@ -31,13 +26,8 @@ namespace ApiFinancas.Src.Domain.Interfaces
             DateTime? dataFinal = null);
 
         /// <summary>
-        /// Atualiza uma movimentação existente
-        /// </summary>
-        Task<Movimentacao> AtualizarAsync(Movimentacao movimentacao);
-
-        /// <summary>
         /// Deleta uma movimentação
         /// </summary>
-        Task<bool> DeletarAsync(Guid id);
+        Task DeletarAsync(Movimentacao movimentacao);
     }
 }

@@ -29,7 +29,6 @@ namespace ApiFinancas.Src.Presentation.Controllers.Usuario
 
             if (result.Success)
                 return CreatedAtAction(nameof(ConsultarUsuario), null, result);
-
             return BadRequest(result);
         }
 

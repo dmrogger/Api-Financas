@@ -10,8 +10,9 @@ namespace ApiFinancas.Src.Infrastructure.Persistence
 
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Movimentacao> Movimentacao { get; set; }
-        public DbSet<Conta> Contas { get; set; }
-        public DbSet<TipoConta> TiposConta { get; set; }
+
+        // Conta e TipoConta ainda não têm mapeamento nem endpoints;
+        // entram no DbContext (e numa migration) quando a funcionalidade for implementada.
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

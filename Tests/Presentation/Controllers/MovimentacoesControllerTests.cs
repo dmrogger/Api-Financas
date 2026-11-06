@@ -122,5 +122,43 @@ namespace ApiFinancas.Tests.Presentation.Controllers
             Assert.Equal("Token inválido ou incompleto!", naoAutorizado.Value);
             _movimentacaoServiceMock.Verify(x => x.ObterMovimentacoes(It.IsAny<ObterMovimentacoesRequest>(), It.IsAny<Guid>()), Times.Never);
         }
+
+        [Fact(DisplayName = "Deve retornar 204 ao excluir movimentação")]
+        public async Task DeveRetornarNoContentAoExcluir()
+        {
+            var idMovimentacao = Guid.NewGuid();
+
+            _movimentacaoServiceMock.Setup(x => x.DeletaMovimentacao(idMovimentacao, _idUsuario))
+                .ReturnsAsync(Result<string>.Ok("Movimentação excluída com sucesso!"));
+
+            var resposta = await _controller.DeletaMovimentacao(idMovimentacao);
+
+            Assert.IsType<NoContentResult>(resposta);
+        }
+
+        [Fact(DisplayName = "Deve retornar 404 quando movimentação não for encontrada")]
+        public async Task DeveRetornarNotFoundAoExcluirMovimentacaoInexistente()
+        {
+            var idMovimentacao = Guid.NewGuid();
+            var resultado = Result<string>.Fail("Movimentação não encontrada.");
+
+            _movimentacaoServiceMock.Setup(x => x.DeletaMovimentacao(idMovimentacao, _idUsuario)).ReturnsAsync(resultado);
+
+            var resposta = await _controller.DeletaMovimentacao(idMovimentacao);
+
+            var naoEncontrado = Assert.IsType<NotFoundObjectResult>(resposta);
+            Assert.Same(resultado, naoEncontrado.Value);
+        }
+
+        [Fact(DisplayName = "Deve retornar 401 ao excluir com token inválido")]
+        public async Task DeveRetornarUnauthorizedAoExcluirComTokenInvalido()
+        {
+            DefinirUsuario(new Claim(ClaimTypes.NameIdentifier, "id-invalido"));
+
+            var resposta = await _controller.DeletaMovimentacao(Guid.NewGuid());
+
+            Assert.IsType<UnauthorizedObjectResult>(resposta);
+            _movimentacaoServiceMock.Verify(x => x.DeletaMovimentacao(It.IsAny<Guid>(), It.IsAny<Guid>()), Times.Never);
+        }
     }
 }
