@@ -20,6 +20,6 @@ namespace ApiFinancas.Src.Application.DTOs.Responses.Movimentacoes
         public DateTime DataTransacao { get; set; }
         public ETipoMovimentacao Tipo { get; set; }
         public string? Descricao { get; set; }
-        public int? CategoriaId { get; set; }
+        public Guid? CategoriaId { get; set; }
     }
 }

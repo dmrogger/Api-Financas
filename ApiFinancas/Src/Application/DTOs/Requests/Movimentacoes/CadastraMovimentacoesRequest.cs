@@ -8,7 +8,7 @@ namespace ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes
     /// </summary>
     public class CadastraMovimentacoesRequest
     {
-        public CadastraMovimentacoesRequest(decimal valor, string? descricao, int? categoriaId, ETipoMovimentacao tipo)
+        public CadastraMovimentacoesRequest(decimal valor, string? descricao, Guid? categoriaId, ETipoMovimentacao tipo)
         {
             Valor = valor;
             Descricao = descricao;
@@ -30,7 +30,10 @@ namespace ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes
         [MaxLength(255, ErrorMessage = "A descrição não pode exceder 255 caracteres")]
         public string? Descricao { get; set; }
 
-        public int? CategoriaId { get; set; }
+        /// <summary>
+        /// Categoria padrão ou do próprio usuário (veja GET /api/v1/categorias). Opcional
+        /// </summary>
+        public Guid? CategoriaId { get; set; }
 
         /// <summary>
         /// 1 = Entrada, 2 = Saída

@@ -1,3 +1,4 @@
+using ApiFinancas.Src.Domain.Consultas;
 using ApiFinancas.Src.Domain.Entities;   
 
 namespace ApiFinancas.Src.Domain.Interfaces
@@ -29,5 +30,11 @@ namespace ApiFinancas.Src.Domain.Interfaces
         /// Deleta uma movimentação
         /// </summary>
         Task DeletarAsync(Movimentacao movimentacao);
+
+        /// <summary>
+        /// Soma entradas e saídas do usuário no período [inicio, fim), agrupando por categoria.
+        /// A agregação é feita no banco
+        /// </summary>
+        Task<List<TotalPorCategoria>> ObterTotaisPorCategoriaAsync(Guid usuarioId, DateTime inicioUtc, DateTime fimUtcExclusivo);
     }
 }

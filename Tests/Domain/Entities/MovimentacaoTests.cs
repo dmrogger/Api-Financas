@@ -13,15 +13,16 @@ namespace ApiFinancas.Tests.Domain.Entities
         {
 
             var idUsuario = Guid.NewGuid();
+            var idCategoria = Guid.NewGuid();
 
 
-            var movimentacao = new Movimentacao(valor, null, idUsuario, 3, tipoMovimentacao, "Mercado");
+            var movimentacao = new Movimentacao(valor, null, idUsuario, idCategoria, tipoMovimentacao, "Mercado");
 
 
             Assert.NotEqual(Guid.Empty, movimentacao.Id);
             Assert.Equal(valor, movimentacao.Valor);
             Assert.Equal(idUsuario, movimentacao.UsuarioId);
-            Assert.Equal(3, movimentacao.CategoriaId);
+            Assert.Equal(idCategoria, movimentacao.CategoriaId);
             Assert.Equal(tipoMovimentacao, movimentacao.Tipo);
             Assert.Equal("Mercado", movimentacao.Descricao);
         }
