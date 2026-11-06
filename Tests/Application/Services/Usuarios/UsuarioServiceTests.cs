@@ -85,6 +85,7 @@ namespace ApiFinancas.Tests.Application.Services.Usuarios
 
             Assert.False(result.Success);
             Assert.Equal(result.Error, mensagemEsperada);
+            Assert.Equal(ETipoErro.Conflito, result.TipoErro);
             Assert.Null(result.Data);
         }
 
@@ -211,6 +212,7 @@ namespace ApiFinancas.Tests.Application.Services.Usuarios
             Assert.False(result.Success);
             Assert.NotNull(result.Error);
             Assert.Equal("Usuário não localizado, não foi possível deletar", result.Error);
+            Assert.Equal(ETipoErro.NaoEncontrado, result.TipoErro);
         }
 
 
@@ -341,6 +343,7 @@ namespace ApiFinancas.Tests.Application.Services.Usuarios
 
             Assert.False(result.Success);
             Assert.Equal("Usuário não localizado!", result.Error);
+            Assert.Equal(ETipoErro.NaoEncontrado, result.TipoErro);
             _repositoryMock.Verify(x => x.ObterPorIdAsync(idUsuario), Times.Once);
         }
 
@@ -401,6 +404,7 @@ namespace ApiFinancas.Tests.Application.Services.Usuarios
 
             Assert.False(result.Success);
             Assert.Equal("Usuário não localizado!", result.Error);
+            Assert.Equal(ETipoErro.NaoEncontrado, result.TipoErro);
             _senhaServiceMock.Verify(x => x.ValidaSenha(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
             _repositoryMock.Verify(x => x.EditaUsuarioAsync(It.IsAny<Usuario>()), Times.Never);
         }

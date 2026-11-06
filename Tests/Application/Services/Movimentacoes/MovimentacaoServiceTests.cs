@@ -1,4 +1,5 @@
-﻿using ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes;
+﻿using ApiFinancas.Src.Application.DTOs.Common;
+using ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes;
 using ApiFinancas.Src.Application.Services.Movimentacoes;
 using ApiFinancas.Src.Domain.Entities;
 using ApiFinancas.Src.Domain.Enums;
@@ -489,6 +490,7 @@ namespace ApiFinancas.Tests.Application.Services.Movimentacoes
 
             Assert.False(result.Success);
             Assert.Equal("Movimentação não encontrada.", result.Error);
+            Assert.Equal(ETipoErro.NaoEncontrado, result.TipoErro);
             _repositoryMock.Verify(x => x.DeletarAsync(It.IsAny<Movimentacao>()), Times.Never);
         }
 
@@ -506,6 +508,7 @@ namespace ApiFinancas.Tests.Application.Services.Movimentacoes
             // Mesma resposta de "não encontrada", para não revelar que o ID existe
             Assert.False(result.Success);
             Assert.Equal("Movimentação não encontrada.", result.Error);
+            Assert.Equal(ETipoErro.NaoEncontrado, result.TipoErro);
             _repositoryMock.Verify(x => x.DeletarAsync(It.IsAny<Movimentacao>()), Times.Never);
         }
 

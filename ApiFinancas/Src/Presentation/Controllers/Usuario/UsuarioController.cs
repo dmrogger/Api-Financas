@@ -23,13 +23,14 @@ namespace ApiFinancas.Src.Presentation.Controllers.Usuario
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> CriarUsuario([FromBody] CriaUsuarioRequest request)
         {
             var result = await _usuarioService.CriarUsuarioAsync(request);
 
             if (result.Success)
                 return CreatedAtAction(nameof(ConsultarUsuario), null, result);
-            return BadRequest(result);
+            return this.RespostaDeErro(result);
         }
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace ApiFinancas.Src.Presentation.Controllers.Usuario
             if (result.Success)
                 return Ok(result);
 
-            return NotFound(result);
+            return this.RespostaDeErro(result);
         }
 
         /// <summary>
@@ -61,6 +62,7 @@ namespace ApiFinancas.Src.Presentation.Controllers.Usuario
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> EditaUsuario([FromBody] EditaUsuarioRequest request)
         {
             if (!User.TryObterIdUsuario(out var idUsuario))
@@ -71,7 +73,7 @@ namespace ApiFinancas.Src.Presentation.Controllers.Usuario
             if (result.Success)
                 return Ok(result);
 
-            return BadRequest(result);
+            return this.RespostaDeErro(result);
         }
 
         /// <summary>
@@ -82,6 +84,7 @@ namespace ApiFinancas.Src.Presentation.Controllers.Usuario
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeletarUsuario([FromBody] ExcluiUsuarioRequest request)
         {
             if (!User.TryObterIdUsuario(out var idUsuario))
@@ -92,7 +95,7 @@ namespace ApiFinancas.Src.Presentation.Controllers.Usuario
             if (result.Success)
                 return Ok(result);
 
-            return BadRequest(result);
+            return this.RespostaDeErro(result);
         }
     }
 }

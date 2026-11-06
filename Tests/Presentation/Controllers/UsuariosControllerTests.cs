@@ -62,7 +62,7 @@ namespace ApiFinancas.Tests.Presentation.Controllers
         [Fact(DisplayName = "Deve retornar 400 quando criação falhar")]
         public async Task DeveRetornarBadRequestQuandoCriacaoFalhar()
         {
-            var resultado = Result<UsuarioResponse>.Fail("E-mail já cadastrado! Tente criar a conta usando outro E-mail");
+            var resultado = Result<UsuarioResponse>.Fail("Erro desconhecido ao criar usuário!");
 
             _usuarioServiceMock.Setup(x => x.CriarUsuarioAsync(_criacaoRequest)).ReturnsAsync(resultado);
 
@@ -70,6 +70,20 @@ namespace ApiFinancas.Tests.Presentation.Controllers
 
             var requisicaoInvalida = Assert.IsType<BadRequestObjectResult>(resposta);
             Assert.Same(resultado, requisicaoInvalida.Value);
+        }
+
+        [Fact(DisplayName = "Deve retornar 409 quando e-mail já estiver cadastrado")]
+        public async Task DeveRetornarConflictQuandoEmailJaCadastrado()
+        {
+            var resultado = Result<UsuarioResponse>.Fail(
+                "E-mail já cadastrado! Tente criar a conta usando outro E-mail", ETipoErro.Conflito);
+
+            _usuarioServiceMock.Setup(x => x.CriarUsuarioAsync(_criacaoRequest)).ReturnsAsync(resultado);
+
+            var resposta = await _controller.CriarUsuario(_criacaoRequest);
+
+            var conflito = Assert.IsType<ConflictObjectResult>(resposta);
+            Assert.Same(resultado, conflito.Value);
         }
 
         [Fact(DisplayName = "Deve retornar 200 ao consultar usuário")]
@@ -88,7 +102,7 @@ namespace ApiFinancas.Tests.Presentation.Controllers
         [Fact(DisplayName = "Deve retornar 404 quando usuário não for localizado")]
         public async Task DeveRetornarNotFoundQuandoUsuarioNaoLocalizado()
         {
-            var resultado = Result<UsuarioResponse>.Fail("Usuário não localizado!");
+            var resultado = Result<UsuarioResponse>.Fail("Usuário não localizado!", ETipoErro.NaoEncontrado);
 
             _usuarioServiceMock.Setup(x => x.ConsultaUsuario(_idUsuario)).ReturnsAsync(resultado);
 
@@ -136,6 +150,19 @@ namespace ApiFinancas.Tests.Presentation.Controllers
             Assert.Same(resultado, requisicaoInvalida.Value);
         }
 
+        [Fact(DisplayName = "Deve retornar 404 ao editar usuário não localizado")]
+        public async Task DeveRetornarNotFoundAoEditarUsuarioNaoLocalizado()
+        {
+            var resultado = Result<string>.Fail("Usuário não localizado!", ETipoErro.NaoEncontrado);
+
+            _usuarioServiceMock.Setup(x => x.EditaUsuario(_edicaoRequest, _idUsuario)).ReturnsAsync(resultado);
+
+            var resposta = await _controller.EditaUsuario(_edicaoRequest);
+
+            var naoEncontrado = Assert.IsType<NotFoundObjectResult>(resposta);
+            Assert.Same(resultado, naoEncontrado.Value);
+        }
+
         [Fact(DisplayName = "Deve retornar 401 ao editar com token inválido")]
         public async Task DeveRetornarUnauthorizedAoEditarComTokenInvalido()
         {
@@ -172,6 +199,20 @@ namespace ApiFinancas.Tests.Presentation.Controllers
 
             var requisicaoInvalida = Assert.IsType<BadRequestObjectResult>(resposta);
             Assert.Same(resultado, requisicaoInvalida.Value);
+        }
+
+        [Fact(DisplayName = "Deve retornar 404 ao excluir usuário não localizado")]
+        public async Task DeveRetornarNotFoundAoExcluirUsuarioNaoLocalizado()
+        {
+            var resultado = Result<string>.Fail(
+                "Usuário não localizado, não foi possível deletar", ETipoErro.NaoEncontrado);
+
+            _usuarioServiceMock.Setup(x => x.DeletaUsuario(_exclusaoRequest, _idUsuario)).ReturnsAsync(resultado);
+
+            var resposta = await _controller.DeletarUsuario(_exclusaoRequest);
+
+            var naoEncontrado = Assert.IsType<NotFoundObjectResult>(resposta);
+            Assert.Same(resultado, naoEncontrado.Value);
         }
 
         [Fact(DisplayName = "Deve retornar 401 ao excluir com token inválido")]
