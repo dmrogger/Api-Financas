@@ -22,6 +22,72 @@ namespace ApiFinancas.Src.Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("ApiFinancas.Src.Domain.Entities.Categoria", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("name");
+
+                    b.Property<Guid?>("UsuarioId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId", "Nome")
+                        .IsUnique();
+
+                    b.ToTable("categories", "finances");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("8b1f6c1e-3f0a-4c2d-9a51-0c6f2a1d7e01"),
+                            Nome = "Alimentação"
+                        },
+                        new
+                        {
+                            Id = new Guid("8b1f6c1e-3f0a-4c2d-9a51-0c6f2a1d7e02"),
+                            Nome = "Moradia"
+                        },
+                        new
+                        {
+                            Id = new Guid("8b1f6c1e-3f0a-4c2d-9a51-0c6f2a1d7e03"),
+                            Nome = "Transporte"
+                        },
+                        new
+                        {
+                            Id = new Guid("8b1f6c1e-3f0a-4c2d-9a51-0c6f2a1d7e04"),
+                            Nome = "Saúde"
+                        },
+                        new
+                        {
+                            Id = new Guid("8b1f6c1e-3f0a-4c2d-9a51-0c6f2a1d7e05"),
+                            Nome = "Educação"
+                        },
+                        new
+                        {
+                            Id = new Guid("8b1f6c1e-3f0a-4c2d-9a51-0c6f2a1d7e06"),
+                            Nome = "Lazer"
+                        },
+                        new
+                        {
+                            Id = new Guid("8b1f6c1e-3f0a-4c2d-9a51-0c6f2a1d7e07"),
+                            Nome = "Salário"
+                        },
+                        new
+                        {
+                            Id = new Guid("8b1f6c1e-3f0a-4c2d-9a51-0c6f2a1d7e08"),
+                            Nome = "Outros"
+                        });
+                });
+
             modelBuilder.Entity("ApiFinancas.Src.Domain.Entities.Movimentacao", b =>
                 {
                     b.Property<Guid>("Id")
@@ -29,8 +95,8 @@ namespace ApiFinancas.Src.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<int?>("CategoriaId")
-                        .HasColumnType("integer")
+                    b.Property<Guid?>("CategoriaId")
+                        .HasColumnType("uuid")
                         .HasColumnName("category_id");
 
                     b.Property<DateTime>("Data")
@@ -56,6 +122,8 @@ namespace ApiFinancas.Src.Infrastructure.Persistence.Migrations
                         .HasColumnName("amount");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoriaId");
 
                     b.HasIndex("UsuarioId", "Data");
 
@@ -94,8 +162,21 @@ namespace ApiFinancas.Src.Infrastructure.Persistence.Migrations
                     b.ToTable("user", "finances");
                 });
 
+            modelBuilder.Entity("ApiFinancas.Src.Domain.Entities.Categoria", b =>
+                {
+                    b.HasOne("ApiFinancas.Src.Domain.Entities.Usuario", null)
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("ApiFinancas.Src.Domain.Entities.Movimentacao", b =>
                 {
+                    b.HasOne("ApiFinancas.Src.Domain.Entities.Categoria", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriaId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("ApiFinancas.Src.Domain.Entities.Usuario", null)
                         .WithMany()
                         .HasForeignKey("UsuarioId")
