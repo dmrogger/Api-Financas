@@ -67,7 +67,7 @@ namespace ApiFinancas.Src.Application.Services.Movimentacoes
             // Movimentação de outro usuário recebe a mesma resposta de "não encontrada",
             // para não revelar que o ID existe
             if (movimentacao == null || movimentacao.UsuarioId != idUsuario)
-                return Result<string>.Fail("Movimentação não encontrada.");
+                return Result<string>.Fail("Movimentação não encontrada.", ETipoErro.NaoEncontrado);
 
             await _movimentacaoRepository.DeletarAsync(movimentacao);
 

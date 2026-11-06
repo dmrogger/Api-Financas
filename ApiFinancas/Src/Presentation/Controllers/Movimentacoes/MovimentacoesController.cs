@@ -85,7 +85,7 @@ namespace ApiFinancas.Src.Presentation.Controllers.Movimentacoes
             if (result.Success)
                 return NoContent();
 
-            return NotFound(result);
+            return this.RespostaDeErro(result);
         }
     }
 }

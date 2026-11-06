@@ -140,7 +140,7 @@ namespace ApiFinancas.Tests.Presentation.Controllers
         public async Task DeveRetornarNotFoundAoExcluirMovimentacaoInexistente()
         {
             var idMovimentacao = Guid.NewGuid();
-            var resultado = Result<string>.Fail("Movimentação não encontrada.");
+            var resultado = Result<string>.Fail("Movimentação não encontrada.", ETipoErro.NaoEncontrado);
 
             _movimentacaoServiceMock.Setup(x => x.DeletaMovimentacao(idMovimentacao, _idUsuario)).ReturnsAsync(resultado);
 

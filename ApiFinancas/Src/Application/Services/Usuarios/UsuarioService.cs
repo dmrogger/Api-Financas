@@ -23,7 +23,7 @@ namespace ApiFinancas.Src.Application.Services.Usuarios
             var usuarioExistente = await _usuarioRepository.ObterPorEmailAsync(request.Email);
 
             if (usuarioExistente != null)
-                return Result<UsuarioResponse>.Fail("E-mail já cadastrado! Tente criar a conta usando outro E-mail");
+                return Result<UsuarioResponse>.Fail("E-mail já cadastrado! Tente criar a conta usando outro E-mail", ETipoErro.Conflito);
 
             var senhaHash = _passwordService.HashSenha(request.Senha);
 
@@ -46,7 +46,7 @@ namespace ApiFinancas.Src.Application.Services.Usuarios
             var usuario = await _usuarioRepository.ObterPorIdAsync(idUsuario);
 
             if (usuario == null)
-                return Result<string>.Fail("Usuário não localizado!");
+                return Result<string>.Fail("Usuário não localizado!", ETipoErro.NaoEncontrado);
 
             if (!_passwordService.ValidaSenha(request.SenhaAtual, usuario.Senha))
                 return Result<string>.Fail("Erro: Email ou senha inválidos!");
@@ -66,7 +66,7 @@ namespace ApiFinancas.Src.Application.Services.Usuarios
         {
             var usuario = await _usuarioRepository.ObterPorIdAsync(idUsuario);
             if (usuario == null)
-                return Result<string>.Fail("Usuário não localizado, não foi possível deletar");
+                return Result<string>.Fail("Usuário não localizado, não foi possível deletar", ETipoErro.NaoEncontrado);
 
             if (!_passwordService.ValidaSenha(request.Senha, usuario.Senha))
                 return Result<string>.Fail("Erro: Email ou senha inválidos!");
@@ -88,7 +88,7 @@ namespace ApiFinancas.Src.Application.Services.Usuarios
             var usuario = await _usuarioRepository.ObterPorIdAsync(idUsuario);
 
             if (usuario == null)
-                return Result<UsuarioResponse>.Fail("Usuário não localizado!");
+                return Result<UsuarioResponse>.Fail("Usuário não localizado!", ETipoErro.NaoEncontrado);
 
             return Result<UsuarioResponse>.Ok(new UsuarioResponse(usuario.Id, usuario.Nome, usuario.Email));
         }
