@@ -14,7 +14,6 @@ Diante disso, resolvi desenvolver minha própria API REST (toda feita por mim), 
 
 Fique à vontade para bisbilhotar! Em caso de dúvidas ou críticas, é só chamar.
 
-Fique a vontade para bisbilhotar, em caso de dúvidas ou críticas é só chamar 
 
 ## Funcionalidades
 
