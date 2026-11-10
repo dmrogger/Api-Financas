@@ -5,4 +5,5 @@
 .git/
 .github/
 Tests/
+frontend/
 .env
