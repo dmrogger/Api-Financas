@@ -1,0 +1,74 @@
+.secao {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: 28px 0 14px;
+  font: var(--mat-sys-title-medium);
+  font-weight: 600;
+
+  span {
+    font: var(--mat-sys-body-small);
+    color: var(--texto-suave);
+  }
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 14px;
+}
+
+.bloco {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 72px;
+  padding: 14px 10px 14px 16px;
+}
+
+.nome {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.acoes {
+  display: flex;
+  color: var(--texto-suave);
+}
+
+.padrao {
+  box-shadow: none;
+  background: var(--superficie-2);
+}
+
+.cadeado {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
+  color: var(--texto-suave);
+  opacity: 0.6;
+}
+
+// Bloco tracejado "adicionar"
+.nova {
+  justify-content: center;
+  gap: 8px;
+  border: 1.5px dashed var(--borda);
+  border-radius: var(--raio);
+  background: transparent;
+  color: var(--mat-sys-primary);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: color-mix(in srgb, var(--mat-sys-primary) 6%, transparent);
+  }
+}

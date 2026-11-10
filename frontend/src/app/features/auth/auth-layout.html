@@ -1,0 +1,43 @@
+<aside class="painel">
+  <div class="marca">
+    <span class="marca-icone"><mat-icon>account_balance_wallet</mat-icon></span>
+    Minhas Finanças
+  </div>
+
+  <div class="painel-meio">
+    <h2>Suas finanças, simples e sob controle.</h2>
+    <ul>
+      <li><mat-icon>bolt</mat-icon> Registre entradas e saídas em segundos</li>
+      <li><mat-icon>donut_large</mat-icon> Veja para onde vai seu dinheiro</li>
+      <li><mat-icon>lock</mat-icon> Seus dados protegidos com login seguro</li>
+    </ul>
+
+    <!-- Cartão decorativo, só ilustração -->
+    <div class="cartao-demo" aria-hidden="true">
+      <span class="demo-rotulo">Saldo do mês</span>
+      <strong class="demo-valor">R$ 4.250,80</strong>
+      <div class="demo-barras">
+        <span style="height: 40%"></span>
+        <span style="height: 65%"></span>
+        <span style="height: 50%"></span>
+        <span style="height: 85%"></span>
+        <span style="height: 60%"></span>
+        <span style="height: 95%"></span>
+      </div>
+    </div>
+  </div>
+
+  <small>© {{ ano }} Minhas Finanças</small>
+</aside>
+
+<main class="lado-form">
+  <div class="form-caixa">
+    <header>
+      <h1>{{ titulo() }}</h1>
+      @if (subtitulo()) {
+        <p>{{ subtitulo() }}</p>
+      }
+    </header>
+    <ng-content />
+  </div>
+</main>

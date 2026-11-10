@@ -1,0 +1,90 @@
+<div class="pagina estreita">
+  <div class="pagina-cabecalho">
+    <div>
+      <h1>Meu perfil</h1>
+      <p>Gerencie seus dados de acesso.</p>
+    </div>
+  </div>
+
+  <div class="cartao identidade">
+    <span class="avatar">{{ iniciais() }}</span>
+    <div>
+      <strong>{{ usuario()?.nome }}</strong>
+      <span>{{ usuario()?.email }}</span>
+    </div>
+  </div>
+
+  <div class="cartao">
+    <h2 class="cartao-titulo">Dados da conta</h2>
+
+    <form [formGroup]="formEdicao" (ngSubmit)="salvar()" class="formulario">
+      <mat-form-field>
+        <mat-label>Nome</mat-label>
+        <mat-icon matPrefix>person</mat-icon>
+        <input matInput formControlName="nome" autocomplete="name" />
+        <mat-error>Informe o nome (até 150 caracteres)</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Nova senha (opcional)</mat-label>
+        <mat-icon matPrefix>lock</mat-icon>
+        <input matInput type="password" formControlName="senhaNova" autocomplete="new-password" />
+        <mat-hint>Deixe em branco para manter a atual</mat-hint>
+        <mat-error>{{ dicaSenha }}</mat-error>
+      </mat-form-field>
+
+      @if (formEdicao.controls.senhaNova.value) {
+        <mat-form-field>
+          <mat-label>Confirmar nova senha</mat-label>
+          <mat-icon matPrefix>lock_reset</mat-icon>
+          <input matInput type="password" formControlName="confirmacao" autocomplete="new-password" />
+        </mat-form-field>
+        @if (formEdicao.hasError('senhasDiferentes') && formEdicao.controls.confirmacao.touched) {
+          <span class="aviso-erro">As senhas não conferem.</span>
+        }
+      }
+
+      <div class="separador"></div>
+
+      <mat-form-field>
+        <mat-label>Senha atual</mat-label>
+        <mat-icon matPrefix>key</mat-icon>
+        <input matInput type="password" formControlName="senhaAtual" autocomplete="current-password" />
+        <mat-hint>Necessária para confirmar qualquer alteração</mat-hint>
+        <mat-error>Informe a senha atual</mat-error>
+      </mat-form-field>
+
+      <div class="acoes">
+        <button
+          mat-flat-button
+          type="submit"
+          [disabled]="salvando() || formEdicao.hasError('semAlteracao')"
+        >
+          Salvar alterações
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="cartao zona-perigo">
+    <h2 class="cartao-titulo">Excluir conta</h2>
+    <p class="aviso">
+      Apaga sua conta, suas categorias e todas as movimentações. Essa ação não pode ser desfeita.
+    </p>
+
+    <form [formGroup]="formExclusao" (ngSubmit)="excluirConta()" class="formulario">
+      <mat-form-field>
+        <mat-label>Digite sua senha para confirmar</mat-label>
+        <mat-icon matPrefix>key</mat-icon>
+        <input matInput type="password" formControlName="senha" autocomplete="current-password" />
+        <mat-error>Informe a senha para confirmar</mat-error>
+      </mat-form-field>
+
+      <div class="acoes">
+        <button mat-stroked-button class="botao-perigo" type="submit" [disabled]="excluindo()">
+          <mat-icon>delete_forever</mat-icon> Excluir minha conta
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

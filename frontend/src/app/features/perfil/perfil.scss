@@ -1,0 +1,76 @@
+.estreita {
+  max-width: 680px;
+}
+
+.cartao + .cartao {
+  margin-top: 20px;
+}
+
+.identidade {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  strong {
+    display: block;
+    font-size: 18px;
+  }
+
+  span:not(.avatar) {
+    color: var(--texto-suave);
+  }
+}
+
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--gradiente);
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.separador {
+  height: 1px;
+  background: var(--borda);
+  margin: 4px 0;
+}
+
+.acoes {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.aviso {
+  margin: -6px 0 18px;
+  color: var(--texto-suave);
+}
+
+.aviso-erro {
+  color: var(--cor-saida);
+  font-size: 13px;
+  margin-top: -8px;
+}
+
+.zona-perigo {
+  border-color: color-mix(in srgb, var(--cor-saida) 40%, var(--borda));
+
+  .cartao-titulo {
+    color: var(--cor-saida);
+  }
+}
+
+// Variáveis do próprio botão do Material (a cor "comum" seria sobrescrita por ele)
+.botao-perigo {
+  --mat-button-outlined-label-text-color: var(--cor-saida);
+  --mat-button-outlined-outline-color: var(--cor-saida);
+}

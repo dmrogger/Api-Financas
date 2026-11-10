@@ -1,0 +1,24 @@
+// Estilo dos formulários de login e cadastro
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.acao-principal {
+  height: 48px;
+  margin-top: 4px;
+  font-size: 15px;
+}
+
+.rodape {
+  text-align: center;
+  margin-top: 24px;
+  color: var(--texto-suave);
+}
+
+.aviso-erro {
+  color: var(--cor-saida);
+  font-size: 13px;
+  margin-top: -8px;
+}

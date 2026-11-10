@@ -1,0 +1,66 @@
+<h2 mat-dialog-title>Nova movimentação</h2>
+
+<form [formGroup]="form" (ngSubmit)="salvar()">
+  <mat-dialog-content class="campos">
+    <!-- Tipo: dois botões grandes coloridos -->
+    <div class="tipo" role="radiogroup" aria-label="Tipo da movimentação">
+      <button
+        type="button"
+        role="radio"
+        class="opcao saida"
+        [class.selecionada]="form.controls.tipo.value === Tipo.Saida"
+        [attr.aria-checked]="form.controls.tipo.value === Tipo.Saida"
+        (click)="form.controls.tipo.setValue(Tipo.Saida)"
+      >
+        <mat-icon>north_east</mat-icon> Saída
+      </button>
+      <button
+        type="button"
+        role="radio"
+        class="opcao entrada"
+        [class.selecionada]="form.controls.tipo.value === Tipo.Entrada"
+        [attr.aria-checked]="form.controls.tipo.value === Tipo.Entrada"
+        (click)="form.controls.tipo.setValue(Tipo.Entrada)"
+      >
+        <mat-icon>south_west</mat-icon> Entrada
+      </button>
+    </div>
+
+    <mat-form-field>
+      <mat-label>Valor</mat-label>
+      <span matTextPrefix>R$&nbsp;</span>
+      <input matInput type="number" min="0.01" step="0.01" formControlName="valor" cdkFocusInitial />
+      <mat-error>Informe um valor maior que zero</mat-error>
+    </mat-form-field>
+
+    <div class="linha">
+      <mat-form-field>
+        <mat-label>Data</mat-label>
+        <input matInput [matDatepicker]="seletorData" [max]="hoje" formControlName="data" />
+        <mat-datepicker-toggle matIconSuffix [for]="seletorData" />
+        <mat-datepicker #seletorData />
+        <mat-error>Informe a data</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Categoria</mat-label>
+        <mat-select formControlName="categoriaId">
+          <mat-option [value]="null">Sem categoria</mat-option>
+          @for (c of categorias; track c.categoriaId) {
+            <mat-option [value]="c.categoriaId">{{ c.nome }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field>
+      <mat-label>Descrição (opcional)</mat-label>
+      <input matInput formControlName="descricao" maxlength="255" placeholder="Ex.: Mercado, aluguel, salário…" />
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" mat-dialog-close>Cancelar</button>
+    <button mat-flat-button type="submit" [disabled]="salvando()">Salvar</button>
+  </mat-dialog-actions>
+</form>

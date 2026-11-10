@@ -1,1 +1,191 @@
-/* You can add global styles to this file, and also import other style files */
+// =====================================================================
+// Tema e estilos globais
+// O Angular Material (Material 3) gera variáveis CSS --mat-sys-* a partir do tema.
+// Elas mudam sozinhas entre claro/escuro, então use-as em vez de cores fixas.
+// Mais detalhes: https://material.angular.dev/guide/theming
+// =====================================================================
+@use '@angular/material' as mat;
+
+html {
+  height: 100%;
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$violet-palette,
+        tertiary: mat.$cyan-palette,
+      ),
+      typography: (
+        plain-family: 'Inter, sans-serif',
+        brand-family: 'Inter, sans-serif',
+      ),
+      density: 0,
+    )
+  );
+
+  // Ajustes finos nos componentes do Material
+  @include mat.form-field-overrides(
+    (
+      outlined-container-shape: 12px,
+    )
+  );
+  @include mat.dialog-overrides(
+    (
+      container-shape: 24px,
+    )
+  );
+}
+
+// ---------- Variáveis do app ----------
+:root {
+  // Fundo da página e dos cartões (claro / escuro)
+  --fundo: light-dark(#f4f3f8, #121116);
+  --superficie: light-dark(#ffffff, #1c1b22);
+  --superficie-2: light-dark(#f7f6fb, #24232b);
+  --borda: light-dark(#e7e5ef, #2e2d36);
+  --texto-suave: var(--mat-sys-on-surface-variant);
+
+  --raio: 20px;
+  --raio-pequeno: 12px;
+  --sombra: 0 1px 2px rgb(20 16 40 / 4%), 0 4px 16px rgb(20 16 40 / 6%);
+
+  // Cores de valores financeiros
+  --cor-entrada: light-dark(#14915a, #5ee3a1);
+  --cor-saida: light-dark(#d63a4a, #ff8a95);
+
+  // Gradiente de destaque (cartão de saldo, painel do login)
+  --gradiente: linear-gradient(135deg, #6d4aff 0%, #8f5cff 45%, #22b8cf 100%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sombra: none;
+  }
+}
+
+body {
+  // "light dark" segue o tema claro/escuro do sistema operacional
+  color-scheme: light dark;
+  background-color: var(--fundo);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+  margin: 0;
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--mat-sys-primary);
+  font-weight: 500;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// ---------- Utilitários ----------
+.valor-entrada {
+  color: var(--cor-entrada);
+}
+
+.valor-saida {
+  color: var(--cor-saida);
+}
+
+.numero {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.largura-total {
+  width: 100%;
+}
+
+.vazio {
+  text-align: center;
+  padding: 40px 16px;
+  color: var(--texto-suave);
+
+  mat-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    opacity: 0.6;
+  }
+
+  p {
+    margin: 8px 0 16px;
+  }
+}
+
+// Cartão padrão (substitui o mat-card para ter controle total do visual)
+.cartao {
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.cartao-titulo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 16px;
+  font: var(--mat-sys-title-medium);
+  font-weight: 600;
+}
+
+// Círculo colorido com ícone (categorias, indicadores)
+.icone-circulo {
+  --cor: var(--mat-sys-primary);
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--cor);
+  background: color-mix(in srgb, var(--cor) 14%, transparent);
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+// ---------- Estrutura das páginas internas ----------
+.pagina {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+  box-sizing: border-box;
+
+  @media (max-width: 600px) {
+    padding: 20px 16px 40px;
+  }
+}
+
+.pagina-cabecalho {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+
+  h1 {
+    font: var(--mat-sys-headline-small);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: var(--texto-suave);
+  }
+}

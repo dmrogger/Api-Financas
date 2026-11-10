@@ -1,0 +1,52 @@
+<div class="pagina">
+  <div class="pagina-cabecalho">
+    <div>
+      <h1>Categorias</h1>
+      <p>Organize suas movimentações do seu jeito.</p>
+    </div>
+    <button mat-flat-button (click)="nova()">
+      <mat-icon>add</mat-icon> Nova categoria
+    </button>
+  </div>
+
+  @if (carregando()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+
+  <h2 class="secao">Minhas categorias</h2>
+  <div class="grade">
+    @for (c of minhas(); track c.categoriaId) {
+      <div class="cartao bloco">
+        <span class="icone-circulo" [style.--cor]="cor(c.nome)"><mat-icon>{{ icone(c.nome) }}</mat-icon></span>
+        <strong class="nome">{{ c.nome }}</strong>
+        <div class="acoes">
+          <button mat-icon-button (click)="renomear(c)" matTooltip="Renomear" aria-label="Renomear">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="excluir(c)" matTooltip="Excluir" aria-label="Excluir">
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+        </div>
+      </div>
+    }
+
+    <button class="bloco nova" (click)="nova()">
+      <mat-icon>add</mat-icon>
+      {{ minhas().length ? 'Adicionar categoria' : 'Criar minha primeira categoria' }}
+    </button>
+  </div>
+
+  <h2 class="secao">
+    Categorias padrão
+    <span>Disponíveis para todos · não podem ser alteradas</span>
+  </h2>
+  <div class="grade">
+    @for (c of padrao(); track c.categoriaId) {
+      <div class="cartao bloco padrao">
+        <span class="icone-circulo" [style.--cor]="cor(c.nome)"><mat-icon>{{ icone(c.nome) }}</mat-icon></span>
+        <strong class="nome">{{ c.nome }}</strong>
+        <mat-icon class="cadeado" matTooltip="Categoria do sistema">lock</mat-icon>
+      </div>
+    }
+  </div>
+</div>
