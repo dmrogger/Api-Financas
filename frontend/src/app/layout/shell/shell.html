@@ -1,0 +1,54 @@
+<mat-sidenav-container class="container">
+  <mat-sidenav
+    #menu
+    class="menu"
+    [mode]="telaPequena() ? 'over' : 'side'"
+    [opened]="!telaPequena()"
+  >
+    <div class="menu-interno">
+      <a class="marca" routerLink="/" (click)="aoNavegar()">
+        <span class="marca-icone"><mat-icon>account_balance_wallet</mat-icon></span>
+        <span>Minhas Finanças</span>
+      </a>
+
+      <nav class="navegacao" aria-label="Menu principal">
+        @for (item of itensMenu; track item.rota) {
+          <a
+            class="item"
+            [routerLink]="item.rota"
+            routerLinkActive="ativo"
+            [routerLinkActiveOptions]="{ exact: item.rota === '/' }"
+            (click)="aoNavegar()"
+          >
+            <mat-icon>{{ item.icone }}</mat-icon>
+            <span>{{ item.rotulo }}</span>
+          </a>
+        }
+      </nav>
+
+      <div class="usuario">
+        <span class="avatar">{{ iniciais() }}</span>
+        <div class="usuario-texto">
+          <strong>{{ usuario()?.nome }}</strong>
+          <span>{{ usuario()?.email }}</span>
+        </div>
+        <button mat-icon-button (click)="sair()" matTooltip="Sair" aria-label="Sair">
+          <mat-icon>logout</mat-icon>
+        </button>
+      </div>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="conteudo">
+    @if (telaPequena()) {
+      <header class="barra-mobile">
+        <button mat-icon-button (click)="menu.toggle()" aria-label="Abrir menu">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span class="marca-icone pequena"><mat-icon>account_balance_wallet</mat-icon></span>
+        <strong>Minhas Finanças</strong>
+      </header>
+    }
+    <router-outlet />
+  </mat-sidenav-content>
+</mat-sidenav-container>

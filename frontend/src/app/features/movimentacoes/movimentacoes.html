@@ -1,0 +1,101 @@
+<div class="pagina">
+  <div class="pagina-cabecalho">
+    <div>
+      <h1>Movimentações</h1>
+      <p>Tudo o que entrou e saiu da sua conta.</p>
+    </div>
+    <button mat-flat-button (click)="nova()">
+      <mat-icon>add</mat-icon> Nova movimentação
+    </button>
+  </div>
+
+  <!-- Totais do período -->
+  <section class="totais">
+    <div class="cartao total">
+      <span class="icone-circulo entrada"><mat-icon>south_west</mat-icon></span>
+      <div>
+        <small>Entradas</small>
+        <strong class="numero valor-entrada">{{ totais().entradas | currency }}</strong>
+      </div>
+    </div>
+    <div class="cartao total">
+      <span class="icone-circulo saida"><mat-icon>north_east</mat-icon></span>
+      <div>
+        <small>Saídas</small>
+        <strong class="numero valor-saida">{{ totais().saidas | currency }}</strong>
+      </div>
+    </div>
+    <div class="cartao total">
+      <span class="icone-circulo"><mat-icon>account_balance</mat-icon></span>
+      <div>
+        <small>Saldo</small>
+        <strong class="numero" [class.valor-saida]="totais().saldo < 0">{{ totais().saldo | currency }}</strong>
+      </div>
+    </div>
+  </section>
+
+  <div class="cartao lista">
+    <!-- Filtros -->
+    <div class="filtros">
+      <mat-button-toggle-group
+        hideSingleSelectionIndicator
+        [value]="periodo()"
+        (change)="escolherPeriodo($event.value)"
+        aria-label="Período"
+      >
+        <mat-button-toggle value="mes">Este mês</mat-button-toggle>
+        <mat-button-toggle value="anterior">Mês passado</mat-button-toggle>
+        <mat-button-toggle value="tudo">Tudo</mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <mat-form-field class="campo-data">
+        <mat-label>Período personalizado</mat-label>
+        <mat-date-range-input [formGroup]="intervalo" [rangePicker]="seletorPeriodo">
+          <input matStartDate formControlName="inicio" placeholder="Início" />
+          <input matEndDate formControlName="fim" placeholder="Fim" />
+        </mat-date-range-input>
+        <mat-datepicker-toggle matIconSuffix [for]="seletorPeriodo" />
+        <mat-date-range-picker #seletorPeriodo (closed)="aoEscolherIntervalo()" />
+      </mat-form-field>
+
+      <mat-form-field class="campo-busca">
+        <mat-icon matPrefix>search</mat-icon>
+        <mat-label>Buscar</mat-label>
+        <input matInput [value]="busca()" (input)="busca.set($any($event.target).value)" />
+      </mat-form-field>
+    </div>
+
+    @if (carregando()) {
+      <mat-progress-bar mode="indeterminate" />
+    }
+
+    <!-- Lista agrupada por dia -->
+    @for (grupo of grupos(); track grupo.chave) {
+      <div class="dia">
+        <span class="dia-nome">{{ rotuloDia(grupo.data) ?? (grupo.data | date: "EEEE, d 'de' MMMM") }}</span>
+        <span class="numero" [class.valor-saida]="grupo.total < 0" [class.valor-entrada]="grupo.total > 0">
+          {{ grupo.total | currency }}
+        </span>
+      </div>
+      @for (m of grupo.itens; track m.movimentacaoId) {
+        <app-item-movimentacao
+          [movimentacao]="m"
+          [nomeCategoria]="nomeCategoria(m.categoriaId)"
+          [mostrarData]="false"
+          [podeExcluir]="true"
+          (excluir)="excluir(m)"
+        />
+      }
+    } @empty {
+      @if (!carregando()) {
+        <div class="vazio">
+          <mat-icon>{{ busca() ? 'search_off' : 'receipt_long' }}</mat-icon>
+          <p>{{ busca() ? 'Nada encontrado para essa busca.' : 'Nenhuma movimentação neste período.' }}</p>
+          @if (!busca()) {
+            <button mat-flat-button (click)="nova()"><mat-icon>add</mat-icon> Lançar a primeira</button>
+          }
+        </div>
+      }
+    }
+  </div>
+</div>

@@ -19,7 +19,11 @@ namespace ApiFinancas.Src.Application.DTOs.Requests.Movimentacoes
         /// <summary>
         /// Valor da movimentação (sempre positivo; o sinal é definido pelo Tipo)
         /// </summary>
-        [Range(typeof(decimal), "0.01", "999999999999", ErrorMessage = "O valor deve ser maior que zero")]
+        // Limites em cultura invariante: em pt-BR "0.01" não é um decimal válido (o separador é vírgula)
+        [Range(typeof(decimal), "0.01", "999999999999",
+            ParseLimitsInInvariantCulture = true,
+            ConvertValueInInvariantCulture = true,
+            ErrorMessage = "O valor deve ser maior que zero")]
         public decimal Valor { get; set; }
 
         /// <summary>

@@ -1,0 +1,149 @@
+:host {
+  display: grid;
+  grid-template-columns: minmax(380px, 1fr) minmax(400px, 1.1fr);
+  min-height: 100vh;
+  background: var(--superficie);
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.painel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px;
+  background: var(--gradiente);
+  color: #fff;
+  overflow: hidden;
+
+  // Brilho decorativo
+  &::after {
+    content: '';
+    position: absolute;
+    width: 420px;
+    height: 420px;
+    right: -140px;
+    top: -120px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 12%);
+  }
+
+  @media (max-width: 900px) {
+    display: none;
+  }
+
+  small {
+    opacity: 0.75;
+  }
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.marca-icone {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgb(255 255 255 / 20%);
+}
+
+.painel-meio {
+  position: relative;
+  z-index: 1;
+  max-width: 420px;
+
+  h2 {
+    font-size: 34px;
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin: 0 0 24px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 36px;
+    display: grid;
+    gap: 14px;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    opacity: 0.95;
+  }
+}
+
+.cartao-demo {
+  padding: 20px;
+  border-radius: 20px;
+  background: rgb(255 255 255 / 14%);
+  border: 1px solid rgb(255 255 255 / 25%);
+  backdrop-filter: blur(8px);
+  max-width: 300px;
+}
+
+.demo-rotulo {
+  display: block;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.demo-valor {
+  display: block;
+  font-size: 26px;
+  margin: 4px 0 16px;
+}
+
+.demo-barras {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 56px;
+
+  span {
+    flex: 1;
+    border-radius: 6px;
+    background: rgb(255 255 255 / 55%);
+  }
+}
+
+.lado-form {
+  display: grid;
+  place-items: center;
+  padding: 32px 20px;
+}
+
+.form-caixa {
+  width: 100%;
+  max-width: 400px;
+
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+
+  header {
+    margin-bottom: 28px;
+  }
+
+  p {
+    margin: 8px 0 0;
+    color: var(--texto-suave);
+  }
+}

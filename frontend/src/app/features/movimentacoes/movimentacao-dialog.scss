@@ -1,0 +1,53 @@
+.campos {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px !important;
+}
+
+.tipo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.opcao {
+  --cor: var(--texto-suave);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  border-radius: 14px;
+  border: 1.5px solid var(--borda);
+  background: transparent;
+  color: var(--texto-suave);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &.saida {
+    --cor: var(--cor-saida);
+  }
+
+  &.entrada {
+    --cor: var(--cor-entrada);
+  }
+
+  &.selecionada {
+    border-color: var(--cor);
+    color: var(--cor);
+    background: color-mix(in srgb, var(--cor) 12%, transparent);
+  }
+}
+
+.linha {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}

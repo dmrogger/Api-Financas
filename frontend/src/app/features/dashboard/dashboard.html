@@ -1,0 +1,122 @@
+<div class="pagina">
+  <div class="pagina-cabecalho">
+    <div>
+      <h1>Olá, {{ nomeUsuario() }} 👋</h1>
+      <p>Este é o resumo das suas finanças.</p>
+    </div>
+
+    <div class="seletor-mes">
+      <button mat-icon-button (click)="mudarMes(-1)" matTooltip="Mês anterior" aria-label="Mês anterior">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <span class="nome-mes">{{ mes() | date: 'MMMM yyyy' }}</span>
+      <button
+        mat-icon-button
+        (click)="mudarMes(1)"
+        [disabled]="ehMesAtual()"
+        matTooltip="Próximo mês"
+        aria-label="Próximo mês"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  @if (carregando() && !resumo()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+
+  @if (resumo(); as r) {
+    <section class="topo">
+      <!-- Cartão de destaque com o saldo -->
+      <div class="destaque" [class.carregando]="carregando()">
+        <span class="destaque-rotulo">Saldo do mês</span>
+        <strong class="destaque-valor numero">{{ r.saldo | currency }}</strong>
+
+        <div class="destaque-linhas">
+          <div>
+            <span class="bolha"><mat-icon>south_west</mat-icon></span>
+            <div>
+              <small>Entradas</small>
+              <strong class="numero">{{ r.totalEntradas | currency }}</strong>
+            </div>
+          </div>
+          <div>
+            <span class="bolha"><mat-icon>north_east</mat-icon></span>
+            <div>
+              <small>Saídas</small>
+              <strong class="numero">{{ r.totalSaidas | currency }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Taxa de economia -->
+      <div class="cartao economia">
+        <span class="icone-circulo"><mat-icon>savings</mat-icon></span>
+        <span class="rotulo">Economia do mês</span>
+        @if (taxaEconomia() !== null) {
+          <strong class="numero">{{ taxaEconomia() | percent: '1.0-0' }}</strong>
+          <div class="barra-fundo">
+            <div class="barra" [style.width.%]="(taxaEconomia() ?? 0) * 100"></div>
+          </div>
+          <small>das entradas ficaram com você</small>
+        } @else {
+          <strong>—</strong>
+          <small>Lance uma entrada para ver sua taxa de economia.</small>
+        }
+      </div>
+    </section>
+
+    @if (semDados()) {
+      <div class="cartao vazio">
+        <mat-icon>receipt_long</mat-icon>
+        <p>Nenhuma movimentação em {{ mes() | date: 'MMMM' }}.</p>
+        <a mat-flat-button routerLink="/movimentacoes">
+          <mat-icon>add</mat-icon> Lançar movimentação
+        </a>
+      </div>
+    } @else {
+      <section class="detalhes">
+        <!-- Gráfico de rosca -->
+        <div class="cartao">
+          <h2 class="cartao-titulo">Gastos por categoria</h2>
+          @if (fatias().length) {
+            <div class="grafico">
+              <div class="rosca" [style.background]="gradienteRosca()">
+                <div class="rosca-centro">
+                  <small>Total</small>
+                  <strong class="numero">{{ r.totalSaidas | currency: 'BRL' : 'symbol' : '1.0-0' }}</strong>
+                </div>
+              </div>
+
+              <ul class="legenda">
+                @for (f of fatias(); track f.nome) {
+                  <li>
+                    <span class="ponto" [style.background]="f.cor"></span>
+                    <span class="legenda-nome">{{ f.nome }}</span>
+                    <span class="legenda-pct">{{ f.percentual | percent: '1.0-0' }}</span>
+                    <strong class="numero">{{ f.valor | currency }}</strong>
+                  </li>
+                }
+              </ul>
+            </div>
+          } @else {
+            <p class="vazio">Nenhum gasto neste mês. 🎉</p>
+          }
+        </div>
+
+        <!-- Últimas movimentações -->
+        <div class="cartao">
+          <h2 class="cartao-titulo">
+            Últimas movimentações
+            <a routerLink="/movimentacoes" class="ver-todas">Ver todas</a>
+          </h2>
+          @for (m of recentes(); track m.movimentacaoId) {
+            <app-item-movimentacao [movimentacao]="m" [nomeCategoria]="nomeCategoria(m.categoriaId)" />
+          }
+        </div>
+      </section>
+    }
+  }
+</div>
