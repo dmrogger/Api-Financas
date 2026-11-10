@@ -10,7 +10,9 @@
 
 Este projeto nasceu de uma dor pessoal. Eu usava alguns serviços de gestão financeira que ofereciam apenas funções básicas e, para ter acesso a recursos mais completos, era preciso aderir a um plano mensal.
 
-Diante disso, resolvi desenvolver minha própria API REST, integrada a um front-end, e aproveitar a oportunidade para aplicar e estudar novas ferramentas, como o SonarCloud, que roda na pipeline e avalia a qualidade de todo código que entra neste repositório.
+Diante disso, resolvi desenvolver minha própria API REST (toda feita por mim), integrada a um front-end (feito em parceria com o Claude, já que design não é meu forte), e aproveitar a oportunidade para aplicar e estudar novas ferramentas, como o SonarCloud, que roda na pipeline e avalia a qualidade de todo código que entra neste repositório.
+
+Fique à vontade para bisbilhotar! Em caso de dúvidas ou críticas, é só chamar.
 
 Fique a vontade para bisbilhotar, em caso de dúvidas ou críticas é só chamar 
 
